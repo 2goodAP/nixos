@@ -82,9 +82,9 @@
 
   services.greetd = let
     swayConfig = pkgs.writeText "greetd-sway-config" ''
-      # `-l` activates layer-shell mode. Notice that `swaymsg exit`
-      # will run after gtkgreet exits.
-      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
+      # `-l` activates layer-shell mode and `-c` runs the specified command.
+      # Notice that `swaymsg exit` will run after gtkgreet exits.
+      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -c sway; swaymsg exit"
 
       # Nagbar keys
       set $exit e
