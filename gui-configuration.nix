@@ -63,6 +63,8 @@
       mpv
       # Screenshot
       sway-contrib.grimshot
+      # Screensharing
+      dbus-sway-environment
       # Terminal
       foot
       # Theme
