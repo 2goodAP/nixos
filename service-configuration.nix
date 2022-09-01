@@ -3,6 +3,12 @@
 { ... }:
 
 {
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
+
+
   security.apparmor = {
     enable = true;
     killUnconfinedConfinables = true;

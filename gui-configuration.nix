@@ -72,6 +72,8 @@
       capitaine-cursors
       libsForQt5.qt5ct
       papirus-icon-theme
+      # Volume
+      pavucontrol
     ];
   };
 
