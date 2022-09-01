@@ -52,6 +52,7 @@
     conda
     docker-compose
     git
+    jq
 		(neovim.override { withNodeJs = true; })
     (python39.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
     (python310.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
