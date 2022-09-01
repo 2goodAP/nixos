@@ -16,14 +16,14 @@
 
 
   programs = {
-    bash = {
-      vteIntegration = true;
-    };
+    bash.vteIntegration = true;
 
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
+
+    light.enable = true;
 
     zsh = {
       enable = true;

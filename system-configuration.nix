@@ -10,15 +10,15 @@
       luks.devices = {
         boot_crypt = {
           allowDiscards = true;
-          device = "/dev/disk/by-uuid/1791212e-fded-43c5-85d5-7d51e7ccb8ac";
+          device = "/dev/disk/by-partlabel/LinuxBootPartition";
         };
         swap_crypt = {
           allowDiscards = true;
-          device = "/dev/disk/by-uuid/27953c11-4827-4e9d-9a44-4fbfe3ea9805";
+          device = "/dev/disk/by-partlabel/LinuxSwapPartition";
         };
         data_crypt = {
           allowDiscards = true;
-          device = "/dev/disk/by-uuid/10164698-6741-4a9f-978b-15f7b259f891";
+          device = "/dev/disk/by-partlabel/LinuxDataPartition";
         };
       };
     };
@@ -45,8 +45,6 @@
         enable = true;
         enableCryptodisk = true;
         extraGrubInstallArgs = [ "--bootloader-id=GRUB" ];
-        useOSProber = true;
-        version = 2;
       };
     };
   };
@@ -54,7 +52,7 @@
 
   fileSystems = {
     "/efi" = {
-      device = "/dev/disk/by-uuid/10E5-6022";
+      device = "/dev/disk/by-partlabel/EFISystemPartition";
       fsType = "vfat";
     };
 
@@ -101,29 +99,21 @@
     };
   };
 
+
   swapDevices = [ { device = "/dev/mapper/swap_crypt"; } ];
 
 
-  # Set your time zone.
+  # Set time zone.
   time.timeZone = "Asia/Kathmandu";
-
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+
+
   console = {
     font = "Lat2-Terminus18";
     keyMap = "us";
     packages = [ pkgs.terminus_font ];
   };
-
-
-  # Install and configure fonts.
-  fonts.fonts = with pkgs; [
-    fantasque-sans-mono
-    open-sans
-    roboto
-    roboto-mono
-    victor-mono
-  ];
 
 
   # This value determines the NixOS release from which the default
@@ -132,5 +122,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.11";
+  system.stateVersion = "22.05";
 }

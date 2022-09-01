@@ -13,12 +13,7 @@
 
 
     users = let
-      pkgsUnstable = import <nixos-unstable> {};
-
-      userPackages = (with pkgs; [
-        alacritty
-        foot
-
+      userPackages = with pkgs; [
         firefox
         thunderbird
         ungoogled-chromium
@@ -27,15 +22,13 @@
         imv
         keepassxc
         libreoffice-qt
-        mpv
         nextcloud-client
         speedcrunch
         transmission
         xorg.xeyes
         zathura
         zoom-us
-      ]);
-
+      ];
     in {
       aashishp = {
         isNormalUser = true;

@@ -5,7 +5,6 @@
 {
   networking = {
     hostName = "nixosbox";
-
     nameservers = [ "1.1.1.1" "9.9.9.9" ];
 
     networkmanager = {
@@ -29,14 +28,13 @@
   };
 
   
-  systemd = {
-    # Enable systemd-networkd.
-    network = {
-      enable = true;
-      wait-online = {
-        anyInterface = true;
-        extraArgs = [ "--interface=wlp0s20f3" "--interface=enp7s0f1" ];
-      };
+  # Enable systemd-networkd.
+  systemd.network = {
+    enable = true;
+
+    wait-online = {
+      anyInterface = true;
+      extraArgs = [ "--interface=wlp0s20f3" "--interface=enp7s0f1" ];
     };
   };
 }
