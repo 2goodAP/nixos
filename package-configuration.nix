@@ -6,7 +6,7 @@
   # Append "nixpkgs-overlays" to existing NIX_PATH.
   nix = {
     nixPath = options.nix.nixPath.default ++ [
-      "nixpkgs-overlays=/etc/nixos/overlays/"
+      "nixpkgs-overlays=$HOME/.nixos/overlays/"
     ];
 
     package = pkgs.nixFlakes;

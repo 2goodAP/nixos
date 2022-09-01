@@ -19,11 +19,34 @@
 
 
   programs.sway = let 
-    # bash script to let dbus know about important env variables and
+    # A wrapper script to launch sway.
+    swayrun = pkgs.writeTextFile rec {
+      name = "swayrun";
+      destination = "/bin/${name}";
+      executable = true;
+
+      text = ''
+        export XDG_SESSION_TYPE=wayland
+        export XDG_SESSION_DESKTOP=sway
+        export XDG_CURRENT_DESKTOP=sway
+        export MOZ_ENABLE_WAYLAND=1
+        export CLUTTER_BACKEND=wayland
+        export QT_QPA_PLATFORM=wayland-egl
+        export QT_WAYLAND_FORCE_DPI=physical
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+        export ECORE_EVAS_ENGINE=wayland-egl
+        export ELM_ENGINE=wayland_egl
+        export _JAVA_AWT_WM_NONREPARENTING=1
+
+        systemd-cat --identifier=sway ${pkgs.sway}/bin/sway $@
+      '';
+    };
+
+    # A Bash script to let dbus know about important env variables and
     # propogate them to relevent services run at the end of sway config.
-    dbus-sway-environment = pkgs.writeTextFile {
+    dbus-sway-environment = pkgs.writeTextFile rec {
       name = "dbus-sway-environment";
-      destination = "/bin/dbus-sway-environment";
+      destination = "/bin/${name}";
       executable = true;
 
       text = ''
@@ -37,7 +60,12 @@
     enable = true;
     wrapperFeatures.gtk = true;
 
-    extraPackages = with pkgs; [
+    extraPackages = [
+      # Screensharing
+      dbus-sway-environment
+      # Wrapper
+      swayrun
+    ] ++ (with pkgs; [
       # Bar
       waybar
       libappindicator-gtk3
@@ -63,8 +91,6 @@
       mpv
       # Screenshot
       sway-contrib.grimshot
-      # Screensharing
-      dbus-sway-environment
       # Terminal
       foot
       # Theme
@@ -74,7 +100,7 @@
       papirus-icon-theme
       # Volume
       pavucontrol
-    ];
+    ]);
   };
 
 
@@ -85,10 +111,11 @@
 
 
   services.greetd = let
+    # A minimal sway config for launching gtkgreet.
     swayConfig = pkgs.writeText "greetd-sway-config" ''
       # `-l` activates layer-shell mode and `-c` runs the specified command.
       # Notice that `swaymsg exit` will run after gtkgreet exits.
-      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -c sway; swaymsg exit"
+      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -c swayrun; swaymsg exit"
 
       # Nagbar keys
       set $exit e
@@ -119,7 +146,7 @@
     enable = true;
 
     settings = {
-      default_session.command = "${pkgs.sway}/bin/sway --config ${swayConfig}";
+      default_session.command = "swayrun --config ${swayConfig}";
     };
   };
 
