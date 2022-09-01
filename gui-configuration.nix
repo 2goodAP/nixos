@@ -65,7 +65,18 @@
       sway-contrib.grimshot
       # Terminal
       foot
+      # Theme
+      adwaita-qt
+      capitaine-cursors
+      libsForQt5.qt5ct
+      papirus-icon-theme
     ];
+  };
+
+
+  qt5 = {
+    platformTheme = "qt5ct";
+    style = "adwaita";
   };
 
 
