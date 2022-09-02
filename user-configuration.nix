@@ -4,11 +4,6 @@
 
 {
   users = {
-    groups = {
-      nixos = {};
-    };
-
-
     defaultUserShell = pkgs.zsh;
 
 
@@ -19,13 +14,11 @@
         ungoogled-chromium
 
         gimp
-        imv
         keepassxc
-        libreoffice-qt
+        libreoffice-fresh
         nextcloud-client
         speedcrunch
         transmission
-        xorg.xeyes
         zathura
         zoom-us
       ];
@@ -37,7 +30,6 @@
           "cups"
           "disk"
           "docker"
-          "nixos"
           "networkmanager"
           "video"
           "wheel"
@@ -53,7 +45,6 @@
           "cups"
           "disk"
           "docker"
-          "nixos"
           "networkmanager"
           "video"
           "wheel"
