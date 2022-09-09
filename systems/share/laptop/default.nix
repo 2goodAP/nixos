@@ -1,7 +1,4 @@
-# Service configurations for the various nixos profiles.
-
-{ ... }:
-
+# Configurations shared across the various nixos profiles for laptops.
 {
   hardware.bluetooth = {
     enable = true;

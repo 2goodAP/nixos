@@ -36,7 +36,17 @@ in {
         efiSupport = true;
         devices = [ "nodev" ];
         extraGrubInstallArgs = [ "--bootloader-id=GRUB" ];
-        inherit (cfg) enableFullEncrypt espMountPoint;
+        enableCryptodisk = cfg.enableFullEncrypt;
+        efiSysMountPoint = cfg.espMountPoint;
+        extraEntries = ''
+          menuentry "Reboot" {
+            reboot
+          }
+
+          menuentry "Shutdown" {
+            halt
+          }
+        '';
       };
     };
   };

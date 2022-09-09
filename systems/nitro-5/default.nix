@@ -2,10 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, ... }:
+{ pkgs, modules, ... }:
 
 {
-  imports = [ ./hardware.nix ./service.nix ];
+  imports = [ ./hardware.nix ../share/laptop ];
 
 
   # Set time zone.
@@ -19,12 +19,6 @@
     keyMap = "us";
     packages = [ pkgs.terminus_font ];
   };
-
-
-  # Enable flakes.
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  # Allow un-free (propriatery) packages.
-  nixpkgs.config.allowUnfree = true;
 
 
   # List packages installed in system profile.

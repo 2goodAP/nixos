@@ -1,28 +1,47 @@
 {
-  description = "2goodAP's NixOS configuration with flakes."
+  description = "2goodAP's NixOS configuration with flakes.";
 
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    }
+    };
   };
 
 
-  outputs = { self, flake-utils, nixpkgs, home-manager, ... }: 
+  outputs = { self, flake-utils, nixpkgs, home-manager, ... }:
   let
-    localLib = import ./lib;
+    lib = import ./lib;
+    system = "x86_64-linux";
+    modules = import ./modules;
+    overlays = import ./overlays;
+  # in flake-utils.lib.eachDefaultSystem (system: {
   in {
-    nixosConfigurations.Nitro5 = localLib.mkSystem {
-      inherit flake-utils, nixpkgs, home-manager;
+    nixosConfigurations.nitro5box = nixpkgs.lib.nixosSystem {
+      inherit system;
+
+      # Modules
+      modules = [
+        # Nix-specific configurations.
+        {
+          # Enable flakes.
+          nix.settings.experimental-features = [ "nix-command" "flakes" ];
+          nixpkgs = {
+            # Allow un-free (propriatery) packages.
+            config.allowUnfree = true;
+            # Apply overlays
+            inherit overlays;
+          };
+        }
+        # System-specific configuraitons.
+        ./systems/nitro-5
+      ];
     };
-  }
+  };
+  # });
 }
