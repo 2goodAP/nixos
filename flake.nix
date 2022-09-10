@@ -3,8 +3,6 @@
 
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
@@ -14,34 +12,33 @@
   };
 
 
-  outputs = { self, flake-utils, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }:
   let
-    lib = import ./lib;
     system = "x86_64-linux";
+    lib = import ./lib;
     modules = import ./modules;
     overlays = import ./overlays;
-  # in flake-utils.lib.eachDefaultSystem (system: {
   in {
     nixosConfigurations.nitro5box = nixpkgs.lib.nixosSystem {
       inherit system;
 
-      # Modules
       modules = [
-        # Nix-specific configurations.
-        {
-          # Enable flakes.
-          nix.settings.experimental-features = [ "nix-command" "flakes" ];
-          nixpkgs = {
-            # Allow un-free (propriatery) packages.
-            config.allowUnfree = true;
-            # Apply overlays
-            inherit overlays;
-          };
-        }
+        # Custom modules.
+        modules
+
+        # Nix-specific settings.
+        { nix.settings.experimental-features = [ "nix-command" "flakes" ]; }
+
         # System-specific configuraitons.
-        ./systems/nitro-5
+        (import ./systems/nitro-5 {
+          hostName = "nitro5box";
+          pkgs = import nixpkgs {
+            config.allowUnfree = true;
+            inherit system overlays;
+          };
+          inherit (nixpkgs) lib;
+        })
       ];
     };
   };
-  # });
 }

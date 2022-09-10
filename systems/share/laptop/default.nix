@@ -13,10 +13,6 @@
 
 
   services = {
-    ntp.enable = true;
-    timesyncd.enable = true;
-    openssh.enable = true;
-
     pipewire = {
       enable = true;
       alsa = {

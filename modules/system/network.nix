@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }:
 
 let
-  cfg = config.laptop.network;
+  cfg = config.machine.network;
   inherit (lib) mkIf mkOption types;
 in {
-  options.laptop.network = {
+  options.machine.network = {
     enable = mkOption {
       description = "Whether or not to enable networking services.";
       type = types.bool;
@@ -46,7 +46,12 @@ in {
       };
     };
 
-    
+    # Enable NTP.
+    services = {
+      ntp.enable = true;
+      timesyncd.enable = true;
+    };
+
     # Enable systemd-networkd.
     systemd.network = {
       enable = true;

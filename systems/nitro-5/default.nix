@@ -1,17 +1,35 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, modules, ... }:
+{ hostName, pkgs, lib, ... }:
 
 {
-  imports = [ ./hardware.nix ../share/laptop ];
+  imports = [
+    ./hardware.nix
+    ../share/laptop
+  ];
+
+
+  # Bootloader
+  machine = {
+    loader = {
+        enable = true;
+        enableFullEncrypt = true;
+        espMountPoint = "/efi";
+    };
+
+    network = {
+      enable = true;
+      inherit hostName;
+      nameservers = [ "1.1.1.1" "9.9.9.9" ];
+      interfaces = [ "wlp0s20f3" "enp7s0f1" ];
+    };
+  };
 
 
   # Set time zone.
   time.timeZone = "Asia/Kathmandu";
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+  # Enable ssh.
+  services.openssh.enable = true;
 
 
   console = {
@@ -30,7 +48,6 @@
     ntfs3g
     pamixer
     pulseaudio
-    tlp
 
     # Programs
     busybox

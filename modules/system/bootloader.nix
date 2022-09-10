@@ -1,10 +1,10 @@
 { config, lib, ... }:
 
 let
-  cfg = config.laptop.loader;
+  cfg = config.machine.loader;
   inherit (lib) mkIf mkOption types;
 in {
-  options.laptop.loader = {
+  options.machine.loader = {
     enable = mkOption {
       description = "Whether or not to enable GRUB.";
       type = types.bool;
@@ -28,7 +28,7 @@ in {
     boot.loader = {
       efi = {
         canTouchEfiVariables = true;
-        inherit (cfg) efiSysMountPoint;
+        efiSysMountPoint = cfg.espMountPoint;
       };
 
       grub = {
@@ -37,7 +37,6 @@ in {
         devices = [ "nodev" ];
         extraGrubInstallArgs = [ "--bootloader-id=GRUB" ];
         enableCryptodisk = cfg.enableFullEncrypt;
-        efiSysMountPoint = cfg.espMountPoint;
         extraEntries = ''
           menuentry "Reboot" {
             reboot
