@@ -1,10 +1,5 @@
 {
-  mkHMConfig = {
-    _,
-    ...
-  }:
-  let
+  mkHMConfig = {_, ...}: let
   in {
-
   };
 }

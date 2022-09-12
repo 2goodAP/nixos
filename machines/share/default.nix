@@ -5,12 +5,10 @@
     powerOnBoot = false;
   };
 
-
   security.apparmor = {
     enable = true;
     killUnconfinedConfinables = true;
   };
-
 
   services = {
     pipewire = {
@@ -25,6 +23,5 @@
 
     # Enable CUPS for printing documents.
     printing.enable = true;
-    tlp.enable = true;
   };
 }

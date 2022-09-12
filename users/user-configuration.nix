@@ -1,11 +1,7 @@
 # User and group configurations for the various nixos profiles.
-
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   users = {
     defaultUserShell = pkgs.zsh;
-
 
     users = let
       userPackages = with pkgs; [
@@ -25,31 +21,15 @@
     in {
       aashishp = {
         isNormalUser = true;
-        extraGroups = [
-          "audio"
-          "cups"
-          "disk"
-          "docker"
-          "networkmanager"
-          "video"
-          "wheel"
-        ];
+        extraGroups = ["audio" "cups" "disk" "docker" "networkmanager" "video" "wheel"];
         packages = userPackages;
         useDefaultShell = true;
       };
 
       workerap = {
         isNormalUser = true;
-        extraGroups = [
-          "audio"
-          "cups"
-          "disk"
-          "docker"
-          "networkmanager"
-          "video"
-          "wheel"
-        ];
-        packages = userPackages ++ (with pkgs; [ insomnia ]);
+        extraGroups = ["audio" "cups" "disk" "docker" "networkmanager" "video" "wheel"];
+        packages = userPackages ++ (with pkgs; [insomnia]);
         useDefaultShell = true;
       };
     };

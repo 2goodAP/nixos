@@ -1,7 +1,6 @@
 {
   description = "2goodAP's NixOS configuration with flakes.";
 
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -11,9 +10,12 @@
     };
   };
 
-
-  outputs = { self, nixpkgs, home-manager, ... }:
-  let
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    ...
+  }: let
     system = "x86_64-linux";
     lib = import ./lib;
     modules = import ./modules;
@@ -27,10 +29,12 @@
         modules
 
         # Nix-specific settings.
-        { nix.settings.experimental-features = [ "nix-command" "flakes" ]; }
+        {
+          nix.settings.experimental-features = ["nix-command" "flakes"];
+        }
 
         # System-specific configuraitons.
-        (import ./systems/nitro-5 {
+        (import ./machines/nitro-5 {
           hostName = "nitro5box";
           pkgs = import nixpkgs {
             config.allowUnfree = true;

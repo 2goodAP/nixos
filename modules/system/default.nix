@@ -1,8 +1,13 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
-    ./bootloader.nix
+    ./boot.nix
+    ./laptop.nix
     ./network.nix
+    ./programs.nix
   ];
 }

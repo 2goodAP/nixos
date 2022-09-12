@@ -1,6 +1,9 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.machine.network;
   inherit (lib) mkIf mkOption types;
 in {
@@ -26,7 +29,6 @@ in {
       type = types.listOf types.str;
     };
   };
-
 
   config = mkIf cfg.enable {
     networking = {
