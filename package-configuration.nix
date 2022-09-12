@@ -24,6 +24,7 @@
     # Override packages using overlays.
     overlays = [
       (import ./overlays/fantasque-sans-mono.nix)
+      (import ./overlays/neovim.nix)
       (import ./overlays/swaylock-effects.nix)
     ];
   };
@@ -53,7 +54,7 @@
     docker-compose
     git
     jq
-		(neovim.override { withNodeJs = true; })
+		neovim
     (python39.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
     (python310.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
     p7zip
