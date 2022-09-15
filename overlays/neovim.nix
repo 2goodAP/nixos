@@ -269,16 +269,15 @@ self: super: {
 
         -- Set background to dark if running in a Linux Console.
         if vim.env.TERM == "linux" then
-          vim.opt.background = "dark"
+          vim.cmd("colorscheme tokyonight-storm")
         else
-          vim.opt.background = "light"
+          vim.cmd("colorscheme tokyonight-day")
         end
 
         EOF
       '';
 
       packages.nix = {
-        # Loaded on launch.
         start = with super.pkgs.vimPlugins; [
           # Deps
           plenary-nvim
@@ -380,11 +379,13 @@ self: super: {
           registers-nvim
           trouble-nvim
         ];
-        # Manually loadable by calling `:packadd $plugin-name`
-        # To automatically load a plugin when opening a filetype, add init lines.
+
         opt = with super.pkgs.vimPlugins; [
+          # Markdown
           glow-nvim
+          # Editorconfig
           editorconfig-nvim
+          # Org-mode
           neorg
         ];
       };
