@@ -3,6 +3,8 @@ self: super: {
   neovim = super.neovim.override {
     configure = {
       customRC = ''
+        lua << EOF
+
         -- ============================ --
         -- NeoVim Lua Config (init.lua) --
         -- ============================ --
@@ -271,6 +273,8 @@ self: super: {
         else
           vim.opt.background = "light"
         end
+
+        EOF
       '';
 
       packages.nix = {
