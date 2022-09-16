@@ -5,10 +5,11 @@
 {
   # Install and configure fonts.
   fonts.fonts = with pkgs; [
-    fantasque-sans-mono
+    fira-code-nerd-font
+    noto-nerd-font
     open-sans
     roboto
-    victor-mono
+    victor-mono-nerd-font
   ];
 
 

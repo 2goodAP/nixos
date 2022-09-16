@@ -23,9 +23,11 @@
 
     # Override packages using overlays.
     overlays = [
-      (import ./overlays/fantasque-sans-mono.nix)
+      (import ./overlays/fira-code-nerd-font.nix)
       (import ./overlays/neovim.nix)
+      (import ./overlays/noto-nerd-font.nix)
       (import ./overlays/swaylock-effects.nix)
+      (import ./overlays/victor-mono-nerd-font.nix)
     ];
   };
 
