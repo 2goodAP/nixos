@@ -5,11 +5,11 @@
 {
   # Install and configure fonts.
   fonts.fonts = with pkgs; [
+    caskaydia-cove-nerd-font
     fira-code-nerd-font
     noto-nerd-font
     open-sans
     roboto
-    victor-mono-nerd-font
   ];
 
 
@@ -93,7 +93,7 @@
       # Screenshot
       sway-contrib.grimshot
       # Terminal
-      foot
+      kitty
       # Theme
       adwaita-qt
       capitaine-cursors

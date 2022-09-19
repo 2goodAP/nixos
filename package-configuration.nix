@@ -27,7 +27,7 @@
       (import ./overlays/neovim.nix)
       (import ./overlays/noto-nerd-font.nix)
       (import ./overlays/swaylock-effects.nix)
-      (import ./overlays/victor-mono-nerd-font.nix)
+      (import ./overlays/caskaydia-cove-nerd-font.nix)
     ];
   };
 
