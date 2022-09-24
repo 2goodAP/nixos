@@ -93,7 +93,7 @@
       # Screenshot
       sway-contrib.grimshot
       # Terminal
-      kitty
+      foot
       # Theme
       adwaita-qt
       capitaine-cursors
