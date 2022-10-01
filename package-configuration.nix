@@ -9,7 +9,7 @@
       "nixpkgs-overlays=$HOME/.nixos/overlays/"
     ];
 
-    package = pkgs.nixFlakes;
+    package = pkgs.nixUnstable;
 
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -23,11 +23,12 @@
 
     # Override packages using overlays.
     overlays = [
+      (import ./overlays/big-bag-kbd-trix-xkb.nix)
+      (import ./overlays/caskaydia-cove-nerd-font.nix)
       (import ./overlays/fira-code-nerd-font.nix)
       (import ./overlays/neovim.nix)
       (import ./overlays/noto-nerd-font.nix)
       (import ./overlays/swaylock-effects.nix)
-      (import ./overlays/caskaydia-cove-nerd-font.nix)
     ];
   };
 
@@ -50,6 +51,7 @@
     zsh-powerlevel10k
 
     # Programs
+    big-bag-kbd-trix-xkb
     busybox
     cmus
     conda
