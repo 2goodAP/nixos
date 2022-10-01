@@ -1,3 +1,0 @@
-[
-  (import ./neovim.nix)
-]

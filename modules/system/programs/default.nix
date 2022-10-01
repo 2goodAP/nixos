@@ -12,6 +12,11 @@
     inherit (lib) mkEnableOption mkOption types;
 	in {
     enable = mkEnableOption "Whether or not to enable common system-wide programs.";
+    fd.enable = mkEnableOption "Whether to enable fd, an alternative to find."
+
+    glow.enable = mkEnableOpton "Whether to enable glow, a CLI markdown renderer.";
+
+    ripgrep.enable = mkEnableOption "Whether to enable ripgrep, an alternative to grep."
 
     extraPackages = mkOption {
       description = "Extra base application packages to install.";
@@ -42,7 +47,15 @@
         pkgs.tmux
         pkgs.wget
         pkgs.zip
-      ]
-      ++ cfg.extraPackages;
+      ] ++ (if cfg.fd.enable
+        then [pkgs.fd]
+        else []
+      ) ++ (if cfg.glow.enable
+        then [pkgs.glow]
+        else []
+      ) ++ (if cfg.ripgrep.enable
+        then [pkgs.ripgrep]
+        else []
+      ) ++ cfg.extraPackages;
   };
 }
