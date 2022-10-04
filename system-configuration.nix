@@ -138,9 +138,8 @@ in {
 
 
   console = {
-    font = "Lat2-Terminus18";
-    keyMap = "us";
-    packages = [ pkgs.terminus_font ];
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";
+    useXkbConfig = true;
   };
 
 

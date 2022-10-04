@@ -111,43 +111,51 @@
   };
 
 
-  services.greetd = let
-    # A minimal sway config for launching gtkgreet.
-    swayConfig = pkgs.writeText "greetd-sway-config" ''
-      # `-l` activates layer-shell mode and `-c` runs the specified command.
-      # Notice that `swaymsg exit` will run after gtkgreet exits.
-      exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -c swayrun; swaymsg exit"
+  services = {
+    greetd = let
+      # A minimal sway config for launching gtkgreet.
+      swayConfig = pkgs.writeText "greetd-sway-config" ''
+        # `-l` activates layer-shell mode and `-c` runs the specified command.
+        # Notice that `swaymsg exit` will run after gtkgreet exits.
+        exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -c swayrun; swaymsg exit"
 
-      # Nagbar keys
-      set $exit e
-      set $reboot r
-      set $shutdown s
-      set $dismiss d
+        # Nagbar keys
+        set $exit e
+        set $reboot r
+        set $shutdown s
+        set $dismiss d
 
-      # Session control using swaynag.
-      mode "nagbar" {
-          # Exit out of swaywm.
-          bindsym $exit exit
-          # Reboot the machine
-          bindsym $reboot exec "systemctl -i reboot"
-          # Shutdown the machine
-          bindsym $shutdown exec "systemctl -i poweroff"
-          # Quit out of the nagbar.
-          bindsym $dismiss exec killall swaynag; mode "default"
-      }
-      
-      bindsym Mod4+Shift+e exec swaynag -t "warning" -f "FantasqueSansMono Nerd Font" \
-          -m "You pressed the exit shortcut. Select the action you want to perform." \
-          -s "" -B "Shutdown ($shutdown)" "systemctl -i poweroff" \
-          -B "Reboot ($reboot)" "systemctl -i reboot" \
-          -B "Exit Sway ($exit)" "swaymsg exit" \
-          -Z "Dismiss Nagbar ($dismiss)" "swaymsg mode default"; mode "nagbar"
-    '';
-  in {
-    enable = true;
+        # Session control using swaynag.
+        mode "nagbar" {
+            # Exit out of swaywm.
+            bindsym $exit exit
+            # Reboot the machine
+            bindsym $reboot exec "systemctl -i reboot"
+            # Shutdown the machine
+            bindsym $shutdown exec "systemctl -i poweroff"
+            # Quit out of the nagbar.
+            bindsym $dismiss exec killall swaynag; mode "default"
+        }
+        
+        bindsym Mod4+Shift+e exec swaynag -t "warning" \
+            -f "FantasqueSansMono Nerd Font" \
+            -m "You pressed the exit shortcut. Select the action you want to perform." \
+            -s "" -B "Shutdown ($shutdown)" "systemctl -i poweroff" \
+            -B "Reboot ($reboot)" "systemctl -i reboot" \
+            -B "Exit Sway ($exit)" "swaymsg exit" \
+            -Z "Dismiss Nagbar ($dismiss)" "swaymsg mode default"; mode "nagbar"
+      '';
+    in {
+      enable = true;
 
-    settings = {
-      default_session.command = "swayrun --config ${swayConfig}";
+      settings = {
+        default_session.command = "swayrun --config ${swayConfig}";
+      };
+    };
+
+    xserver = {
+      layout = "us,np";
+      xkbVariant = "colemak_dh,";
     };
   };
 

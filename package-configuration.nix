@@ -23,7 +23,6 @@
 
     # Override packages using overlays.
     overlays = [
-      (import ./overlays/big-bag-kbd-trix-xkb.nix)
       (import ./overlays/caskaydia-cove-nerd-font.nix)
       (import ./overlays/fira-code-nerd-font.nix)
       (import ./overlays/neovim.nix)
@@ -51,7 +50,6 @@
     zsh-powerlevel10k
 
     # Programs
-    big-bag-kbd-trix-xkb
     busybox
     cmus
     conda
