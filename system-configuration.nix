@@ -2,15 +2,41 @@
 
 { pkgs, ... }:
 
-{
+
+let
+  bootKeyFile = "/boot/crypto_keyfile.bin";
+  bootDevice = "/dev/disk/by-partlabel/LinuxBootPartition";
+
+  # Write a helper script to generate new luks keyfiles
+  # at a predetermined location.
+  generateLuksKeys = pkgs.writeScriptBin "generate-luks-keys" ''
+    # Generate keyfiles for the necessary drives
+    # and set the appropriate permissions.
+    dd bs=1024 count=4 if=/dev/random of=${bootKeyFile} iflag=fullblock
+    chmod 600 ${bootKeyFile}
+
+    # Add/Replace the keyfiles (in slot 7) for the necessary devices.
+    ${pkgs.cryptsetup}/bin/cryptsetup luksKillSlot ${bootDevice} 7
+    ${pkgs.cryptsetup}/bin/cryptsetup luksAddKey --key-slot 7 ${bootDevice} ${bootKeyFile}
+
+    # Regenerate the NixOS configuration to apply the new keyfiles.
+    nixos-rebuild switch -I nixos-config=$HOME/.nixos/configuration.nix
+  '';
+in {
+  environment.systemPackages = [generateLuksKeys];
+
   boot = {
+    consoleLogLevel = 3;
+
     initrd = {
       kernelModules = [ "i915" ];
       
       luks.devices = {
         boot_crypt = {
           allowDiscards = true;
-          device = "/dev/disk/by-partlabel/LinuxBootPartition";
+          device = bootDevice;
+          fallbackToPassword = true;
+          keyFile = bootKeyFile;
         };
         swap_crypt = {
           allowDiscards = true;
@@ -21,13 +47,15 @@
           device = "/dev/disk/by-partlabel/LinuxDataPartition";
         };
       };
+
+      secrets."${bootKeyFile}" = bootKeyFile;
     };
 
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 
     kernelParams = [
       "quiet"
-      "loglevel=3"
+      "udev.log_level=3"
       "lsm=landlock,lockdown,yama,apparmor,bpf"
       "resume=/dev/mapper/swap_crypt"
     ];
@@ -40,9 +68,9 @@
       };
       
       grub = {
+        enable = true;
         devices = [ "nodev" ];
         efiSupport = true;
-        enable = true;
         enableCryptodisk = true;
         extraGrubInstallArgs = [ "--bootloader-id=GRUB" ];
       };
