@@ -23,6 +23,11 @@
         zoom-us
       ];
     in {
+      root = {
+        isSystemUser = true;
+        initialPassword = "NixOS-root.";
+      };
+
       aashishp = {
         isNormalUser = true;
         extraGroups = [
@@ -35,7 +40,7 @@
           "wheel"
         ];
         packages = userPackages;
-        useDefaultShell = true;
+        initialPassword = "NixOS-aashishp.";
       };
 
       workerap = {
@@ -50,7 +55,7 @@
           "wheel"
         ];
         packages = userPackages ++ (with pkgs; [ insomnia ]);
-        useDefaultShell = true;
+        initialPassword = "NixOS-workerap.";
       };
     };
   };

@@ -1,40 +1,20 @@
 # System configurations for the various nixos profiles.
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
-
-let
-  bootKeyFile = "/boot/crypto_keyfile.bin";
-  bootDevice = "/dev/disk/by-partlabel/LinuxBootPartition";
-
-  # Write a helper script to generate new luks keyfiles
-  # at a predetermined location.
-  generateLuksKeys = pkgs.writeScriptBin "generate-luks-keys" ''
-    # Generate keyfiles for the necessary drives
-    # and set the appropriate permissions.
-    dd bs=1024 count=4 if=/dev/random of=${bootKeyFile} iflag=fullblock
-    chmod 600 ${bootKeyFile}
-
-    # Add/Replace the keyfiles (in slot 7) for the necessary devices.
-    ${pkgs.cryptsetup}/bin/cryptsetup luksKillSlot ${bootDevice} 7
-    ${pkgs.cryptsetup}/bin/cryptsetup luksAddKey --key-slot 7 ${bootDevice} ${bootKeyFile}
-
-    # Regenerate the NixOS configuration to apply the new keyfiles.
-    nixos-rebuild switch -I nixos-config=$HOME/.nixos/configuration.nix
-  '';
-in {
-  environment.systemPackages = [generateLuksKeys];
-
+{
   boot = {
     consoleLogLevel = 3;
 
-    initrd = {
+    initrd = let
+      bootKeyFile = "/boot/crypto_keyfile.bin";
+    in {
       kernelModules = [ "i915" ];
       
       luks.devices = {
         boot_crypt = {
           allowDiscards = true;
-          device = bootDevice;
+          device = "/dev/disk/by-partlabel/LinuxBootPartition";
           fallbackToPassword = true;
           keyFile = bootKeyFile;
         };
@@ -67,12 +47,27 @@ in {
         efiSysMountPoint = "/efi";
       };
       
-      grub = {
+      grub = let
+        gkbFile = "grub/colemak_dh.gkb";
+
+        # Generate colemak_dh GRUB shell keyboard layout.
+        grub-mkgkb = pkgs.runCommandLocal "grub-mkgkb" {} ''
+          ${pkgs.ckbcomp}/bin/ckbcomp -layout us -variant colemak_dh \
+            | ${pkgs.grub2_efi}/bin/grub-mklayout -o $out
+        '';
+      in {
         enable = true;
         devices = [ "nodev" ];
         efiSupport = true;
         enableCryptodisk = true;
-        extraGrubInstallArgs = [ "--bootloader-id=GRUB" ];
+        extraConfig = ''
+
+          # Change the keyboard layout (for supported keyboards).
+          insmod keylayouts
+          terminal_input at_keyboard console
+          keymap ($drive1)/@boot/${gkbFile}
+        '';
+        extraFiles."${gkbFile}" = "${grub-mkgkb}";
       };
     };
   };
