@@ -30,8 +30,8 @@
       pulse.enable = true;
     };
 
-    # Enable CUPS for printing documents.
     printing.enable = true;
     tlp.enable = true;
+    usbmuxd.enable = true;
   };
 }

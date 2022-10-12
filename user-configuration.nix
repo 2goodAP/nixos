@@ -13,6 +13,10 @@
         thunderbird
         ungoogled-chromium
 
+        android-file-transfer
+        libimobiledevice
+        ifuse
+
         gimp
         keepassxc
         libreoffice-fresh
@@ -54,7 +58,7 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ (with pkgs; [ insomnia ]);
+        packages = userPackages ++ (with pkgs; [ insomnia openvpn ]);
         initialPassword = "NixOS-workerap.";
       };
     };
