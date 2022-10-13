@@ -128,8 +128,8 @@
         # Keyboards
         input "*" {
             accel_profile flat
-            xkb_layout "us,np"
-            xkb_variant "colemak_dh,"
+            xkb_layout us
+            xkb_variant colemak_dh
         }
 
         # Touchpad
