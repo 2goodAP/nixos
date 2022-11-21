@@ -1,17 +1,14 @@
 # Network configurations for the various nixos profiles.
-
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   networking = {
     hostName = "nixosbox";
-    nameservers = [ "1.1.1.1" "9.9.9.9" ];
+    nameservers = ["1.1.1.1" "9.9.9.9"];
 
     networkmanager = {
       enable = true;
       enableStrongSwan = true;
       firewallBackend = "nftables";
-      insertNameservers = [ "1.1.1.1" "9.9.9.9" ];
+      insertNameservers = ["1.1.1.1" "9.9.9.9"];
     };
 
     # Configure the firewall.
@@ -27,14 +24,13 @@
     #};
   };
 
-  
   # Enable systemd-networkd.
   systemd.network = {
     enable = true;
 
     wait-online = {
       anyInterface = true;
-      extraArgs = [ "--interface=wlp0s20f3" "--interface=enp7s0f1" ];
+      extraArgs = ["--interface=wlp0s20f3" "--interface=enp7s0f1"];
     };
   };
 }

@@ -1,31 +1,28 @@
 # User and group configurations for the various nixos profiles.
-
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   users = {
     defaultUserShell = pkgs.zsh;
 
-
     users = let
-      userPackages = with pkgs; [
-        firefox
-        thunderbird
-        ungoogled-chromium
-
+      basePackages = with pkgs; [
         android-file-transfer
         libimobiledevice
         ifuse
 
-        gimp
+        firefox
         keepassxc
         libreoffice-fresh
         nextcloud-client
         speedcrunch
         transmission
         zathura
-        zoom-us
       ];
+      userPackages = basePackages ++ (with pkgs; [
+        gimp
+        thunderbird
+        ungoogled-chromium
+        zoom-us
+      ]);
     in {
       root = {
         isSystemUser = true;
@@ -58,8 +55,21 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ (with pkgs; [ insomnia openvpn ]);
+        packages = userPackages ++ (with pkgs; [insomnia openvpn]);
         initialPassword = "NixOS-workerap.";
+      };
+      
+      justagamer = {
+        isNormalUser = true;
+        extraGroups = [
+          "audio"
+          "disk"
+          "networkmanager"
+          "video"
+          "wheel"
+        ];
+        packages = basePackages ++ (with pkgs; [lutris wineWowPackages.staging]);
+        initialPassword = "NixOS-justagamer.";
       };
     };
   };

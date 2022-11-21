@@ -1,19 +1,14 @@
 # Service configurations for the various nixos profiles.
-
-{ ... }:
-
-{
+{...}: {
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = false;
   };
 
-
   security.apparmor = {
     enable = true;
     killUnconfinedConfinables = true;
   };
-
 
   services = {
     ntp.enable = true;

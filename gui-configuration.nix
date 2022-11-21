@@ -1,8 +1,9 @@
 # GUI configurations using KDE Plasma
-
-{ pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   # Install and configure fonts.
   fonts.fonts = with pkgs; [
     caskaydia-cove-nerd-font
@@ -12,14 +13,12 @@
     roboto
   ];
 
-
   hardware.opengl = {
     enable = true;
     driSupport32Bit = true;
   };
 
-
-  programs.sway = let 
+  programs.sway = let
     # A wrapper script to launch sway.
     swayrun = pkgs.writeTextFile rec {
       name = "swayrun";
@@ -61,55 +60,55 @@
     enable = true;
     wrapperFeatures.gtk = true;
 
-    extraPackages = [
-      # Screensharing
-      dbus-sway-environment
-      # Wrapper
-      swayrun
-    ] ++ (with pkgs; [
-      # Bar
-      waybar
-      libappindicator-gtk3
-      # Desktop
-      dex
-      mako
-      rofi-wayland
-      swaybg
-      wob
-      # Display
-      gammastep
-      kanshi
-      # Input
-      clipman
-      wev
-      wl-clipboard
-      ydotool
-      # Locking
-      swayidle
-      swaylock-effects
-      # Media
-      imv
-      mpv
-      # Screenshot
-      sway-contrib.grimshot
-      # Terminal
-      foot
-      # Theme
-      adwaita-qt
-      capitaine-cursors
-      libsForQt5.qt5ct
-      papirus-icon-theme
-      # Volume
-      pavucontrol
-    ]);
+    extraPackages =
+      [
+        # Screensharing
+        dbus-sway-environment
+        # Wrapper
+        swayrun
+      ]
+      ++ (with pkgs; [
+        # Bar
+        waybar
+        libappindicator-gtk3
+        # Desktop
+        dex
+        mako
+        rofi-wayland
+        swaybg
+        wob
+        # Display
+        gammastep
+        kanshi
+        # Input
+        clipman
+        wev
+        wl-clipboard
+        ydotool
+        # Locking
+        swayidle
+        swaylock-effects
+        # Media
+        imv
+        mpv
+        # Screenshot
+        sway-contrib.grimshot
+        # Terminal
+        foot
+        # Theme
+        adwaita-qt
+        capitaine-cursors
+        libsForQt5.qt5ct
+        papirus-icon-theme
+        # Volume
+        pavucontrol
+      ]);
   };
-
 
   qt5 = {
     platformTheme = "qt5ct";
     style = "adwaita";
   };
-
 
   services = {
     greetd = let
@@ -161,7 +160,7 @@
           # Quit out of the nagbar.
           bindsym $dismiss exec killall swaynag; mode "default"
         }
-        
+
         bindsym Mod4+Shift+e exec swaynag -t "warning" \
           -f "FantasqueSansMono Nerd Font" \
           -m "You pressed the exit shortcut. Select the action you want to perform." \
@@ -179,18 +178,17 @@
     };
 
     xserver = {
+      videoDrivers = ["nvidia"];
       layout = "us,np";
       xkbVariant = "colemak_dh,";
     };
   };
 
-
   sound.enable = true;
-
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
     wlr.enable = true;
   };
 }

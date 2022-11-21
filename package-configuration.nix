@@ -1,13 +1,17 @@
 # Package configurations for the various nixos profiles.
-
-{ config, pkgs, options, ... }:
-
 {
+  config,
+  pkgs,
+  options,
+  ...
+}: {
   # Append "nixpkgs-overlays" to existing NIX_PATH.
   nix = {
-    nixPath = options.nix.nixPath.default ++ [
-      "nixpkgs-overlays=$HOME/.nixos/overlays/"
-    ];
+    nixPath =
+      options.nix.nixPath.default
+      ++ [
+        "nixpkgs-overlays=$HOME/.nixos/overlays/"
+      ];
 
     package = pkgs.nixUnstable;
 
@@ -16,13 +20,19 @@
     '';
   };
 
-
   nixpkgs = {
     # Allow un-free (propriatery) and broken packages.
     config.allowUnfree = true;
 
     # Override packages using overlays.
     overlays = [
+      # Emacs
+      (import (builtins.fetchGit {
+        url = "https://github.com/nix-community/emacs-overlay.git";
+        ref = "master";
+        rev = "acbbcb781724648f206068e230a7a5f77fba510c";
+      }))
+      # Local
       (import ./overlays/caskaydia-cove-nerd-font.nix)
       (import ./overlays/fira-code-nerd-font.nix)
       (import ./overlays/neovim.nix)
@@ -30,7 +40,6 @@
       (import ./overlays/swaylock-effects.nix)
     ];
   };
-
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -54,11 +63,12 @@
     cmus
     conda
     docker-compose
+    emacsPgtkNativeComp
     git
     jq
-		neovim
-    (python39.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
-    (python310.withPackages (pks: with pks; [ black mypy pylint pynvim ]))
+    neovim
+    (python39.withPackages (pks: with pks; [black mypy pylint pynvim]))
+    (python310.withPackages (pks: with pks; [black mypy pylint pynvim]))
     p7zip
     ranger
     unrar
@@ -67,7 +77,6 @@
     wget
     zip
   ];
-
 
   # Allow automatic upgrades.
   system.autoUpgrade = {
