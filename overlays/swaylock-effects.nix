@@ -1,5 +1,4 @@
 # An overlay for the latest version of swaylock-effects from a different maintainer.
-
 self: super: {
   swaylock-effects = super.swaylock-effects.overrideAttrs (oldAttrs: {
     version = "1.6.10";

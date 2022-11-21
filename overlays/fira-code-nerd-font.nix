@@ -1,5 +1,4 @@
 # An overlay for the latest version of Fira Code Nerd Font.
-
 self: super: {
   fira-code-nerd-font = let
     version = "2.2.2";

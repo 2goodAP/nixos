@@ -137,7 +137,6 @@
     powerManagement.enable = true;
   };
 
-
   # Set time zone.
   time.timeZone = "Asia/Kathmandu";
   # Select internationalisation properties.

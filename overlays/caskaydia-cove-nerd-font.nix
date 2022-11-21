@@ -1,5 +1,4 @@
 # An overlay for the latest version of Victor Mono Nerd Font.
-
 self: super: {
   caskaydia-cove-nerd-font = let
     version = "2.2.2";

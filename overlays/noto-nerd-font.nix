@@ -1,5 +1,4 @@
 # An overlay for the latest version of Rototo Mono Nerd Font.
-
 self: super: {
   noto-nerd-font = let
     version = "2.2.2";

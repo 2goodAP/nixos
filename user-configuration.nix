@@ -17,12 +17,14 @@
         transmission
         zathura
       ];
-      userPackages = basePackages ++ (with pkgs; [
-        gimp
-        thunderbird
-        ungoogled-chromium
-        zoom-us
-      ]);
+      userPackages =
+        basePackages
+        ++ (with pkgs; [
+          gimp
+          thunderbird
+          ungoogled-chromium
+          zoom-us
+        ]);
     in {
       root = {
         isSystemUser = true;
@@ -58,7 +60,7 @@
         packages = userPackages ++ (with pkgs; [insomnia openvpn]);
         initialPassword = "NixOS-workerap.";
       };
-      
+
       justagamer = {
         isNormalUser = true;
         extraGroups = [
@@ -68,7 +70,13 @@
           "video"
           "wheel"
         ];
-        packages = basePackages ++ (with pkgs; [lutris wineWowPackages.staging]);
+        packages =
+          basePackages
+          ++ (with pkgs; [
+            lutris
+            winetricks
+            wineWowPackages.staging
+          ]);
         initialPassword = "NixOS-justagamer.";
       };
     };
