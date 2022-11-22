@@ -125,8 +125,7 @@
   swapDevices = [{device = "/dev/mapper/swap_crypt";}];
 
   hardware.nvidia = {
-    open = true;
-    package = config.boot.kernelPackages.nvidia_x11_vulkan_beta;
+    package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
     modesetting.enable = true;
     nvidiaPersistenced = true;
     prime = {

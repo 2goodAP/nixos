@@ -73,9 +73,12 @@
         packages =
           basePackages
           ++ (with pkgs; [
+            gamemode
+            mangohud
             lutris
+            unigine-heaven
             winetricks
-            wineWowPackages.staging
+            wineWowPackages.stagingFull
           ]);
         initialPassword = "NixOS-justagamer.";
       };
