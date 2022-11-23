@@ -76,6 +76,7 @@
             gamemode
             mangohud
             lutris
+            piper
             unigine-heaven
             winetricks
             wineWowPackages.stagingFull

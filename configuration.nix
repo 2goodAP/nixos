@@ -5,11 +5,9 @@
   imports = [
     ./hardware-configuration.nix
     ./system-configuration.nix
-    ./network-configuration.nix
     ./user-configuration.nix
     ./package-configuration.nix
     ./service-configuration.nix
-    ./program-configuration.nix
     ./gui-configuration.nix
   ];
 }
