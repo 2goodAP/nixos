@@ -73,7 +73,6 @@
     printing.enable = true;
     tlp.enable = true;
     usbmuxd.enable = true;
-    ratbagd.enable = true;
   };
 
   systemd = {
