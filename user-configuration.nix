@@ -39,6 +39,7 @@
           "disk"
           "docker"
           "networkmanager"
+          "nixbld"
           "video"
           "wheel"
         ];
@@ -54,10 +55,18 @@
           "disk"
           "docker"
           "networkmanager"
+          "nixbld"
           "video"
           "wheel"
         ];
-        packages = userPackages ++ (with pkgs; [insomnia openvpn]);
+        packages =
+          userPackages
+          ++ (with pkgs; [
+            openvpn
+          ])
+          ++ (with (import <nixos-22.05> {}); [
+            insomnia
+          ]);
         initialPassword = "NixOS-workerap.";
       };
 

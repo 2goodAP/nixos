@@ -7,12 +7,6 @@
 }: {
   # Append "nixpkgs-overlays" to existing NIX_PATH.
   nix = {
-    nixPath =
-      options.nix.nixPath.default
-      ++ [
-        "nixpkgs-overlays=$HOME/.nixos/overlays/"
-      ];
-
     package = pkgs.nixUnstable;
 
     extraOptions = ''
