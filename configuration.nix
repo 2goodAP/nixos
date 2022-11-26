@@ -3,11 +3,10 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {...}: {
   imports = [
+    ./gui-configuration.nix
     ./hardware-configuration.nix
-    ./system-configuration.nix
-    ./user-configuration.nix
     ./package-configuration.nix
     ./service-configuration.nix
-    ./gui-configuration.nix
+    ./system-configuration.nix
   ];
 }
