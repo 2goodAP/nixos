@@ -100,6 +100,7 @@
         ifuse
 
         firefox
+        gimp
         keepassxc
         libreoffice-fresh
         nextcloud-client
@@ -110,8 +111,6 @@
       userPackages =
         basePackages
         ++ (with pkgs; [
-          gimp
-          thunderbird
           ungoogled-chromium
           zoom-us
         ]);
