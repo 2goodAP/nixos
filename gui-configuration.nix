@@ -39,10 +39,8 @@
 
     extraOptions = ["--unsupported-gpu"];
     extraSessionCommands = ''
-      # Hardware cursors not yet working on wlroots.
-      export WLR_NO_HARDWARE_CURSORS=1
       # Set wlroots renderer to Vulkan to avoid flickering.
-      export WLR_RENDERER=vulkan
+      #export WLR_RENDERER=vulkan
       # General wayland environment variables.
       export XDG_SESSION_TYPE=wayland
       export CLUTTER_BACKEND=wayland
