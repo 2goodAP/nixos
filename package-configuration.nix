@@ -9,6 +9,15 @@
   nix = {
     package = pkgs.nixUnstable;
 
+    settings = {
+      substituters = [
+        "https://app.cachix.org/cache/nixpkgs-wayland"
+      ];
+      trusted-public-keys = [
+        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+      ];
+    };
+
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
@@ -26,12 +35,20 @@
         ref = "master";
         rev = "acbbcb781724648f206068e230a7a5f77fba510c";
       }))
+
+      # Wayland
+      (import "${
+        builtins.fetchGit {
+          url = "https://github.com/nix-community/nixpkgs-wayland.git";
+          ref = "master";
+          rev = "7a42bdbb71bed152dc0fccb696b988985ecb412f";
+        }
+      }/overlay.nix")
+
       # Local
-      (import ./overlays/caskaydia-cove-nerd-font.nix)
-      (import ./overlays/fira-code-nerd-font.nix)
+      (import ./overlays/fonts.nix)
       (import ./overlays/nbfc-linux.nix)
       (import ./overlays/neovim.nix)
-      (import ./overlays/noto-nerd-font.nix)
       (import ./overlays/swaylock-effects.nix)
     ];
   };
@@ -148,14 +165,7 @@
           "video"
           "wheel"
         ];
-        packages =
-          userPackages
-          ++ (with pkgs; [
-            openvpn
-          ])
-          ++ (with (import <nixos-22.05> {}); [
-            insomnia
-          ]);
+        packages = userPackages ++ (with pkgs; [openvpn insomnia]);
         initialPassword = "NixOS-workerap.";
       };
 
