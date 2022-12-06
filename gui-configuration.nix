@@ -85,7 +85,7 @@
         ydotool
         # Locking
         swayidle
-        swaylock-effects
+        swaylock
         # Media
         imv
         mpv

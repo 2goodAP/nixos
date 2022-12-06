@@ -40,7 +40,6 @@
       (import ./overlays/fonts.nix)
       (import ./overlays/nbfc-linux.nix)
       (import ./overlays/neovim.nix)
-      (import ./overlays/swaylock-effects.nix)
     ];
   };
 
