@@ -155,7 +155,12 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ (with pkgs; [openvpn insomnia]);
+        packages =
+          userPackages
+          ++ (with pkgs; [
+            openvpn
+          ])
+          ++ [(import <nixos-22.05> {}).insomnia];
         initialPassword = "NixOS-workerap.";
       };
 
