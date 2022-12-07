@@ -102,10 +102,7 @@
       enableOnBoot = false;
       enableNvidia = true;
       storageDriver = "overlay2";
-      rootless = {
-        enable = true;
-        setSocketVariable = true;
-      };
+      rootless.enable = true;
     };
 
     virtualbox = {
