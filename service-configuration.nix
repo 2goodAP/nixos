@@ -1,9 +1,6 @@
 # Service configurations for the various nixos profiles.
 {pkgs, ...}: {
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
+  hardware.bluetooth.enable = true;
 
   networking = {
     hostName = "nixosbox";
@@ -14,6 +11,7 @@
       enableStrongSwan = true;
       firewallBackend = "nftables";
       insertNameservers = ["1.1.1.1" "9.9.9.9"];
+      wifi.scanRandMacAddress = false;
     };
 
     firewall = {
