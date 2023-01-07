@@ -57,6 +57,9 @@
     ntp.enable = true;
     timesyncd.enable = true;
     openssh.enable = true;
+    printing.enable = true;
+    tlp.enable = true;
+    usbmuxd.enable = true;
 
     pipewire = {
       enable = true;
@@ -68,9 +71,12 @@
       pulse.enable = true;
     };
 
-    printing.enable = true;
-    tlp.enable = true;
-    usbmuxd.enable = true;
+    undervolt = {
+      enable = true;
+      temp = 95;
+      coreOffset = -150;
+      uncoreOffset = -150;
+    };
   };
 
   systemd = {

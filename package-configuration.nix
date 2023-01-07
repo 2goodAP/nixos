@@ -180,6 +180,8 @@
             mangohud
             lutris
             unigine-heaven
+            winetricks
+            wineWowPackages.stagingFull
           ]);
         initialPassword = "NixOS-justagamer.";
       };
