@@ -130,7 +130,7 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ [pkgs.via];
+        packages = userPackages ++ [pkgs.vial];
         initialPassword = "NixOS-aashishp.";
       };
 
