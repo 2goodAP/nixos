@@ -55,6 +55,8 @@
       ntfs3g
       pamixer
       pulseaudio
+      qmk
+      qmk-udev-rules
       tlp
 
       # Shell
@@ -130,7 +132,7 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ [pkgs.vial];
+        packages = userPackages ++ [pkgs.via];
         initialPassword = "NixOS-aashishp.";
       };
 
