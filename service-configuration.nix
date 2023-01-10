@@ -59,7 +59,6 @@
     openssh.enable = true;
     printing.enable = true;
     tlp.enable = true;
-    udev.extraRules = "KERNEL==\"hidraw*\", SUBSYSTEM==\"hidraw\", MODE=\"0666\", TAG+=\"uaccess\"";
     usbmuxd.enable = true;
 
     pipewire = {
