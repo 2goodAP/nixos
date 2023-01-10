@@ -37,18 +37,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    etc = {
-      "nbfc/nbfc.json" = {
-        text = ''
-          {"SelectedConfigId": "Acer Nitro AN515-51"}
-        '';
-        mode = "0644";
-      };
-
-      "udev/rules.d/50-qmk.rules" = {
-        source = "${pkgs.qmk-udev-rules}/lib/udev/rules.d/50-qmk.rules";
-        mode = "0644";
-      };
+    etc."nbfc/nbfc.json" = {
+      text = ''
+        {"SelectedConfigId": "Acer Nitro AN515-51"}
+      '';
+      mode = "0644";
     };
 
     shells = [pkgs.bashInteractive pkgs.zsh];

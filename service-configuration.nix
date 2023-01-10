@@ -59,6 +59,7 @@
     openssh.enable = true;
     printing.enable = true;
     tlp.enable = true;
+    udev.packages = [pkgs.qmk-udev-rules];
     usbmuxd.enable = true;
 
     pipewire = {
