@@ -103,7 +103,7 @@
       ]);
   };
 
-  qt5 = {
+  qt = {
     platformTheme = "qt5ct";
     style = "adwaita";
   };
