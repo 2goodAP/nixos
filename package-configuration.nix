@@ -173,6 +173,7 @@
             lutris
             winetricks
             wineWowPackages.stagingFull
+            xboxdrv
           ]);
         initialPassword = "NixOS-justagamer.";
       };
