@@ -93,11 +93,12 @@
     defaultUserShell = pkgs.zsh;
 
     users = let
-      basePackages = with pkgs; [
+      userPackages = with pkgs; [
         android-file-transfer
         libimobiledevice
         ifuse
 
+        ungoogled-chromium
         firefox
         gimp
         keepassxc
@@ -107,12 +108,6 @@
         transmission
         zathura
       ];
-      userPackages =
-        basePackages
-        ++ (with pkgs; [
-          ungoogled-chromium
-          zoom-us
-        ]);
     in {
       root = {
         isSystemUser = true;
@@ -131,7 +126,12 @@
           "video"
           "wheel"
         ];
-        packages = userPackages ++ [pkgs.via];
+        packages =
+          userPackages
+          ++ (with pkgs; [
+            pkgs.via
+            pkgs.zoom-us
+          ]);
         initialPassword = "NixOS-aashishp.";
       };
 
@@ -151,6 +151,7 @@
           userPackages
           ++ (with pkgs; [
             openvpn
+            zoom-us
           ])
           ++ [(import <nixos-22.05> {}).insomnia];
         initialPassword = "NixOS-workerap.";
@@ -166,7 +167,7 @@
           "wheel"
         ];
         packages =
-          basePackages
+          userPackages
           ++ (with pkgs; [
             gamemode
             mangohud
