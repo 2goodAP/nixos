@@ -132,11 +132,11 @@
         # ------
 
         # Keyboards
-        input "*" {
-            accel_profile flat
-            xkb_layout us
-            xkb_variant colemak_dh
+        input type:keyboard {
+            xkb_layout 'us,np'
+            xkb_variant 'altgr-intl,'
         }
+        input '1:1:AT_Translated_Set_2_keyboard' xkb_variant 'colemak_dh,'
 
         # Touchpad
         input "1267:12433:ELAN0504:01_04F3:3091_Touchpad" {
@@ -188,8 +188,9 @@
 
     xserver = {
       videoDrivers = ["nvidia"];
-      layout = "us,np";
-      xkbVariant = "colemak_dh,";
+      layout = "us,us,np";
+      xkbVariant = "altgr-intl,colemak_dh,";
+      xkbOptions = "grp:alt_shift_toggle";
     };
   };
 
