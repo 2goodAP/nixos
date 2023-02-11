@@ -72,8 +72,8 @@
       git
       jq
       neovim
-      (python39.withPackages (pks: with pks; [black mypy pylint pynvim]))
-      (python310.withPackages (pks: with pks; [black mypy pylint pynvim]))
+      (python39.withPackages (pys: with pys; [black mypy pylint pynvim]))
+      (python310.withPackages (pys: with pys; [black mypy pylint pynvim]))
       p7zip
       ranger
       unrar
@@ -174,7 +174,6 @@
             lutris
             winetricks
             wineWowPackages.stagingFull
-            xboxdrv
           ]);
         initialPassword = "NixOS-justagamer.";
       };
