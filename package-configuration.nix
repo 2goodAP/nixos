@@ -72,8 +72,7 @@
       git
       jq
       neovim
-      (python39.withPackages (pys: with pys; [black mypy pylint pynvim]))
-      (python310.withPackages (pys: with pys; [black mypy pylint pynvim]))
+      (python3.withPackages (pys: with pys; [black mypy pylint pynvim]))
       p7zip
       ranger
       unrar
