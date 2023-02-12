@@ -1,6 +1,9 @@
 # Service configurations for the various nixos profiles.
 {pkgs, ...}: {
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth.enable = true;
+    xpadneo.enable = true;
+  };
 
   networking = {
     hostName = "nixosbox";
