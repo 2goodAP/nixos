@@ -132,20 +132,24 @@
         # ------
 
         # Keyboards
+        input '1:1:AT_Translated_Set_2_keyboard' {
+            xkb_layout 'us,np'
+            xkb_variant 'colemak_dh,'
+        }
         input type:keyboard {
             xkb_layout 'us,np'
             xkb_variant 'altgr-intl,'
         }
-        input '1:1:AT_Translated_Set_2_keyboard' xkb_variant 'colemak_dh,'
 
-        # Touchpad
-        input "1267:12433:ELAN0504:01_04F3:3091_Touchpad" {
+        # Pointers
+        input '1267:12433:ELAN0504:01_04F3:3091_Touchpad' {
             accel_profile adaptive
             click_method clickfinger
             dwt enable
             natural_scroll enabled
             tap enabled
         }
+        input type:pointer accel_profile flat
 
         # Keybindings
         # -----------
