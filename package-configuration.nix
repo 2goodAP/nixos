@@ -98,7 +98,6 @@
         ifuse
 
         ungoogled-chromium
-        firefox
         gimp
         keepassxc
         libreoffice-fresh
@@ -128,8 +127,9 @@
         packages =
           userPackages
           ++ (with pkgs; [
-            pkgs.via
-            pkgs.zoom-us
+            firefox
+            via
+            zoom-us
           ]);
         initialPassword = "NixOS-aashishp.";
       };
@@ -149,6 +149,7 @@
         packages =
           userPackages
           ++ (with pkgs; [
+            google-chrome
             openvpn
             zoom-us
           ])
@@ -168,9 +169,10 @@
         packages =
           userPackages
           ++ (with pkgs; [
+            firefox
             gamemode
-            mangohud
             lutris
+            mangohud
             winetricks
             wineWowPackages.stagingFull
           ]);
