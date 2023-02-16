@@ -131,14 +131,17 @@
         # Inputs
         # ------
 
+        # General
+        input '*' {
+            xkb_layout 'us,np'
+            xkb_variant 'altgr-intl,'
+            accel_profile flat
+        }
+
         # Keyboards
         input '1:1:AT_Translated_Set_2_keyboard' {
             xkb_layout 'us,np'
             xkb_variant 'colemak_dh,'
-        }
-        input type:keyboard {
-            xkb_layout 'us,np'
-            xkb_variant 'altgr-intl,'
         }
 
         # Pointers
@@ -149,7 +152,6 @@
             natural_scroll enabled
             tap enabled
         }
-        input type:pointer accel_profile flat
 
         # Keybindings
         # -----------
