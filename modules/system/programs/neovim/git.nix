@@ -9,9 +9,9 @@
   in {
     enable = mkEnableOption "Whether or not to enable git-related plugins.";
 
-    gitsigns.enable = mkEnableOpton "Whether or not to enable gitsigns.";
+    gitsigns.enable = mkEnableOption "Whether or not to enable gitsigns.";
 
-    neogit.enable = mkEnableOpton "Whether or not to enable neogit.";
+    neogit.enable = mkEnableOption "Whether or not to enable neogit.";
   };
 
   config = let

@@ -17,6 +17,7 @@
 
   config = let
     cfg = config.machine.programs.neovim;
+    inherit (lib) mkIf optionals;
   in
     mkIf cfg.lsp.enable {
       machine.programs.neovim.startPackages =

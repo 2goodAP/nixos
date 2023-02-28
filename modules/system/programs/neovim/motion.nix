@@ -9,15 +9,15 @@
   in {
     enable = mkEnableOption "Whether or not to enable motion-related plugins.";
 
-    comment.enable = mkEnableOpton "Whether or not to enable Comment.nvim.";
+    comment.enable = mkEnableOption "Whether or not to enable Comment.nvim.";
 
-    harpoon.enable = mkEnableOpton "Whether or not to enable harpoon.";
+    harpoon.enable = mkEnableOption "Whether or not to enable harpoon.";
 
-    hop.enable = mkEnableOpton "Whether or not to enable hop.nvim.";
+    hop.enable = mkEnableOption "Whether or not to enable hop.nvim.";
 
-    surround.enable = mkEnableOpton "Whether or not to enable nvim-surround.";
+    surround.enable = mkEnableOption "Whether or not to enable nvim-surround.";
 
-    which-key.enable = mkEnableOpton "Whether or not to enable which-key.nvim";
+    which-key.enable = mkEnableOption "Whether or not to enable which-key.nvim";
   };
 
   config = let

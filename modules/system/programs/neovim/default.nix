@@ -6,13 +6,12 @@
 }: {
   imports = [
     ./lsp
-    ./completion.nix
+    ./autocompletion.nix
     ./filetype.nix
-    ./fuzzy.nix
     ./git.nix
     ./motion.nix
-    ./snippets.nix
     ./statusline.nix
+    ./telescope.nix
     ./treesitter.nix
     ./ui.nix
   ];
@@ -24,7 +23,7 @@
 
     aliases = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
-    luaConfigRC = mkOption {
+    luaConfig = mkOption {
       description = "The lua configuration to source into neovim.";
       type = types.lines;
       default = "";
@@ -60,13 +59,15 @@
       };
 
       environment.systemPackages = [
-        python310.withPackages
-        (pyps: [
-          pyps.black
-          pyps.mypy
-          pyps.pylint
-          pyps.pynvim
-        ])
+        (
+          pkgs.python310.withPackages
+          (pyps: [
+            pyps.black
+            pyps.mypy
+            pyps.pylint
+            pyps.pynvim
+          ])
+        )
       ];
     };
 }

@@ -10,12 +10,12 @@
     enable = mkEnableOption "Whether or not to enable filetype-related plugins.";
 
     editorconfig.enable =
-      mkEnableOpton
+      mkEnableOption
       "Whether or not to enable editorconfig.nvim.";
 
-    glow.enable = mkEnableOpton "Whether or not to enable glow.nvim.";
+    glow.enable = mkEnableOption "Whether or not to enable glow.nvim.";
 
-    neorg.enable = mkEnableOpton "Whether or not to enable neorg.";
+    neorg.enable = mkEnableOption "Whether or not to enable neorg.";
   };
 
   config = let

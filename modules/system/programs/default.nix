@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./neovim.nix
+    ./neovim
   ];
 
   options.machine.programs = let
@@ -14,7 +14,7 @@
     enable = mkEnableOption "Whether or not to enable common system-wide programs.";
     fd.enable = mkEnableOption "Whether to enable fd, an alternative to find.";
 
-    glow.enable = mkEnableOpton "Whether to enable glow, a CLI markdown renderer.";
+    glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
 
     ripgrep.enable = mkEnableOption "Whether to enable ripgrep, an alternative to grep.";
 

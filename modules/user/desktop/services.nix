@@ -5,7 +5,7 @@
   ...
 }: {
   options.machine.desktop.services.wob = let
-    inherit (lib) mkIf;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
       description = "Whether or not to enable wob.";
