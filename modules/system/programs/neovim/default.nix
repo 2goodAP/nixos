@@ -45,6 +45,7 @@
 
   config = let
     cfg = config.machine.programs.neovim;
+    inherit (lib) mkIf;
   in
     mkIf cfg.enable {
       programs.neovim = {

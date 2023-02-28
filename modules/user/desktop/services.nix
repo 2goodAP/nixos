@@ -1,13 +1,12 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
-}: let
-  cfg = config.machine.desktop;
-  inherit (lib) mkIf mkEnableOption mkOption types;
-in {
-  options.machine.desktop.services.wob = {
+}: {
+  options.machine.desktop.services.wob = let
+    inherit (lib) mkIf;
+  in {
     enable = mkEnableOption {
       description = "Whether or not to enable wob.";
       default = false;
@@ -20,7 +19,10 @@ in {
     };
   };
 
-  config =
+  config = let
+    cfg = config.machine.desktop;
+    inherit (lib) mkIf;
+  in
     mkIf (
       cfg.sway.enable
       && (builtins.getEnv "WAYLAND_DISPLAY" != "")

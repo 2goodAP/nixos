@@ -1,13 +1,12 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
-}: let
-  cfg = config.machine.applications;
-  inherit (lib) mkIf mkEnableOption mkOption types;
-in {
-  options.machine.applications = {
+}: {
+  options.machine.applications = let
+    inherit (lib) mkEnableOption mkOption types;
+  in {
     enable = mkEnableOption {
       description = "Whether or not to enable common base applications.";
     };
@@ -19,5 +18,9 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {};
+  config = let
+    cfg = config.machine.applications;
+    inherit (lib) mkIf;
+  in
+    mkIf cfg.enable {};
 }

@@ -1,9 +1,6 @@
 # Configurations shared across the various nixos profiles for laptops.
 {
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
+  hardware.bluetooth.enable = true;
 
   security.apparmor = {
     enable = true;

@@ -1,13 +1,12 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
-}: let
-  cfg = config.machine.network;
-  inherit (lib) mkIf mkOption types;
-in {
-  options.machine.network = {
+}: {
+  options.machine.network = let
+    inherit (lib) mkOption types;
+  in {
     enable = mkOption {
       description = "Whether or not to enable networking services.";
       type = types.bool;
@@ -30,38 +29,42 @@ in {
     };
   };
 
-  config = mkIf cfg.enable {
-    networking = {
-      inherit (cfg) hostName nameservers;
+  config = let
+    cfg = config.machine.network;
+    inherit (lib) mkIf;
+  in
+    mkIf cfg.enable {
+      networking = {
+        inherit (cfg) hostName nameservers;
 
-      networkmanager = {
+        networkmanager = {
+          enable = true;
+          enableStrongSwan = true;
+          firewallBackend = "nftables";
+          insertNameservers = cfg.nameservers;
+        };
+
+        # Configure the firewall.
+        firewall = {
+          enable = true;
+          package = pkgs.iptables-nftables-compat;
+        };
+      };
+
+      # Enable NTP.
+      services = {
+        ntp.enable = true;
+        timesyncd.enable = true;
+      };
+
+      # Enable systemd-networkd.
+      systemd.network = {
         enable = true;
-        enableStrongSwan = true;
-        firewallBackend = "nftables";
-        insertNameservers = cfg.nameservers;
-      };
 
-      # Configure the firewall.
-      firewall = {
-        enable = true;
-        package = pkgs.iptables-nftables-compat;
+        wait-online = {
+          anyInterface = true;
+          extraArgs = builtins.map (iface: "--interface=${iface}") cfg.interfaces;
+        };
       };
     };
-
-    # Enable NTP.
-    services = {
-      ntp.enable = true;
-      timesyncd.enable = true;
-    };
-
-    # Enable systemd-networkd.
-    systemd.network = {
-      enable = true;
-
-      wait-online = {
-        anyInterface = true;
-        extraArgs = builtins.map (iface: "--interface=${iface}") cfg.interfaces;
-      };
-    };
-  };
 }

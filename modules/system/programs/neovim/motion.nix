@@ -1,12 +1,12 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
-}: let
-  inherit (lib) mkIf mkEnableOption optionals;
-in {
-  options.machine.programs.neovim.motion = {
+}: {
+  options.machine.programs.neovim.motion = let
+    inherit (lib) mkEnableOption;
+  in {
     enable = mkEnableOption "Whether or not to enable motion-related plugins.";
 
     comment.enable = mkEnableOpton "Whether or not to enable Comment.nvim.";
@@ -22,6 +22,7 @@ in {
 
   config = let
     cfg = config.machine.programs.neovim.motion;
+    inherit (lib) mkIf optionals;
   in
     mkIf cfg.enable {
       machine.programs.neovim.startPackages =
