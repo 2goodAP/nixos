@@ -20,13 +20,6 @@
 
     # Override packages using overlays.
     overlays = [
-      # Emacs
-      (import (builtins.fetchGit {
-        url = "https://github.com/nix-community/emacs-overlay.git";
-        ref = "master";
-        rev = "acbbcb781724648f206068e230a7a5f77fba510c";
-      }))
-
       # Local
       (import ./overlays/fonts.nix)
       (import ./overlays/nbfc-linux.nix)
@@ -68,7 +61,6 @@
       cmus
       conda
       docker-compose
-      emacsPgtkNativeComp
       git
       jq
       neovim
