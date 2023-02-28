@@ -51,16 +51,18 @@ in {
       };
     };
 
-    home.packages = [
-      pkgs.imv
-      pkgs.gimp
-      pkgs.firefox
-      pkgs.keepassxc
-      pkgs.libreoffice-fresh
-      pkgs.nextcloud-client
-      pkgs.speedcrunch
-      pkgs.zathura
-      pkgs.zoom-us
-    ] ++ cfg.applications.extraPackages;
+    home.packages =
+      [
+        pkgs.imv
+        pkgs.gimp
+        pkgs.firefox
+        pkgs.keepassxc
+        pkgs.libreoffice-fresh
+        pkgs.nextcloud-client
+        pkgs.speedcrunch
+        pkgs.zathura
+        pkgs.zoom-us
+      ]
+      ++ cfg.applications.extraPackages;
   };
 }

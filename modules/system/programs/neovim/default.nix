@@ -1,20 +1,20 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }: {
   imports = [
-    ./completion
-    ./filetype
-    ./fuzzy
-    ./git
     ./lsp
-    ./motion
-    ./snippets
-    ./statusline
-    ./treesitter
-    ./ui
+    ./completion.nix
+    ./filetype.nix
+    ./fuzzy.nix
+    ./git.nix
+    ./motion.nix
+    ./snippets.nix
+    ./statusline.nix
+    ./treesitter.nix
+    ./ui.nix
   ];
 
   options.machine.programs.neovim = let
@@ -41,52 +41,6 @@
       type = types.listOf types.package;
       default = [];
     };
-
-     = {
-      completion = mkEnableOption {
-        description = "Whether or not to enable completion-related plugins.";
-      };
-
-      dap = mkEnableOption {
-        description = "Whether or not to enable dap-related plugins.";
-      };
-
-      filetype = {
-        editorconfig = mkEnableOption {
-          description = "Whether or not to enable the editorconfig plugin.";
-        };
-        markdown = mkEnableOption {
-          description = "Whether or not to enable the markdown plugin.";
-        };
-        neorg = mkEnableOption {
-          description = "Whether or not to enable the neorg plugin.";
-        };
-      };
-
-      lsp = mkEnableOption {
-        description = "Whether or not to enable lsp-related plugins.";
-      };
-
-      search = mkEnableOption {
-        description = "Whether or not to enable fuzzy search-related plugins.";
-      };
-
-      snippet = mkEnableOption {
-        description = "Whether or not to enable snippet-related plugins.";
-      };
-
-      statusline = mkEnableOption {
-        description = "Whether or not to enable statusline-related plugins.";
-      };
-
-      treesitter = mkEnableOption {
-        description = "Whether or not to enable treesitter-related plugins.";
-      };
-
-      ui = mkEnableOption {
-        description = "Whether or not to enable ui-related plugins.";
-      };
-    };
   };
 
   config = let
@@ -105,11 +59,12 @@
       };
 
       environment.systemPackages = [
-        python3Minimal.withPackages
+        python310.withPackages
         (pyps: [
           pyps.black
           pyps.mypy
           pyps.pylint
+          pyps.pynvim
         ])
       ];
     };

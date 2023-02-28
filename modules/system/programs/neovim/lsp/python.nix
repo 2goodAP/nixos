@@ -13,12 +13,14 @@ in {
 
   config = mkIf (cfg.enable && cfg.languages.python) {
     environment.systemPackages = [
-      pkgs.python3.withPackages (pygs: [
+      pkgs.python3.withPackages
+      (pygs: [
         pygs.bandit
         pygs.pyls-isort
         pygs.pylsp-mypy
         pygs.python-lsp-black
-        pygs.python-lsp-server.override {
+        pygs.python-lsp-server.override
+        {
           withAutopep8 = false;
           withYapf = false;
         }

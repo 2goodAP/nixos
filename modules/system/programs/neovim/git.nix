@@ -1,11 +1,11 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.machine.programs.neovim.git;
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption optionals;
 in {
   options.machine.programs.neovim.git = {
     enable = mkEnableOption "Whether or not to enable git-related plugins.";
@@ -17,22 +17,24 @@ in {
 
   config = mkIf cfg.enable {
     machine.programs.neovim.startPackages =
-    (if cfg.neogit.enable
-      then [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugins.harpoon]
-      else []
-    ) ++ (if cfg.hop.enable
-      then [pkgs.vimPlugins.hop-nvim]
-      else []
-    ) ++ (if cfg.surround.enable
-      then [pkgs.vimPlugins.nvim-surround]
-      else []
-    ) ++ (if cfg.which-key.enable
-      then [pkgs.vimPlugins.which-key-nvim]
-      else []
-    );
+      (
+        optionals cfg.neogit.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugins.harpoon]
+      )
+      ++ (
+        optionals cfg.hop.enable [pkgs.vimPlugins.hop-nvim]
+      )
+      ++ (
+        optionals cfg.surround.enable [pkgs.vimPlugins.nvim-surround]
+      )
+      ++ (
+        optionals cfg.which-key.enable [pkgs.vimPlugins.which-key-nvim]
+      );
 
     machine.programs.neovim.luaConfig = let
-      writeIf = cond: msg: if cond then msg else "";
+      writeIf = cond: msg:
+        if cond
+        then msg
+        else "";
     in ''
       ${writeIf cfg.neogit.enable "require('neogit').setup()"}
 

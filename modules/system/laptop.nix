@@ -1,11 +1,11 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.machine.laptop;
-  inherit (lib) mkEnableOption mkOption types;
+  inherit (lib) mkIf mkEnableOption mkOption types;
 in {
   options.machine.laptop = {
     enable = mkEnableOption {
@@ -37,7 +37,7 @@ in {
         HandleLidSwitchDocked=ignore
         HandleHibernateKey=hibernate
         HandlePowerKey=hibernate
-        HandleSuspendKey=suspend-ten-hibernate
+        HandleSuspendKey=suspend-then-hibernate
       '';
 
       auto-cpufreq.enable = true;
