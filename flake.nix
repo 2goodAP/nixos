@@ -26,7 +26,7 @@
         inherit (nixpkgs) lib;
         systemModules = import ./modules/system;
         userModules = import ./modules/user;
-        overlays = import ./overlays;
+        overlays = import ./overlays {};
       in {
         nixosConfigurations = {
           nitro5box = let
@@ -43,9 +43,10 @@
                 # nix and nixpkgs specific settings.
                 {
                   nix.settings.experimental-features = ["nix-command" "flakes"];
-
-                  nixpkgs.allowUnfree = true;
-                  nixpkgs.overlays = overlays;
+                  nixpkgs = {
+                    config.allowUnfree = true;
+                    inherit (overlays) overlays;
+                  };
                 }
 
                 # System-specific configuraitons.

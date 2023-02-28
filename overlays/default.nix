@@ -1,7 +1,7 @@
 {...}: {
-  imports = [
-    ./fantasque-sans-mono.nix
-    ./neovim.nix
-    ./swaylock-effects.nix
+  overlays = [
+    (import ./fantasque-sans-mono.nix)
+    (import ./neovim.nix)
+    (import ./swaylock-effects.nix)
   ];
 }
