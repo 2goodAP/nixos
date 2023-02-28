@@ -2,9 +2,12 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
