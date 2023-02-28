@@ -6,7 +6,7 @@
 }: {
   imports = [
     ./hardware.nix
-    ../share
+    ../common.nix
   ];
 
   # Bootloader

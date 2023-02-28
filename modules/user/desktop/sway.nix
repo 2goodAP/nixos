@@ -44,21 +44,18 @@
         '';
       };
 
-      # Bar
-      programs.waybar = {
-        enable = true;
-        systemd = {
-          enable = true;
-          target = "sway-session.target";
-        };
-      };
-
-      # Desktop
       programs = {
         mako.enable = true;
         rofi = {
           enable = true;
           package = pkgs.rofi-wayland;
+        };
+        waybar = {
+          enable = true;
+          systemd = {
+            enable = true;
+            target = "sway-session.target";
+          };
         };
       };
       machine.services.wob = {
@@ -82,21 +79,21 @@
       };
 
       # Extra Packages
-      home.packages =
+      home.packages = with pkgs;
         [
           # Bar
-          pkgs.libappindicator-gtk3
+          libappindicator-gtk3
           # Desktop
-          pkgs.swaybg
+          swaybg
           # Input
-          pkgs.clipman
-          pkgs.wev
-          pkgs.wl-clipboard
-          pkgs.ydotool
+          clipman
+          wev
+          wl-clipboard
+          ydotool
           # Locking
-          pkgs.swaylock-effects
+          swaylock
           # Screenshot
-          pkgs.sway-contrib.grimshot
+          sway-contrib.grimshot
           # Volume
           pkgs.pavucontrol
         ]

@@ -13,7 +13,7 @@
     dictionary.enable =
       mkEnableOption "Whether or not to enable dictionary autocompletion.";
 
-    snippets.enable = mkEnableOpton "Whether or not to enable code snippets.";
+    snippets.enable = mkEnableOption "Whether or not to enable code snippets.";
   };
 
   config = let

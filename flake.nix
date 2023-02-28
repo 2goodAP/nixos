@@ -22,35 +22,59 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
 
-      perSystem = {
-        config,
-        lib,
-        pkgs,
-        ...
-      }: let
-        modules = import ./modules;
+      flake = let
+        inherit (nixpkgs) lib;
+        systemModules = import ./modules/system;
+        userModules = import ./modules/user;
         overlays = import ./overlays;
       in {
-        nixosConfigurations.nitro5box = nixpkgs.lib.nixosSystem {
-          modules = [
-            # Custom modules.
-            modules
+        nixosConfigurations = {
+          nitro5box = let
+            system = "x86_64-linux";
+            pkgs = import nixpkgs {
+              config.allowUnfree = true;
+              inherit system overlays;
+            };
+          in
+            lib.nixosSystem {
+              inherit system;
 
-            # Nix-specific settings.
-            {
-              nix.settings.experimental-features = ["nix-command" "flakes"];
-            }
+              modules = [
+                # Custom modules.
+                systemModules
 
-            # System-specific configuraitons.
-            (import ./machines/nitro-5 {
-              hostName = "nitro5box";
-              inherit lib pkgs;
-            })
-          ];
+                # Nix-specific settings.
+                {
+                  nix.settings.experimental-features = ["nix-command" "flakes"];
+                }
+
+                # System-specific configuraitons.
+                (import ./machines/nitro-5 {
+                  hostName = "nitro5box";
+                  inherit lib pkgs;
+                })
+
+                # Home-Manager configurations.
+                home-manager.nixosModules.home-manager
+                {
+                  home-manager = {
+                    useGlobalPkgs = true;
+                    useUserPackages = true;
+
+                    sharedModules = [userModules];
+
+                    # users = {
+                    #   jdoe = import ./home.nix;
+                    # };
+                  };
+                }
+              ];
+            };
         };
       };
     };
 
+  # let
   #   lib = import ./lib;
   #   modules = import ./modules;
   #   overlays = import ./overlays;
