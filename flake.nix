@@ -40,7 +40,7 @@
                 # Custom modules.
                 systemModules
 
-                # Nix-specific settings.
+                # nix and nixpkgs specific settings.
                 {
                   nix.settings.experimental-features = ["nix-command" "flakes"];
 
