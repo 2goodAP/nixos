@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.desktop.applications = let
+  options.tgap.desktop.applications = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
@@ -19,7 +19,7 @@
   };
 
   config = let
-    cfg = config.machine.desktop;
+    cfg = config.tgap.desktop;
     inherit (lib) mkIf;
   in
     mkIf (cfg.sway.enable && cfg.applications.enable) {

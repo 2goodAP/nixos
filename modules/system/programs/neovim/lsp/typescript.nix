@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.programs.neovim.lsp.languages = let
+  options.tgap.programs.neovim.lsp.languages = let
     inherit (lib) mkEnableOption;
   in {
     typescript =
@@ -12,7 +12,7 @@
   };
 
   config = let
-    cfg = config.machine.programs.neovim.lsp;
+    cfg = config.tgap.programs.neovim.lsp;
     inherit (lib) mkIf;
   in
     mkIf (cfg.enable && cfg.languages.typescript) {
@@ -21,7 +21,7 @@
         pkgs.nodePackages.typescript-language-server
       ];
 
-      machine.programs.neovim.luaConfig = ''
+      tgap.programs.neovim.luaExtraConfig = ''
         require('lspconfig').tsserver.setup()
       '';
     };

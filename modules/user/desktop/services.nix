@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.desktop.services.wob = let
+  options.tgap.desktop.services.wob = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
@@ -20,7 +20,7 @@
   };
 
   config = let
-    cfg = config.machine.desktop;
+    cfg = config.tgap.desktop;
     inherit (lib) mkIf;
   in
     mkIf (

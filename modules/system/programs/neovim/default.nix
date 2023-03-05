@@ -16,14 +16,14 @@
     ./ui.nix
   ];
 
-  options.machine.programs.neovim = let
+  options.tgap.programs.neovim = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to enable neovim.";
 
     aliases = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
-    luaConfig = mkOption {
+    luaExtraConfig = mkOption {
       description = "The lua configuration to source into neovim.";
       type = types.lines;
       default = "";
@@ -43,7 +43,7 @@
   };
 
   config = let
-    cfg = config.machine.programs.neovim;
+    cfg = config.tgap.programs.neovim;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
@@ -55,19 +55,12 @@
 
         runtime = {
           "init.lua".source = ./init.lua;
+          "lua/extraConfig.lua".text = cfg.luaExtraConfig;
         };
       };
 
       environment.systemPackages = [
-        (
-          pkgs.python310.withPackages
-          (pyps: [
-            pyps.black
-            pyps.mypy
-            pyps.pylint
-            pyps.pynvim
-          ])
-        )
+        (pkgs.python310.withPackages (ps: [ps.pynvim]))
       ];
     };
 }

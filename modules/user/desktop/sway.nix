@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.desktop.sway = let
+  options.tgap.desktop.sway = let
     inherit (lib) mkOption types;
   in {
     enable = mkOption {
@@ -21,7 +21,7 @@
   };
 
   config = let
-    cfg = config.machine.desktop.sway;
+    cfg = config.tgap.desktop.sway;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
@@ -58,7 +58,7 @@
           };
         };
       };
-      machine.services.wob = {
+      tgap.services.wob = {
         enable = true;
         systemdTarget = "sway-session.target";
       };

@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.applications = let
+  options.tgap.applications = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
@@ -19,7 +19,7 @@
   };
 
   config = let
-    cfg = config.machine.applications;
+    cfg = config.tgap.applications;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {};

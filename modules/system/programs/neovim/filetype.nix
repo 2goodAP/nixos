@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.programs.neovim.filetype = let
+  options.tgap.programs.neovim.filetype = let
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to enable filetype-related plugins.";
@@ -19,16 +19,16 @@
   };
 
   config = let
-    cfg = config.machine.programs.neovim.filetype;
+    cfg = config.tgap.programs.neovim.filetype;
     inherit (lib) mkIf optionals;
   in
     mkIf cfg.enable {
-      machine.programs.glow.enable = cfg.glow.enable;
+      tgap.programs.glow.enable = cfg.glow.enable;
 
-      machine.programs.neovim.startPackages =
+      tgap.programs.neovim.startPackages =
         optionals cfg.editorconfig.enable [pkgs.vimPlugins.editorconfig-nvim];
 
-      machine.programs.neovim.optPackages =
+      tgap.programs.neovim.optPackages =
         (
           optionals cfg.glow.enable [pkgs.vimPlugins.glow-nvim]
         )
@@ -36,7 +36,7 @@
           optionals cfg.neorg.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugs.neorg]
         );
 
-      machine.programs.neovim.luaConfig = let
+      tgap.programs.neovim.luaExtraConfig = let
         writeIf = cond: msg:
           if cond
           then msg

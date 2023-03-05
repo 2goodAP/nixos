@@ -1,15 +1,15 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
-  options.machine.boot = let
+  options.tgap.boot = let
     inherit (lib) mkOption types;
   in {
     type = mkOption {
       description = "The type of boot to perform.";
       type = types.enum ["encrypted-boot-btrfs"];
-      default = null;
     };
 
     espMountPoint = mkOption {
@@ -20,25 +20,39 @@
   };
 
   config = let
-    cfg = config.machine.boot;
+    cfg = config.tgap.boot;
     inherit (lib) mkIf;
   in
     mkIf (cfg.type == "encrypted-boot-btrfs") {
       boot = {
-        initrd.luks.devices = {
-          boot_crypt = {
-            allowDiscards = true;
-            device = "/dev/disk/by-partlabel/LinuxBootPartition";
-          };
-          swap_crypt = {
-            allowDiscards = true;
-            device = "/dev/disk/by-partlabel/LinuxSwapPartition";
-          };
-          data_crypt = {
-            allowDiscards = true;
-            device = "/dev/disk/by-partlabel/LinuxDataPartition";
+        consoleLogLevel = 3;
+
+        initrd = let
+          bootKeyFile = "/boot/crypto_keyfile.bin";
+        in {
+          luks.devices = {
+            boot_crypt = {
+              allowDiscards = true;
+              device = "/dev/disk/by-partlabel/LinuxBootPartition";
+              fallbackToPassword = true;
+              keyFile = bootKeyFile;
+            };
+            swap_crypt = {
+              allowDiscards = true;
+              device = "/dev/disk/by-partlabel/LinuxSwapPartition";
+            };
+            data_crypt = {
+              allowDiscards = true;
+              device = "/dev/disk/by-partlabel/LinuxDataPartition";
+            };
           };
         };
+
+        kernelParams = [
+          "quiet"
+          "loglevel=3"
+          "resume=/dev/mapper/swap_crypt"
+        ];
 
         loader = {
           efi = {
@@ -46,12 +60,20 @@
             efiSysMountPoint = cfg.espMountPoint;
           };
 
-          grub = {
+          grub = let
+            gkbFile = "grub/colemak_dh.gkb";
+
+            # Generate colemak_dh GRUB shell keyboard layout.
+            grub-mkgkb = pkgs.runCommandLocal "grub-mkgkb" {} ''
+              ${pkgs.ckbcomp}/bin/ckbcomp -layout us -variant colemak_dh \
+                | ${pkgs.grub2_efi}/bin/grub-mklayout -o $out
+            '';
+          in {
             enable = true;
             efiSupport = true;
             devices = ["nodev"];
-            extraGrubInstallArgs = ["--bootloader-id=GRUB"];
             enableCryptodisk = true;
+            extraGrubInstallArgs = ["--bootloader-id=GRUB"];
             extraEntries = ''
               menuentry "Reboot" {
                 reboot
@@ -61,6 +83,14 @@
                 halt
               }
             '';
+            extraConfig = ''
+
+              # Change the keyboard layout (for supported keyboards).
+              insmod keylayouts
+              terminal_input at_keyboard console
+              keymap ($drive1)/@boot/${gkbFile}
+            '';
+            extraFiles."${gkbFile}" = "${grub-mkgkb}";
           };
         };
       };

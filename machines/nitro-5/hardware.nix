@@ -1,6 +1,7 @@
 {
-  pkgs,
+  config,
   lib,
+  pkgs,
   ...
 }: {
   boot = {
@@ -12,13 +13,6 @@
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     kernelModules = ["kvm-intel"];
     extraModulePackages = [];
-
-    kernelParams = [
-      "quiet"
-      "loglevel=3"
-      "lsm=landlock,lockdown,yama,apparmor,bpf"
-      "resume=/dev/mapper/swap_crypt"
-    ];
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
@@ -26,5 +20,27 @@
   hardware = {
     enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = true;
+
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      modesetting.enable = true;
+      nvidiaPersistenced = true;
+      prime = {
+        offload.enable = true;
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+      powerManagement.enable = true;
+    };
+  };
+
+  services = {
+    undervolt = {
+      enable = true;
+      temp = 95;
+      coreOffset = -150;
+      uncoreOffset = -150;
+    };
+    xserver.videoDrivers = ["nvidia"];
   };
 }

@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.laptop = let
+  options.tgap.laptop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
@@ -18,7 +18,7 @@
   };
 
   config = let
-    cfg = config.machine.laptop;
+    cfg = config.tgap.laptop;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {

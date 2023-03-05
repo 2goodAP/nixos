@@ -4,14 +4,14 @@
   pkgs,
   ...
 }: {
-  options.machine.programs.neovim.lsp.languages = let
+  options.tgap.programs.neovim.lsp.languages = let
     inherit (lib) mkEnableOption;
   in {
     python = mkEnableOption "Whether or not to enable python-specific lsp tools.";
   };
 
   config = let
-    cfg = config.machine.programs.neovim.lsp;
+    cfg = config.tgap.programs.neovim.lsp;
     inherit (lib) mkIf;
   in
     mkIf (cfg.enable && cfg.languages.python) {
@@ -30,7 +30,7 @@
         ])
       ];
 
-      machine.programs.neovim.luaConfig = ''
+      tgap.programs.neovim.luaExtraConfig = ''
         -- Pylsp configuration
         require('lspconfig').pylsp.setup({
           settings = {

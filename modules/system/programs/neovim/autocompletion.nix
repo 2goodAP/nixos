@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.machine.programs.neovim.autocompletion = let
+  options.tgap.programs.neovim.autocompletion = let
     inherit (lib) mkEnableOption;
   in {
     enable =
@@ -17,11 +17,11 @@
   };
 
   config = let
-    cfg = config.machine.programs.neovim;
+    cfg = config.tgap.programs.neovim;
     inherit (lib) mkIf optionals;
   in
     mkIf cfg.autocompletion.enable {
-      machine.programs.neovim.startPackages = with pkgs.vimPlugins;
+      tgap.programs.neovim.startPackages = with pkgs.vimPlugins;
         [
           cmp-buffer
           cmp-cmdline
@@ -49,7 +49,7 @@
           optionals cfg.git.enable [pkgs.vimPlugins.cmp-git]
         );
 
-      machine.programs.neovim.luaConfig = let
+      tgap.programs.neovim.luaExtraConfig = let
         writeIf = cond: msg:
           if cond
           then msg

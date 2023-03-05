@@ -4,26 +4,26 @@
   pkgs,
   ...
 }: {
-  options.machine.programs.neovim.telescope = let
+  options.tgap.programs.neovim.telescope = let
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to enable telescope.";
   };
 
   config = let
-    cfg = config.machine.programs.neovim.telescope;
+    cfg = config.tgap.programs.neovim.telescope;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
-      machine.programs.fd.enable = true;
-      machine.programs.ripgrep.enable = true;
+      tgap.programs.fd.enable = true;
+      tgap.programs.ripgrep.enable = true;
 
-      machine.programs.neovim.startPackages = [
+      tgap.programs.neovim.startPackages = [
         pkgs.vimPlugins.plenary-nvim
         pkgs.vimPlugins.telescope
       ];
 
-      machine.programs.neovim.luaConfig = ''
+      tgap.programs.neovim.luaExtraConfig = ''
         -- Define some sane mappings.
         vim.keymap.set(
           'n',

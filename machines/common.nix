@@ -1,24 +1,18 @@
-# Configurations shared across the various nixos profiles for laptops.
-{
-  hardware.bluetooth.enable = true;
+# Configurations shared across the various nixos profiles.
+{...}: {
+  tgap = {
+    audio.enable = true;
+    apparmor.enable = true;
+    bluetooth.enable = true;
 
-  security.apparmor = {
-    enable = true;
-    killUnconfinedConfinables = true;
-  };
-
-  services = {
-    pipewire = {
+    programs = {
       enable = true;
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-      jack.enable = true;
-      pulse.enable = true;
+      fd.enable = true;
+      glow.enable = true;
+      neovim.enable = true;
+      ripgrep.enable = true;
+      qmk.enable = true;
+      virtualization.enable = true;
     };
-
-    # Enable CUPS for printing documents.
-    printing.enable = true;
   };
 }
