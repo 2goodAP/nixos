@@ -13,6 +13,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nbfc-linux = {
+      url = "github:nbfc-linux/nbfc-linux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -20,6 +25,7 @@
     flake-parts,
     nixpkgs,
     home-manager,
+    nbfc-linux,
     ...
   } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -48,14 +54,20 @@
                   nix.settings.experimental-features = ["nix-command" "flakes"];
                   nixpkgs = {
                     config.allowUnfree = true;
-                    inherit (overlays) overlays;
+                    overlays =
+                      overlays
+                      ++ [
+                        (final: prev: {
+                          nbfc-linux = nbfc-linux.defaultPackage.${system};
+                        })
+                      ];
                   };
                 }
 
                 # System-specific configuraitons.
                 (import ./machines/nitro-5 {
                   hostName = "nitro5box";
-                  inherit lib pkgs;
+                  inherit lib pkgs nbfc-linux;
                 })
 
                 # Home-Manager configurations.

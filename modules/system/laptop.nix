@@ -11,6 +11,10 @@
       description = "Whether or not to enable laptop mode.";
       default = false;
     };
+
+    model = mkOption {
+      type = types.enum ["Acer Nitro AN515-51"];
+    };
   };
 
   config = let
@@ -18,10 +22,20 @@
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
-      environment.systemPackages = [
-        pkgs.acpi
-        pkgs.powertop
-      ];
+      environment = {
+        systemPackages = [
+          pkgs.acpi
+          pkgs.nbfc-linux
+          pkgs.powertop
+        ];
+
+        etc."nbfc/nbfc.json" = {
+          text = ''
+            {"SelectedConfigId": "${cfg.model}"}
+          '';
+          mode = "0644";
+        };
+      };
 
       programs.light.enable = true;
 
@@ -45,6 +59,15 @@
 
         auto-cpufreq.enable = true;
         tlp.enable = true;
+      };
+
+      systemd.services.nbfc_service = {
+        enable = true;
+        description = "NoteBook FanControl service";
+        serviceConfig.Type = "simple";
+        path = [pkgs.kmod];
+        script = "${pkgs.nbfc-linux}/bin/nbfc_service";
+        wantedBy = ["multi-user.target"];
       };
     };
 }
