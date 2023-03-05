@@ -13,6 +13,12 @@
   in {
     enable = mkEnableOption "Whether or not to enable common system-wide programs.";
 
+    defaultShell = mkOption {
+      description = "The default shell assigned to user accounts.";
+      type = types.enum ["bash" "fish"];
+      default = "fish";
+    };
+
     fd.enable = mkEnableOption "Whether to enable fd, an alternative to find.";
 
     glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
@@ -74,6 +80,29 @@
           udev.packages = optionals cfg.qmk.enable [pkgs.qmk-udev-rules];
         };
       }
+
+      (mkIf (cfg.defaultShell == "fish") {
+        programs.fish.enable = true;
+        users.defaultUserShell = pkgs.fish;
+
+        environment.systemPackages = with pkgs; [
+          fishPlugins.bass
+          fishPlugins.colored-man-pages
+          fishPlugins.done
+          fishPlugins.fishtape_3
+          fishPlugins.forgit
+          fishPlugins.pisces
+          fishPlugins.puffer
+          fishPlugins.sponge
+          fishPlugins.tide
+
+          fishPlugins.fzf-fish
+          fzf
+          fishPlugins.grc
+          grc
+        ];
+      })
+
       (mkIf cfg.virtualization.enable {
         virtualisation = {
           docker = {

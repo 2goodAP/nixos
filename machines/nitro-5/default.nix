@@ -6,6 +6,10 @@
 
   tgap = {
     boot.type = "encrypted-boot-btrfs";
+    laptop = {
+      enable = true;
+      model = "Acer Nitro AN515-51";
+    };
 
     network = {
       enable = true;

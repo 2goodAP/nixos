@@ -29,8 +29,7 @@
     };
 
     wifiRandMacAddress = mkOption {
-      description = 
-        "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
+      description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
       type = types.bool;
       default = true;
     };
