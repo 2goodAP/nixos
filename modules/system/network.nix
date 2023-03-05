@@ -27,6 +27,13 @@
       description = "The network interface chips present in the laptop.";
       type = types.listOf types.str;
     };
+
+    wifiRandMacAddress = mkOption {
+      description = 
+        "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
+      type = types.bool;
+      default = true;
+    };
   };
 
   config = let
@@ -42,6 +49,7 @@
           enableStrongSwan = true;
           firewallBackend = "nftables";
           insertNameservers = cfg.nameservers;
+          wifi.scanRandMacAddress = cfg.wifiRandMacAddress;
         };
 
         # Configure the firewall.

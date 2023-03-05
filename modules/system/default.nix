@@ -78,7 +78,7 @@
         };
       })
 
-      (mkIf cfg.gui.enable {
+      (mkIf (cfg.gui.enable || cfg.programs.virtualization.enable) {
         hardware.opengl = {
           enable = true;
           driSupport32Bit = true;

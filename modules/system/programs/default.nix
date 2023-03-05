@@ -79,7 +79,7 @@
           docker = {
             enable = true;
             enableOnBoot = false;
-            enableNvidia = config.hardware.nvidia.enable;
+            enableNvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
             storageDriver = "overlay2";
             rootless.enable = true;
           };
