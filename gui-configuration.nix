@@ -40,7 +40,8 @@
     extraOptions = ["--unsupported-gpu"];
     extraSessionCommands = ''
       # Set wlroots renderer to Vulkan to avoid flickering.
-      #export WLR_RENDERER=vulkan
+      export WLR_RENDERER=vulkan
+      export WLR_DRM_NO_MODIFIERS=1
       # General wayland environment variables.
       export XDG_SESSION_TYPE=wayland
       export CLUTTER_BACKEND=wayland
@@ -78,6 +79,7 @@
         # Display
         gammastep
         kanshi
+        vulkan-validation-layers
         # Input
         clipman
         wev
