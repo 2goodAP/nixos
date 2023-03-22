@@ -13,16 +13,28 @@
       default = false;
     };
 
-    systemdTarget = mkOption {
-      description = "Systemd target to bind to.";
-      type = types.str;
-      default = "sway-session.target";
+    extraConfigEarly = mkOption {
+      description = "Extra configuration lines to add to ~/.config/sway/config before all other configuration.";
+      type = types.lines;
+      default = "";
+    };
+
+    extraConfig = mkOption {
+      description = "Extra configuration lines to add to ~/.config/sway/config.";
+      type = types.lines;
+      default = "";
     };
 
     extraPackages = mkOption {
       description = "Extra packages to install along with swaywm.";
       type = types.listOf types.package;
       default = [];
+    };
+
+    systemdTarget = mkOption {
+      description = "Systemd target to bind to.";
+      type = types.str;
+      default = "sway-session.target";
     };
   };
 
@@ -41,9 +53,100 @@
         wrapperFeatures.gtk = true;
         extraOptions = ["--unsupported-gpu"];
 
+        config = {
+          input = {
+            "*" = {
+              xkb_layout = "us,np";
+              xkb_variant = "altgr-intl,";
+              accel_profile = "flat";
+            };
+
+            "1:1:AT_Translated_Set_2_keyboard" = {
+              xkb_layout = "us,np";
+              xkb_variant = "colemak_dh,";
+            };
+
+            "1267:12433:ELAN0504:01_04F3:3091_Touchpad" = {
+              accel_profile = "adaptive";
+              click_method = "clickfinger";
+              dwt = "enabled";
+              natural_scroll = "enabled";
+              tap = "enabled";
+            };
+          };
+
+          bindkeysToCode = true;
+
+          floating = {
+            border = 2;
+            titlebar = false;
+
+            criteria = [
+              {appId = "com.nextcloud.desktopclient.nextcloud";}
+              {
+                appId = "firefox";
+                title = "^$";
+              }
+              {appId = "wev";}
+              {appId = "pavucontrol";}
+              {
+                appId = "org.keepassxc.KeePassXC";
+                title = "Access\s*Request";
+              }
+            ];
+          };
+
+          focus = {
+            followMouse = false;
+            focusWrapping = "force";
+            mouseWarping = "output";
+          };
+
+          gaps = {
+            inner = 5;
+            smartGaps = true;
+          };
+
+          fonts = ["pango:sans serif 11" "pango:NotoSans Nerd Font 11"];
+
+          colors = {
+            focused = {
+              border = "#77767b";
+              background = "#deddda";
+              text = "#000000";
+              indicator = "#77767b";
+              childBorder = "#77767b";
+            };
+            focusedInactive = {
+              border = "#c0bfbc";
+              background = "#ebebeb";
+              text = "#5e5c64";
+              indicator = "#c0bfbc";
+              childBorder = "#c0bfbc";
+            };
+            unfocused = {
+              border = "#deddda";
+              background = "#fafafa";
+              text = "#c0bfbc";
+              indicator = "#deddda";
+              childBorder = "#deddda";
+            };
+            urgent = {
+              border = "#ae7b03";
+              background = "#e5a50a";
+              text = "#ffffff";
+              indicator = "#ae7b03";
+              childBorder = "#ae7b03";
+            };
+          };
+        };
+
+        inherit (cfg) extraConfigEarly extraConfig;
+
         extraSessionCommands = ''
           # Set wlroots renderer to Vulkan to avoid flickering.
-          #export WLR_RENDERER=vulkan
+          export WLR_RENDERER=vulkan
+          export WLR_DRM_NO_MODIFIERS=1
 
           # General wayland environment variables.
           export XDG_SESSION_TYPE=wayland
@@ -78,6 +181,189 @@
         rofi = {
           enable = true;
           package = pkgs.rofi-wayland;
+          cycle = true;
+          font = "NotoSans Nerd Font 12";
+          terminal = "\${pkgs.foot}/bin/foot";
+
+          extraConfig = {
+            modi = "drun,combi,ssh,filebrowser";
+            show-icons = true;
+            display-drun = " Apps";
+            display-combi = " Combi";
+            display-ssh = " SSH";
+            display-filebrowser = " Files";
+            drun-display-format = "{name}";
+            window-format = "{w} · {c} · {t}";
+          };
+
+          theme = let
+            inherit (lib.formats.rasi) mkLiteral;
+          in {
+            "*" = {
+              border = mkLiteral "0";
+              margin = mkLiteral "0";
+              padding = mkLiteral "0";
+
+              alt-bg-color = mkLiteral "#ebebeb";
+              bg-color = mkLiteral "#fafafa";
+              border-color = mkLiteral "rgba(24, 24, 24, 0.5)";
+              alt-fg-color = mkLiteral "#ffffff";
+              fg-color = mkLiteral "rgba(0, 0, 0, 0.8)";
+              sh-fg-color = mkLiteral "rgba(0, 0, 0, 0.36)";
+              sel-bg-color = mkLiteral "#3584e4";
+              act-bg-color = mkLiteral "#2ec27e";
+              urg-bg-color = mkLiteral "#e5a50a";
+
+              border-rad = mkLiteral "5px";
+              padding-l = mkLiteral "20px";
+              padding-s = mkLiteral "10px";
+              win-border = mkLiteral "2px solid";
+            };
+
+            # Main
+            window = {
+              background-color = mkLiteral "@bg-color";
+              border = mkLiteral "@win-border";
+              border-radius = mkLiteral "@border-rad";
+              transparency = "real";
+            };
+            mainbox = {
+              background-color = mkLiteral "transparent";
+              spacing = mkLiteral "10px";
+              padding = mkLiteral "@padding-l";
+              children = ["inputbar" "bodybox"];
+            };
+
+            ## Inputbar
+            inputbar = {
+              background-color = mkLiteral "@alt-bg-color";
+              border-radius = mkLiteral "@border-rad";
+              children = [
+                "textbox-prompt-colon"
+                "entry"
+                "num-filtered-rows"
+                "textbox-num-sep"
+                "num-rows"
+              ];
+              padding = mkLiteral "@padding-s";
+              spacing = mkLiteral "inherit";
+              text-color = mkLiteral "@fg-color";
+            };
+            textbox-prompt-colon = {
+              str = "";
+              text-color = mkLiteral "inherit";
+            };
+            entry = {
+              cursor = mkLiteral "text";
+              placeholder = "Search...";
+              placeholder-color = mkLiteral "@sh-fg-color";
+              text-color = mkLiteral "inherit";
+            };
+            num-filtered-rows = {text-color = mkLiteral "@sh-fg-color";};
+            textbox-num-sep = {text-color = mkLiteral "@sh-fg-color";};
+            num-rows = {text-color = mkLiteral "@sh-fg-color";};
+
+            # Bodybox
+            bodybox = {
+              background-color = mkLiteral "inherit";
+              children = ["mode-switcher" "listview"];
+              orientation = mkLiteral "horizontal";
+              spacing = mkLiteral "inherit";
+              text-color = mkLiteral "@fg-color";
+            };
+
+            ## Mode Switcher
+            mode-switcher = {
+              background-color = mkLiteral "transparent";
+              orientation = mkLiteral "vertical";
+              spacing = mkLiteral "inherit";
+              text-color = mkLiteral "@fg-color";
+            };
+            button = {
+              border-radius = mkLiteral "@border-rad";
+              background-color = mkLiteral "@alt-bg-color";
+              cursor = mkLiteral "pointer";
+              padding = mkLiteral "@padding-l";
+              text-color = mkLiteral "inherit";
+            };
+            "button selected" = {
+              background-color = mkLiteral "@sel-bg-color";
+              text-color = mkLiteral "@alt-fg-color";
+            };
+
+            ## Listview
+            listview = {
+              background-color = mkLiteral "transparent";
+              border = mkLiteral "inherit";
+              cycle = true;
+              dynamic = true;
+              fixed-height = true;
+              fixed-columns = true;
+              lines = mkLiteral "10";
+              orientation = mkLiteral "vertical";
+              reverse = false;
+              scrollbar = true;
+              spacing = mkLiteral "inherit";
+              text-color = mkLiteral "@fg-color";
+            };
+            scrollbar = {
+              background-color = mkLiteral "@alt-bg-color";
+              border-radius = mkLiteral "@border-rad";
+              handle-width = mkLiteral "5px";
+              handle-color = mkLiteral "@sel-bg-color";
+            };
+            element = {
+              background-color = mkLiteral "transparent";
+              border-radius = mkLiteral "@border-rad";
+              cursor = mkLiteral "pointer";
+              padding = mkLiteral "@padding-s";
+              spacing = mkLiteral "inherit";
+              text-color = mkLiteral "@fg-color";
+            };
+            element-icon = {
+              background-color = mkLiteral "transparent";
+              cursor = mkLiteral "inherit";
+              size = mkLiteral "24px";
+              text-color = mkLiteral "inherit";
+            };
+            element-text = {
+              background-color = mkLiteral "transparent";
+              cursor = mkLiteral "inherit";
+              text-color = mkLiteral "inherit";
+            };
+            "element selected.normal" = {
+              background-color = mkLiteral "@sel-bg-color";
+              text-color = mkLiteral "@alt-fg-color";
+            };
+            "element selected.active" = {background-color = mkLiteral "@act-bg-color";};
+            "element selected.urgent" = {background-color = mkLiteral "@urg-bg-color";};
+            "element alternate.normal" = {background-color = mkLiteral "inherit";};
+            "element alternate.active" = {background-color = mkLiteral "@act-bg-color";};
+            "element alternate.urgent" = {background-color = mkLiteral "@urg-bg-color";};
+            "element normal.normal" = {background-color = mkLiteral "inherit";};
+            "element normal.active" = {background-color = mkLiteral "@act-bg-color";};
+            "element normal.urgent" = {background-color = mkLiteral "@urg-bg-color";};
+
+            ##  Message
+            message = {
+              background-color = mkLiteral "transparent";
+              text-color = mkLiteral "@fg-color";
+            };
+            textbox = {
+              border-radius = mkLiteral "@border-rad";
+              background-color = mkLiteral "@alt-bg-color";
+              padding = mkLiteral "@padding-s";
+              placeholder-color = mkLiteral "@special-alt";
+              text-color = mkLiteral "inherit";
+            };
+
+            ## Error Message
+            error-message = {
+              background-color = mkLiteral "@bg-color";
+              padding = mkLiteral "@padding-l";
+              text-color = mkLiteral "@fg-color";
+            };
+          };
         };
 
         waybar = {
@@ -86,6 +372,236 @@
             enable = true;
             target = cfg.systemdTarget;
           };
+
+          settings = {
+            mainBar = {
+              layer = "bottom";
+              position = "bottom";
+              spacing = 3;
+
+              modules-left = [
+                "sway/workspaces"
+                "sway/mode"
+                "sway/window"
+              ];
+              modules-right = [
+                "idle_inhibitor"
+                "sway/language"
+                "backlight"
+                "pulseaudio"
+                "battery"
+                "bluetooth"
+                "network"
+                "clock"
+                "tray"
+              ];
+
+              "sway/mode" = {
+                format = "<span style=\"italic\">{}</span>";
+              };
+
+              "sway/window" = {
+                format = "{title}";
+                tooltip = false;
+              };
+
+              "sway/language" = {
+                on-click = "swaymsg input type:keyboard xkb_switch_layout next";
+                on-click-right = "swaymsg input type:keyboard xkb_switch_layout prev";
+              };
+
+              idle_inhibitor = {
+                format = "{icon}";
+                format-icons = {
+                  activated = "";
+                  deactivated = "";
+                };
+              };
+
+              backlight = {
+                format = "{icon} {percent}%";
+                format-icons = ["" "" ""];
+              };
+
+              pulseaudio = {
+                format = "{icon} {volume}% {format_source}";
+                format-bluetooth = "{icon} {volume}% {format_source}";
+                format-bluetooth-muted = "婢 {format_source}";
+                format-muted = "婢 {format_source}";
+                format-source = " {volume}%";
+                format-source-muted = "";
+                format-icons = {
+                  headphone = "";
+                  hands-free = "";
+                  headset = "";
+                  phone = "";
+                  portable = "";
+                  car = "";
+                  default = ["奄" "奔" "墳"];
+                };
+                on-click = "pavucontrol";
+              };
+
+              battery = {
+                states = {
+                  warning = 30;
+                  critical = 20;
+                };
+                format = "{icon} {capacity}%";
+                format-icons = ["" "" "" "" ""];
+                format-charging = " {capacity}%";
+                format-full = " 100%";
+              };
+
+              bluetooth = {
+                format-disabled = "";
+                format-on = "";
+                format-off = "";
+                format-connected = "";
+                tooltip-format = "{controller_address} {controller_alias}\n\n{num_connections} connected";
+                tooltip-format-connected = "{controller_address} {controller_alias}\n\n{num_connections} connected\n\n{device_enumerate}";
+                tooltip-format-enumerate-connected = "{device_address} {device_alias}";
+                tooltip-format-enumerate-connected-battery = "{device_address} {device_alias} {device_battery_percentage}%";
+              };
+
+              network = {
+                format-disabled = "";
+                format-wifi = "直 {signalStrength}%";
+                format-ethernet = "";
+                tooltip-format-wifi = "{essid}: {bandwidthDownBits}, {bandwidthUpBits}";
+                tooltip-format-ethernet = "{ipaddr}/{cidr}: {bandwidthDownBits}, {bandwidthUpBits}";
+                format-linked = "";
+                format-disconnected = "";
+              };
+
+              clock = {
+                format = " {:%a, %b %d, %I:%M %p}";
+                tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+              };
+
+              tray = {
+                spacing = 5;
+              };
+            };
+          };
+
+          style = ''
+            @define-color special_fg_color #ffffff;
+
+            /* --------- *
+             * Keyframes *
+             * --------- */
+
+            @keyframes blink-warning {
+              70% { color: @special_fg_color; }
+
+              to {
+                background-color: @warning_color;
+                color:            @special_fg_color;
+              }
+            }
+
+            @keyframes blink-critical {
+              70% { color: @special_fg_color}
+
+              to {
+                background-color: @error_color;
+                color:            @special_fg_color;
+              }
+            }
+
+            /* ----------- *
+             * Base styles *
+             * ----------- */
+
+            /* Reset all styles. */
+            * {
+              border:           none;
+              border-radius:    0.4rem;
+              font-family:      NotoSans Nerd Font, sans-serif;
+              font-size:        1.1rem;
+              min-height:       0;
+              margin:           0;
+              padding:          0;
+            }
+
+            #waybar {
+              background-color: @theme_base_color;
+              color:            @theme_fg_color;
+              border-top:       0.2rem solid @borders;
+            }
+
+            /* Adjust margins and padding for all modules. */
+            .modules-left,
+            .modules-center,
+            .modules-right { margin-top: 0.25rem; }
+
+            #tray,
+            #clock,
+            #network,
+            #bluetooth,
+            #battery,
+            #pulseaudio,
+            #backlight,
+            #language,
+            #idle_inhibitor {
+              color:   inherit;
+              padding: 0.4rem;
+            }
+            #workspaces button { padding: 0.4rem 0.2rem; }
+            #mode, #window     { padding: 0.4rem; }
+
+            /* ------------- *
+             * Module styles *
+             * ------------- */
+
+            #mode {
+              background-color: @theme_selected_bg_color;
+              color:            @theme_selected_fg_color;
+              border-bottom:    0.3rem;
+            }
+
+            #window { font-size: 1rem; }
+
+            #battery {
+              animation-timing-function: linear;
+              animation-iteration-count: infinite;
+              animation-direction:       alternate;
+            }
+            #battery.warning  { color: @warning_color; }
+            #battery.critical { color: @error_color;   }
+            #battery.warning.discharging {
+              animation-name:     blink-warning;
+              animation-duration: 3s;
+            }
+            #battery.critical.discharging {
+              animation-name:     blink-critical;
+              animation-duration: 2s;
+            }
+
+            #pulseaudio.muted { color: @theme_unfocused_fg_color; }
+
+            #workspaces button { color: @theme_unfocused_fg_color; }
+            #workspaces button.urgent {
+              background-color: @warning_color;
+              color:            @special_fg_color;
+              border:           2px solid @warning_color;
+            }
+            #workspaces button.focused {
+              background-color: @theme_bg_color;
+              color:            @theme_fg_color;
+              border:           2px solid @borders;
+            }
+
+            #idle_inhibitor.activated { color: @theme_selected_bg_color; }
+
+            #tray > .passive { -gtk-icon-effect: dim; }
+            #tray > .needs-attention {
+              background-color: @warning_color;
+              color:            @special_fg_color;
+              -gtk-icon-effect: highlight;
+            }
+          '';
         };
 
         swaylock.settings = let
@@ -226,6 +742,8 @@
         ++ (with pkgs; [
           # Bar
           libappindicator-gtk3
+          # Deps
+          vulkan-validation-layers
           # Desktop
           swaybg
           # Input

@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./applications.nix
     ./sway.nix
@@ -10,11 +7,6 @@
   config = {
     gtk = {
       enable = true;
-      cursorTheme = {
-        package = pkgs.capitaine-cursors;
-        name = "capitaine-cursors-white";
-        size = 36;
-      };
       font = {
         package = pkgs.noto-nerd-font;
         name = "NotoSans Nerd Font";
@@ -37,6 +29,13 @@
         package = pkgs.adwaita-qt;
         name = "Adwaita";
       };
+    };
+
+    home.pointerCursor = {
+      gtk.enable = true;
+      package = pkgs.capitaine-cursors;
+      name = "capitaine-cursors-white";
+      size = 36;
     };
   };
 }

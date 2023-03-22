@@ -14,6 +14,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nbfc-linux = {
       url = "github:nbfc-linux/nbfc-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +30,7 @@
     flake-parts,
     nixpkgs,
     home-manager,
+    nixpkgs-wayland,
     nbfc-linux,
     ...
   } @ inputs:
@@ -51,15 +57,30 @@
 
                 # nix and nixpkgs specific settings.
                 {
-                  nix.settings.experimental-features = ["nix-command" "flakes"];
+                  nix = {
+                    settings.experimental-features = ["nix-command" "flakes"];
+
+                    # Add binary caches.
+                    binaryCachePublicKeys = [
+                      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+                      "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+                    ];
+                    binaryCaches = [
+                      "https://cache.nixos.org"
+                      "https://nixpkgs-wayland.cachix.org"
+                    ];
+                  };
+
                   nixpkgs = {
                     config.allowUnfree = true;
+
                     overlays =
                       overlays
                       ++ [
                         (final: prev: {
                           nbfc-linux = nbfc-linux.defaultPackage.${system};
                         })
+                        nixpkgs-wayland.overlay
                       ];
                   };
                 }
