@@ -61,7 +61,6 @@
       cmus
       conda
       docker-compose
-      git
       jq
       neovim
       (python3.withPackages (pys: with pys; [black mypy pylint pynvim]))

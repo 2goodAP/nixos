@@ -36,6 +36,11 @@
       enableSSHSupport = true;
     };
 
+    git = {
+      enable = true;
+      lfs.enable = true;
+    };
+
     light.enable = true;
 
     zsh = {
