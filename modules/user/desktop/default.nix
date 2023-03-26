@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   imports = [
     ./applications.nix
-    ./sway.nix
   ];
 
   config = {
@@ -13,29 +12,21 @@
         size = 11;
       };
       iconTheme = {
-        package = pkgs.papirus-icon-theme;
-        name = "Papirus";
+        package = pkgs.breeze-icons;
+        name = "Breeze";
       };
       theme = {
-        package = pkgs.gnome.gnome-themes-extra;
-        name = "Adwaita";
+        package = pkgs.libsForQt5.breeze-gtk;
+        name = "Breeze";
       };
     };
 
     qt = {
       enable = true;
-      platformTheme = "gtk";
       style = {
-        package = pkgs.adwaita-qt;
-        name = "Adwaita";
+        package = pkgs.libsForQt5.breeze-qt5;
+        name = "Breeze";
       };
-    };
-
-    home.pointerCursor = {
-      gtk.enable = true;
-      package = pkgs.capitaine-cursors;
-      name = "capitaine-cursors-white";
-      size = 36;
     };
   };
 }

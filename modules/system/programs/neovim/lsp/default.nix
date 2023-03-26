@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.programs.neovim.lsp = let
+  options.tgap.system.programs.neovim.lsp = let
     inherit (lib) mkIf mkEnableOption optionals;
   in {
     enable = mkEnableOption "Whether or not to enable lsp-related plugins.";
@@ -16,11 +16,11 @@
   };
 
   config = let
-    cfg = config.tgap.programs.neovim;
+    cfg = config.tgap.system.programs.neovim;
     inherit (lib) mkIf optionals;
   in
     mkIf cfg.lsp.enable {
-      tgap.programs.neovim.startPackages =
+      tgap.system.programs.neovim.startPackages =
         [
           pkgs.vimPlugins.nvim-lspconfig
           pkgs.vimPlugins.null-ls
@@ -32,7 +32,7 @@
           optionals cfg.lsp.lspSignature.enable [pkgs.vimPlugins.lsp_signature-nvim]
         );
 
-      tgap.programs.neovim.luaExtraConfig = let
+      tgap.system.programs.neovim.luaExtraConfig = let
         writeIfElse = cond: trueMsg: falseMsg:
           if cond
           then trueMsg

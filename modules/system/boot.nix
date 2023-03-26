@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.boot = let
+  options.tgap.system.boot = let
     inherit (lib) mkOption types;
   in {
     type = mkOption {
@@ -20,7 +20,7 @@
   };
 
   config = let
-    cfg = config.tgap.boot;
+    cfg = config.tgap.system.boot;
     inherit (lib) mkIf;
   in
     mkIf (cfg.type == "encrypted-boot-btrfs") {

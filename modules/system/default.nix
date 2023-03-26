@@ -6,12 +6,13 @@
 }: {
   imports = [
     ./boot.nix
+    ./desktop.nix
     ./laptop.nix
     ./network.nix
     ./programs
   ];
 
-  options.tgap = let
+  options.tgap.system = let
     inherit (lib) mkEnableOption;
   in {
     apparmor.enable = mkEnableOption "Whether or not to enable apparmor.";
@@ -24,7 +25,7 @@
   };
 
   config = let
-    cfg = config.tgap;
+    cfg = config.tgap.system;
     inherit (lib) mkIf mkMerge;
   in
     mkMerge [
@@ -43,6 +44,7 @@
             xkbVariant = "altgr-intl,colemak_dh,";
             xkbOptions = "grp:alt_shift_toggle";
           };
+          tlp.enable = true;
         };
 
         # This value determines the NixOS release from which the default

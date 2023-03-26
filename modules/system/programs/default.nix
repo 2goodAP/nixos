@@ -8,7 +8,7 @@
     ./neovim
   ];
 
-  options.tgap.programs = let
+  options.tgap.system.programs = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to enable common system-wide programs.";
@@ -28,39 +28,33 @@
     qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
 
     virtualization.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
-
-    extraPackages = mkOption {
-      description = "Extra base application packages to install.";
-      type = types.listOf types.package;
-      default = [];
-    };
   };
 
   config = let
-    cfg = config.tgap.programs;
+    cfg = config.tgap.system.programs;
     inherit (lib) mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
       {
         # List packages installed in system profile.
         environment.systemPackages =
-          [
+          (with pkgs; [
             # Hardware
-            pkgs.gptfdisk
-            pkgs.ntfs3g
+            gptfdisk
+            ntfs3g
 
             # Programs
-            pkgs.busybox
-            pkgs.git
-            pkgs.jq
-            pkgs.p7zip
-            pkgs.ranger
-            pkgs.unrar
-            pkgs.unzip
-            pkgs.tmux
-            pkgs.wget
-            pkgs.zip
-          ]
+            busybox
+            git
+            jq
+            p7zip
+            ranger
+            unrar
+            unzip
+            tmux
+            wget
+            zip
+          ])
           ++ (
             optionals cfg.fd.enable [pkgs.fd]
           )
@@ -72,8 +66,7 @@
           )
           ++ (
             optionals cfg.qmk.enable [pkgs.qmk]
-          )
-          ++ cfg.extraPackages;
+          );
 
         services = {
           openssh.enable = true;

@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.programs.neovim.motion = let
+  options.tgap.system.programs.neovim.motion = let
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to enable motion-related plugins.";
@@ -21,11 +21,11 @@
   };
 
   config = let
-    cfg = config.tgap.programs.neovim.motion;
+    cfg = config.tgap.system.programs.neovim.motion;
     inherit (lib) mkIf optionals;
   in
     mkIf cfg.enable {
-      tgap.programs.neovim.startPackages =
+      tgap.system.programs.neovim.startPackages =
         (
           optionals cfg.comment.enable [pkgs.vimPlugins.comment-nvim]
         )
@@ -44,7 +44,7 @@
           optionals cfg.which-key.enable [pkgs.vimPlugins.which-key-nvim]
         );
 
-      tgap.programs.neovim.luaExtraConfig = let
+      tgap.system.programs.neovim.luaExtraConfig = let
         writeIf = cond: msg:
           if cond
           then msg
