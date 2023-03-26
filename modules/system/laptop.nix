@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.laptop = let
+  options.tgap.system.laptop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption {
@@ -18,7 +18,7 @@
   };
 
   config = let
-    cfg = config.tgap.laptop;
+    cfg = config.tgap.system.laptop;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
@@ -58,7 +58,6 @@
         '';
 
         auto-cpufreq.enable = true;
-        tlp.enable = true;
       };
 
       systemd.services.nbfc_service = {

@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.network = let
+  options.tgap.system.network = let
     inherit (lib) mkOption types;
   in {
     enable = mkOption {
@@ -36,7 +36,7 @@
   };
 
   config = let
-    cfg = config.tgap.network;
+    cfg = config.tgap.system.network;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {

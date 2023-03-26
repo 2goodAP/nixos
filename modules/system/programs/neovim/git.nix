@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.programs.neovim.git = let
+  options.tgap.system.programs.neovim.git = let
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to enable git-related plugins.";
@@ -15,11 +15,11 @@
   };
 
   config = let
-    cfg = config.tgap.programs.neovim.git;
+    cfg = config.tgap.system.programs.neovim.git;
     inherit (lib) mkIf optionals;
   in
     mkIf cfg.enable {
-      tgap.programs.neovim.startPackages =
+      tgap.system.programs.neovim.startPackages =
         (
           optionals cfg.neogit.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugins.harpoon]
         )
@@ -33,7 +33,7 @@
           optionals cfg.which-key.enable [pkgs.vimPlugins.which-key-nvim]
         );
 
-      tgap.programs.neovim.luaExtraConfig = let
+      tgap.system.programs.neovim.luaExtraConfig = let
         writeIf = cond: msg:
           if cond
           then msg

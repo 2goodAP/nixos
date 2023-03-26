@@ -14,11 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nbfc-linux = {
       url = "github:nbfc-linux/nbfc-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,7 +25,6 @@
     flake-parts,
     nixpkgs,
     home-manager,
-    nixpkgs-wayland,
     nbfc-linux,
     ...
   } @ inputs:
@@ -41,102 +35,216 @@
         inherit (nixpkgs) lib;
         systemModules = import ./modules/system;
         userModules = import ./modules/user;
-        overlays = import ./overlays {};
+        overlays = import ./overlays;
       in {
-        nixosConfigurations = {
-          nitro5box = let
-            system = "x86_64-linux";
-            pkgs = nixpkgs.legacyPackages.${system};
-          in
-            lib.nixosSystem {
-              inherit system;
+        nixosConfigurations = let
+          system = "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.${system};
+        in {
+          nitro5 = lib.nixosSystem {
+            inherit system;
 
-              modules = [
-                # Custom modules.
-                systemModules
+            modules = [
+              # Custom modules.
+              systemModules
 
-                # nix and nixpkgs specific settings.
-                {
-                  nix = {
-                    settings.experimental-features = ["nix-command" "flakes"];
+              # nix and nixpkgs specific settings.
+              {
+                nix.settings.experimental-features = ["nix-command" "flakes"];
 
-                    # Add binary caches.
-                    binaryCachePublicKeys = [
-                      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-                      "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+                nixpkgs = {
+                  config.allowUnfree = true;
+                  overlays =
+                    overlays
+                    ++ [
+                      (final: prev: {
+                        nbfc-linux = nbfc-linux.defaultPackage.${system};
+                      })
                     ];
-                    binaryCaches = [
-                      "https://cache.nixos.org"
-                      "https://nixpkgs-wayland.cachix.org"
+                };
+              }
+
+              # System-specific configuraitons.
+              (import ./machines/nitro5 {
+                hostName = "nitro5-nix";
+                inherit lib pkgs;
+              })
+
+              # Configure users and groups.
+              {
+                users.users = {
+                  root = {
+                    isSystemUser = true;
+                    initialPassword = "NixOS-root.";
+                  };
+
+                  aashishp = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-aashishp.";
+                    extraGroups = [
+                      "audio"
+                      "cups"
+                      "disk"
+                      "docker"
+                      "networkmanager"
+                      "nixbld"
+                      "video"
+                      "wheel"
                     ];
                   };
 
-                  nixpkgs = {
-                    config.allowUnfree = true;
-
-                    overlays =
-                      overlays
-                      ++ [
-                        (final: prev: {
-                          nbfc-linux = nbfc-linux.defaultPackage.${system};
-                        })
-                        nixpkgs-wayland.overlay
-                      ];
+                  workerap = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-workerap.";
+                    extraGroups = [
+                      "audio"
+                      "cups"
+                      "disk"
+                      "docker"
+                      "networkmanager"
+                      "nixbld"
+                      "video"
+                      "wheel"
+                    ];
                   };
-                }
 
-                # System-specific configuraitons.
-                (import ./machines/nitro-5 {
-                  hostName = "nitro5box";
-                  inherit lib pkgs nbfc-linux;
-                })
-
-                # Home-Manager configurations.
-                home-manager.nixosModules.home-manager
-                {
-                  home-manager = {
-                    useGlobalPkgs = true;
-                    useUserPackages = true;
-                    sharedModules = [userModules];
-
-                    # users = {
-                    #   jdoe = import ./home.nix;
-                    # };
+                  justagamer = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-justagamer.";
+                    extraGroups = [
+                      "audio"
+                      "disk"
+                      "networkmanager"
+                      "video"
+                      "wheel"
+                    ];
                   };
-                }
-              ];
-            };
+                };
+              }
+
+              # Home-Manager configurations.
+              home-manager.nixosModules.home-manager
+              ({config, ...}: {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  sharedModules = [userModules];
+
+                  extraSpecialArgs = {
+                    sysDesktop = config.tgap.system.desktop.enable;
+                    sysQmk = config.tgap.system.programs.qmk.enable;
+                    sysStateVersion = config.system.stateVersion;
+                  };
+
+                  users = {
+                    aashishp.imports = [./users/aashishp];
+                    workerap.imports = [./users/workerap];
+                    justagamer.imports = [./users/justagamer];
+                  };
+                };
+              })
+            ];
+          };
+
+          workstation = lib.nixosSystem {
+            inherit system;
+
+            modules = [
+              # Custom modules.
+              systemModules
+
+              # nix and nixpkgs specific settings.
+              {
+                nix.settings.experimental-features = ["nix-command" "flakes"];
+
+                nixpkgs = {
+                  config.allowUnfree = true;
+                  inherit overlays;
+                };
+              }
+
+              # System-specific configuraitons.
+              (import ./machines/workstation {
+                hostName = "workstation-nix";
+                inherit lib pkgs;
+              })
+
+              # Configure users and groups.
+              {
+                users.users = {
+                  root = {
+                    isSystemUser = true;
+                    initialPassword = "NixOS-root.";
+                  };
+
+                  aashishp = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-aashishp.";
+                    extraGroups = [
+                      "audio"
+                      "cups"
+                      "disk"
+                      "docker"
+                      "networkmanager"
+                      "nixbld"
+                      "video"
+                      "wheel"
+                    ];
+                  };
+
+                  workerap = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-workerap.";
+                    extraGroups = [
+                      "audio"
+                      "cups"
+                      "disk"
+                      "docker"
+                      "networkmanager"
+                      "nixbld"
+                      "video"
+                      "wheel"
+                    ];
+                  };
+
+                  justagamer = {
+                    isNormalUser = true;
+                    initialPassword = "NixOS-justagamer.";
+                    extraGroups = [
+                      "audio"
+                      "disk"
+                      "networkmanager"
+                      "video"
+                      "wheel"
+                    ];
+                  };
+                };
+              }
+
+              # Home-Manager configurations.
+              home-manager.nixosModules.home-manager
+              ({config, ...}: {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  sharedModules = [userModules];
+
+                  extraSpecialArgs = {
+                    sysDesktop = config.tgap.system.desktop.enable;
+                    sysQmk = config.tgap.system.programs.qmk.enable;
+                    sysStateVersion = config.system.stateVersion;
+                  };
+
+                  users = {
+                    aashishp.imports = [./users/aashishp];
+                    workerap.imports = [./users/workerap];
+                    justagamer.imports = [./users/justagamer];
+                  };
+                };
+              })
+            ];
+          };
         };
       };
     };
-
-  # let
-  #   lib = import ./lib;
-  #   modules = import ./modules;
-  #   overlays = import ./overlays;
-  # in {
-  #   nixosConfigurations.nitro5box = nixpkgs.lib.nixosSystem {
-  #     inherit system;
-
-  #     modules = [
-  #       # Custom modules.
-  #       modules
-
-  #       # Nix-specific settings.
-  #       {
-  #         nix.settings.experimental-features = ["nix-command" "flakes"];
-  #       }
-
-  #       # System-specific configuraitons.
-  #       (import ./machines/nitro-5 {
-  #         hostName = "nitro5box";
-  #         pkgs = import nixpkgs {
-  #           config.allowUnfree = true;
-  #           inherit system overlays;
-  #         };
-  #         inherit (nixpkgs) lib;
-  #       })
-  #     ];
-  #   };
-  # };
 }

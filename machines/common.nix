@@ -1,9 +1,10 @@
 # Configurations shared across the various nixos profiles.
 {...}: {
-  tgap = {
+  tgap.system = {
     audio.enable = true;
     apparmor.enable = true;
     bluetooth.enable = true;
+    desktop.enable = true;
 
     programs = {
       enable = true;

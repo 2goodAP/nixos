@@ -17,7 +17,7 @@ in {
         mv $out/LICENSE* $out/share/doc/${name}
       '';
 
-      sha256 = "sha256-mKdhBsVeuvHhRG8RopcJQ6QDC25OMwUjs0S8Lw5LBzc=";
+      sha256 = "sha256-Vgru3qJx/rSg1/96vJPb9YeAn9Og+cpr/u+l/WO+Z2o=";
     };
 
   fira-code-nerd-font = let
@@ -36,7 +36,7 @@ in {
         mv $out/LICENSE* $out/share/doc/${name}
       '';
 
-      sha256 = "sha256-Woc/BRYzXP8ODudD/3LDn295Ba0yzfcJyVCoGxVYqgk=";
+      sha256 = "sha256-ZI6wq9svK+X90522ENIyG4S53G31IFYHXVTnb6/rHMM=";
     };
 
   noto-nerd-font = let
@@ -55,6 +55,6 @@ in {
         mv $out/LICENSE* $out/share/doc/${name}
       '';
 
-      sha256 = "sha256-qoXLq9LLoQ4Nw0R/hiGK6nPSpx2n2Agxxf4nyXESf3M=";
+      sha256 = "sha256-7sBU/k9W59duvKEtTbLQWwgyuFZuZSEqPPWudn2sFkk=";
     };
 }

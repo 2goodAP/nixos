@@ -16,7 +16,7 @@
     ./ui.nix
   ];
 
-  options.tgap.programs.neovim = let
+  options.tgap.system.programs.neovim = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to enable neovim.";
@@ -43,7 +43,7 @@
   };
 
   config = let
-    cfg = config.tgap.programs.neovim;
+    cfg = config.tgap.system.programs.neovim;
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {

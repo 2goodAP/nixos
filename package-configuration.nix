@@ -49,7 +49,6 @@
       pamixer
       pulseaudio
       qmk
-      tlp
 
       # Shell
       zsh
