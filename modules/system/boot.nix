@@ -73,7 +73,7 @@
             efiSupport = true;
             devices = ["nodev"];
             enableCryptodisk = true;
-            extraGrubInstallArgs = ["--removable --bootloader-id=GRUB"];
+            extraGrubInstallArgs = ["--removable" "--bootloader-id=GRUB"];
             extraEntries = ''
               if [ ''${grub_platform} == "efi" ]; then
                 menuentry "UEFI Shell" --id "uefi-shell" {
