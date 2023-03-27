@@ -46,6 +46,8 @@
               device = "/dev/disk/by-partlabel/LinuxDataPartition";
             };
           };
+
+          secrets."${bootKeyFile}" = bootKeyFile;
         };
 
         kernelParams = [
