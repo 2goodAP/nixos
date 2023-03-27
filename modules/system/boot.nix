@@ -50,7 +50,7 @@
 
         kernelParams = [
           "quiet"
-          "loglevel=3"
+          "udev.log_level=3"
           "resume=/dev/mapper/swap_crypt"
         ];
 
@@ -84,7 +84,6 @@
               }
             '';
             extraConfig = ''
-
               # Change the keyboard layout (for supported keyboards).
               insmod keylayouts
               terminal_input at_keyboard console

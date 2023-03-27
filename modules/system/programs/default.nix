@@ -45,7 +45,6 @@
 
             # Programs
             busybox
-            git
             jq
             p7zip
             ranger
@@ -67,6 +66,16 @@
           ++ (
             optionals cfg.qmk.enable [pkgs.qmk]
           );
+
+        programs.git = {
+          enable = true;
+          lfs.enable = true;
+          config = {
+            init.defaultBranch = "main";
+            pull.rebase = false;
+            push.autoSetupRemote = true;
+          };
+        };
 
         services = {
           openssh.enable = true;
