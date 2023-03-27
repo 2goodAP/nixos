@@ -73,8 +73,21 @@
             efiSupport = true;
             devices = ["nodev"];
             enableCryptodisk = true;
-            extraGrubInstallArgs = ["--bootloader-id=GRUB"];
+            extraGrubInstallArgs = ["--removable --bootloader-id=GRUB"];
             extraEntries = ''
+              if [ ''${grub_platform} == "efi" ]; then
+                menuentry "UEFI Shell" --id "uefi-shell" {
+                  search --no-floppy --file --set=root /shellx64.efi
+                  insmod chain
+
+                  chainloader /shellx64.efi
+                }
+
+                menuentry "UEFI Firmware Settings" --id "uefi-firmware" {
+                  fwsetup
+                }
+              fi
+
               menuentry "Reboot" {
                 reboot
               }
