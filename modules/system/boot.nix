@@ -104,43 +104,43 @@
         "/boot" = {
           device = "/dev/mapper/boot_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@boot"];
+          options = ["compress=lzo" "noatime" "subvol=@boot"];
         };
 
         "/boot/.snapshots" = {
           device = "/dev/mapper/boot_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@snapshots"];
+          options = ["compress=lzo" "noatime" "subvol=@snapshots"];
         };
 
         "/" = {
           device = "/dev/mapper/data_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@"];
+          options = ["compress=lzo" "noatime" "subvol=@"];
         };
 
         "/home" = {
           device = "/dev/mapper/data_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@home"];
+          options = ["compress=lzo" "noatime" "subvol=@home"];
         };
 
         "/var" = {
           device = "/dev/mapper/data_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@var"];
+          options = ["compress=lzo" "noatime" "subvol=@var"];
         };
 
         "/tmp" = {
           device = "/dev/mapper/data_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@tmp"];
+          options = ["compress=lzo" "noatime" "subvol=@tmp"];
         };
 
         "/.snapshots" = {
           device = "/dev/mapper/data_crypt";
           fsType = "btrfs";
-          options = ["autodefrag" "compress=lzo" "noatime" "subvol=@snapshots"];
+          options = ["compress=lzo" "noatime" "subvol=@snapshots"];
         };
       };
 
