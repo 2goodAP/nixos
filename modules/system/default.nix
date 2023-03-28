@@ -51,17 +51,13 @@
                 package = pkgs.caskaydia-cove-nerd-font;
               }
             ];
+            extraOptions = "--session-control --drm --hwaccel";
             extraConfig = ''
               seats=all
-
-              session-control=on
 
               xkb-layout=${config.services.xserver.layout}
               xkb-variant=${config.services.xserver.xkbVariant}
               xkb-options=${config.services.xserver.xkbOptions}
-
-              drm=on
-              hwaccel=on
 
               font-size=12
             '';
