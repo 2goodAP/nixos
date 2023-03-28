@@ -12,7 +12,6 @@
 
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     kernelModules = ["kvm-intel"];
-    extraModulePackages = [];
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
