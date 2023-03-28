@@ -107,18 +107,6 @@
                       "wheel"
                     ];
                   };
-
-                  justagamer = {
-                    isNormalUser = true;
-                    initialPassword = "NixOS-justagamer.";
-                    extraGroups = [
-                      "audio"
-                      "disk"
-                      "networkmanager"
-                      "video"
-                      "wheel"
-                    ];
-                  };
                 };
               }
 
@@ -139,7 +127,6 @@
                   users = {
                     aashishp.imports = [./users/aashishp];
                     workerap.imports = [./users/workerap];
-                    justagamer.imports = [./users/justagamer];
                   };
                 };
               })

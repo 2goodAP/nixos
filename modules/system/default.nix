@@ -39,12 +39,31 @@
 
         services = {
           printing.enable = true; # CUPS for printing documents.
+          tlp.enable = true;
+
+          kmscon = {
+            enable = true;
+            fonts = [
+              {
+                name = "FiraCode Nerd Font";
+                package = pkgs.fira-code-nerd-font;
+              }
+              {
+                name = "CaskaydiaCove Nerd Font";
+                package = pkgs.caskaydia-cove-nerd-font;
+              }
+            ];
+            extraOptions = "--term xterm-256color";
+            extraConfig = ''
+              font-size=14
+            '';
+          };
+
           xserver = {
             layout = "us,us,np";
             xkbVariant = "altgr-intl,colemak_dh,";
             xkbOptions = "grp:alt_shift_toggle";
           };
-          tlp.enable = true;
         };
 
         # This value determines the NixOS release from which the default
