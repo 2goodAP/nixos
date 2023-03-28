@@ -56,9 +56,9 @@
 
               session-control=on
 
-              xkb-layout=${config.xserver.layout}
-              xkb-variant=${config.xserver.xkbVariant}
-              xkb-options=${config.xserver.xkbOptions}
+              xkb-layout=${config.services.xserver.layout}
+              xkb-variant=${config.services.xserver.xkbVariant}
+              xkb-options=${config.services.xserver.xkbOptions}
 
               drm=on
               hwaccel=on
