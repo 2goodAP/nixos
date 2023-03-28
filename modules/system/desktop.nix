@@ -48,17 +48,23 @@
             ];
           };
 
-          displayManager.sddm = {
-            enable = true;
-            theme = "breeze";
-            settings = {
-              General = {
-                DisplayServer = "wayland";
-                GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
-              };
-              Theme = {CursorTheme = "Breeze_Snow";};
-              Wayland = {
-                CompositorCommand = "kwin_wayland_wrapper --no-lockscreen";
+          displayManager = {
+            defaultSession = "${pkgs.libsForQt5.plasma-workspace}/share/wayland-sessions/plasmawayland.desktop";
+
+            sddm = {
+              enable = true;
+              enableHidpi = true;
+              autoNumLock = true;
+              theme = "breeze";
+              settings = {
+                General = {
+                  DisplayServer = "wayland";
+                  GreeterEnvironment = "QT_WAYLAND_SHELL_INTEGRATION=layer-shell";
+                };
+                Theme = {CursorTheme = "Breeze_Snow";};
+                Wayland = {
+                  CompositorCommand = "${pkgs.libsForQt5.kwin}/bin/kwin_wayland_wrapper --no-lockscreen";
+                };
               };
             };
           };
