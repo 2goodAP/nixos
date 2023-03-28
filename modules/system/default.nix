@@ -55,7 +55,7 @@
             ];
             extraOptions = "--term xterm-256color";
             extraConfig = ''
-              font-size=14
+              font-size=12
             '';
           };
 
