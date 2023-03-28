@@ -51,7 +51,7 @@
           };
 
           displayManager = {
-            defaultSession = "${pkgs.libsForQt5.plasma-workspace}/share/wayland-sessions/plasmawayland.desktop";
+            defaultSession = "plasmawayland";
 
             sddm = {
               enable = true;
