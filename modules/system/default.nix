@@ -20,8 +20,6 @@
     audio.enable = mkEnableOption "Whether or not to enable audio-related services.";
 
     bluetooth.enable = mkEnableOption "Whether or not to enable bluetooth-related services.";
-
-    gui.enable = mkEnableOption "Whether or not to enable gui-related services.";
   };
 
   config = let
@@ -53,8 +51,18 @@
                 package = pkgs.caskaydia-cove-nerd-font;
               }
             ];
-            extraOptions = "--term xterm-256color";
             extraConfig = ''
+              seats=all
+
+              session-control=on
+
+              xkb-layout=${config.xserver.layout}
+              xkb-variant=${config.xserver.xkbVariant}
+              xkb-options=${config.xserver.xkbOptions}
+
+              drm=on
+              hwaccel=on
+
               font-size=12
             '';
           };
@@ -99,7 +107,7 @@
         };
       })
 
-      (mkIf (cfg.gui.enable || cfg.programs.virtualization.enable) {
+      (mkIf (cfg.desktop.enable || cfg.programs.virtualization.enable) {
         hardware.opengl = {
           enable = true;
           driSupport32Bit = true;
