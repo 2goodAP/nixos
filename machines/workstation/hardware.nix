@@ -12,7 +12,6 @@
 
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     kernelModules = ["kvm-intel"];
-    kernelParams = ["module_blacklist=i915"];
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
@@ -27,6 +26,12 @@
       modesetting.enable = true;
       nvidiaPersistenced = true;
       powerManagement.enable = true;
+
+      prime = {
+        sync.enable = true;
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
     };
   };
 

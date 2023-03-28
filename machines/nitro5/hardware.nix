@@ -24,22 +24,24 @@
       package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
       modesetting.enable = true;
       nvidiaPersistenced = true;
+      powerManagement.enable = true;
+
       prime = {
         offload.enable = true;
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
       };
-      powerManagement.enable = true;
     };
   };
 
   services = {
+    xserver.videoDrivers = ["nvidia"];
+
     undervolt = {
       enable = true;
       temp = 95;
       coreOffset = -150;
       uncoreOffset = -150;
     };
-    xserver.videoDrivers = ["nvidia"];
   };
 }

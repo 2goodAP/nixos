@@ -63,7 +63,7 @@
               drm
               hwaccel
 
-              font-size=10
+              font-size=12
             '';
           };
 
