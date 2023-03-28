@@ -27,6 +27,8 @@
         kitty
       ];
 
+      programs.dconf.enable = true;
+
       services = {
         power-profiles-daemon.enable = !config.services.tlp.enable;
 
