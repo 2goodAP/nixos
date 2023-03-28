@@ -56,7 +56,7 @@
             sddm = {
               enable = true;
               enableHidpi = true;
-              autoNumLock = true;
+              autoNumlock = true;
               theme = "breeze";
               settings = {
                 General = {
