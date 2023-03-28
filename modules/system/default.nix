@@ -60,9 +60,10 @@
               xkb-variant=${config.services.xserver.xkbVariant}
               xkb-options=${config.services.xserver.xkbOptions}
 
+              drm
               hwaccel
 
-              font-size=12
+              font-size=10
             '';
           };
 
