@@ -58,7 +58,7 @@
               };
               Theme = {CursorTheme = "Breeze_Snow";};
               Wayland = {
-                CompositorCommand = "kwin_wayland --no-lockscreen";
+                CompositorCommand = "kwin_wayland_wrapper --no-lockscreen";
               };
             };
           };

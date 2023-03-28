@@ -39,34 +39,6 @@
           printing.enable = true; # CUPS for printing documents.
           tlp.enable = true;
 
-          kmscon = {
-            enable = true;
-            fonts = [
-              {
-                name = "FiraCode Nerd Font";
-                package = pkgs.fira-code-nerd-font;
-              }
-              {
-                name = "CaskaydiaCove Nerd Font";
-                package = pkgs.caskaydia-cove-nerd-font;
-              }
-            ];
-            extraConfig = ''
-              seats=all
-
-              session-control
-
-              xkb-layout=${config.services.xserver.layout}
-              xkb-variant=${config.services.xserver.xkbVariant}
-              xkb-options=${config.services.xserver.xkbOptions}
-
-              drm
-              hwaccel
-
-              font-size=12
-            '';
-          };
-
           xserver = {
             layout = "us,us,np";
             xkbVariant = "altgr-intl,colemak_dh,";
