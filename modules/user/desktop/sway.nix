@@ -693,8 +693,8 @@
           Unit = {
             Description = "A lightweight overlay volume/backlight/progress/anything bar for Wayland";
             Documentation = "man:wob(1)";
-            PartOf = cfg.systemdTarget;
-            After = cfg.systemdTarget;
+            PartOf = [cfg.systemdTarget];
+            After = [cfg.systemdTarget];
             ConditionEnvironment = "WAYLAND_DISPLAY";
           };
           Service = {
@@ -702,7 +702,7 @@
             ExecStart = "${pkgs.wob}/bin/wob";
           };
           Install = {
-            WantedBy = cfg.systemdTarget;
+            WantedBy = [cfg.systemdTarget];
           };
         };
 
@@ -715,7 +715,7 @@
             FlushPending = true;
           };
           Install = {
-            WantedBy = cfg.systemdTarget;
+            WantedBy = [cfg.systemdTarget];
           };
         };
       };
