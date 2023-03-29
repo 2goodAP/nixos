@@ -92,7 +92,7 @@
 
           focus = {
             followMouse = false;
-            forceWrapping = true;
+            wrapping = true;
             mouseWarping = "output";
           };
 
@@ -101,7 +101,11 @@
             smartGaps = true;
           };
 
-          fonts = ["pango:sans serif 11" "pango:NotoSans Nerd Font 11"];
+          fonts = {
+            names = ["sans serif" "NotoSans Nerd Font"];
+            style = "Regular";
+            size = 11.0;
+          };
 
           colors = {
             focused = {
@@ -168,8 +172,6 @@
       };
 
       programs = {
-        mako.enable = true;
-
         rofi = {
           enable = true;
           package = pkgs.rofi-wayland;
@@ -656,6 +658,7 @@
         };
 
         kanshi.enable = true;
+        mako.enable = true;
 
         # Locking
         swayidle = {
