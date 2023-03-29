@@ -92,7 +92,7 @@
 
           focus = {
             followMouse = false;
-            focusWrapping = "force";
+            forceWrapping = "force";
             mouseWarping = "output";
           };
 
@@ -650,8 +650,8 @@
         gammastep = {
           enable = true;
           tray = true;
-          latitude = 0;
-          longitude = 0;
+          latitude = 0.0;
+          longitude = 0.0;
           temperature.day = 2300;
           temperature.night = 2300;
           settings.general.adjustment-method = "wayland";
