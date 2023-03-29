@@ -92,7 +92,7 @@
 
           focus = {
             followMouse = false;
-            forceWrapping = "force";
+            forceWrapping = true;
             mouseWarping = "output";
           };
 
