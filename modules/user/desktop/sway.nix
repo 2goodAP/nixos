@@ -689,7 +689,6 @@
 
       systemd.user = {
         services.wob = {
-          enable = true;
           Unit = {
             Description = "A lightweight overlay volume/backlight/progress/anything bar for Wayland";
             Documentation = "man:wob(1)";
@@ -707,7 +706,6 @@
         };
 
         sockets.wob = {
-          enable = true;
           Socket = {
             ListenFIFO = "%t/wob.sock";
             SocketMode = 0600;
