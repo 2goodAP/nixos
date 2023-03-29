@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.desktop.user.sway = let
+  options.tgap.user.desktop.sway = let
     inherit (lib) mkOption types;
   in {
     enable = mkOption {
@@ -33,7 +33,7 @@
   };
 
   config = let
-    cfg = config.tgap.desktop.user.sway;
+    cfg = config.tgap.user.desktop.sway;
     inherit (lib) mkIf;
     writeIf = cond: msg:
       if cond
