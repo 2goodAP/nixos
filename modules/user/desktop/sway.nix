@@ -159,13 +159,11 @@
           export MOZ_ENABLE_WAYLAND=1
           export MOZ_USE_XINPUT2=1
 
-          ${writeIf (builtins.elem "nvidia" config.services.xserver.videoDrivers) ''
-            # OpenGL Variables.
-            export GBM_BACKEND=nvidia-drm
-            export __GL_GSYNC_ALLOWED=1
-            export __GL_VRR_ALLOWED=1
-            export __GLX_VENDOR_LIBRARY_NAME=nvidia
-          ''}
+          # OpenGL Variables.
+          export GBM_BACKEND=nvidia-drm
+          export __GL_GSYNC_ALLOWED=1
+          export __GL_VRR_ALLOWED=1
+          export __GLX_VENDOR_LIBRARY_NAME=nvidia
         '';
       };
 
@@ -692,24 +690,33 @@
       systemd.user = {
         services.wob = {
           enable = true;
-          description = "A lightweight overlay volume/backlight/progress/anything bar for Wayland";
-          documentation = "man:wob(1)";
-          partOf = [cfg.systemdTarget];
-          after = [cfg.systemdTarget];
-          serviceConfig = {
+          Unit = {
+            Description = "A lightweight overlay volume/backlight/progress/anything bar for Wayland";
+            Documentation = "man:wob(1)";
+            PartOf = cfg.systemdTarget;
+            After = cfg.systemdTarget;
+            ConditionEnvironment = "WAYLAND_DISPLAY";
+          };
+          Service = {
             StandardInput = "socket";
             ExecStart = "${pkgs.wob}/bin/wob";
           };
-          wantedBy = [cfg.systemdTarget];
+          Install = {
+            WantedBy = cfg.systemdTarget;
+          };
         };
 
         sockets.wob = {
           enable = true;
-          socketConfig = {
+          Socket = {
             ListenFIFO = "%t/wob.sock";
             SocketMode = 0600;
+            RemoveOnStop = true;
+            FlushPending = true;
           };
-          wantedby = [cfg.systemdTarget];
+          Install = {
+            WantedBy = cfg.systemdTarget;
+          };
         };
       };
 
