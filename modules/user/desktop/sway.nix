@@ -43,7 +43,7 @@
     mkIf cfg.enable {
       wayland.windowManager.sway = {
         enable = true;
-        swyanag.enable = true;
+        swaynag.enable = true;
         wrapperFeatures.gtk = true;
         extraOptions = ["--unsupported-gpu"];
 
