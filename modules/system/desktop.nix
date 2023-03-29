@@ -65,7 +65,8 @@
                 };
                 Theme = {CursorTheme = "Breeze_Snow";};
                 Wayland = {
-                  CompositorCommand = "${pkgs.libsForQt5.kwin}/bin/kwin_wayland_wrapper --no-lockscreen";
+                  # CompositorCommand = "${pkgs.libsForQt5.kwin}/bin/kwin_wayland --no-global-shortcuts --no-lockscreen";
+                  CompositorCommand = "${pkgs.sway}/bin/sway --unsupported-gpu";
                 };
               };
             };
