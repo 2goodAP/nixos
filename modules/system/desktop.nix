@@ -20,6 +20,7 @@
       fonts.fonts = with pkgs; [
         caskaydia-cove-nerd-font
         fira-code-nerd-font
+        noto-nerd-font
         open-sans
         roboto
       ];
@@ -36,7 +37,6 @@
           enable = true;
           runUsingSystemd = true;
           useQtScaling = true;
-          notoPackage = pkgs.noto-nerd-font;
           excludePackages = with pkgs.libsForQt5; [
             ark
             elisa
