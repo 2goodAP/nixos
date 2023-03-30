@@ -79,7 +79,7 @@
         };
       })
 
-      (mkIf (cfg.desktop.enable || cfg.programs.virtualization.enable) {
+      (mkIf (cfg.plasma5.enable || cfg.programs.virtualization.enable) {
         hardware.opengl = {
           enable = true;
           driSupport32Bit = true;

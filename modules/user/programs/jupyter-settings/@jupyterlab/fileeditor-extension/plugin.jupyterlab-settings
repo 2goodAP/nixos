@@ -1,0 +1,20 @@
+{
+    "editorConfig": {
+        "autoClosingBrackets": true,
+        "codeFolding": true,
+        "cursorBlinkRate": 530,
+        "fontFamily": "Fira Code Nerd Font",
+        "fontSize": 16,
+        "insertSpaces": true,
+        "lineHeight": null,
+        "lineNumbers": true,
+        "lineWrap": "on",
+        "matchBrackets": true,
+        "readOnly": false,
+        "rulers": [],
+        "showTrailingSpace": true,
+        "tabSize": 4,
+        "wordWrapColumn": 90
+    },
+    "toolbar": []
+}

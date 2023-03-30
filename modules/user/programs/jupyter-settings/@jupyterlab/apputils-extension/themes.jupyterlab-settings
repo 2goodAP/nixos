@@ -1,0 +1,12 @@
+{
+    "theme": "JupyterLab Light",
+    "theme-scrollbars": true,
+    "overrides": {
+        "code-font-family": "FiraCode Nerd Font",
+        "code-font-size": "14px",
+        "content-font-family": "NotoSans Nerd Font",
+        "content-font-size1": "15px",
+        "ui-font-family": null,
+        "ui-font-size1": null
+    }
+}

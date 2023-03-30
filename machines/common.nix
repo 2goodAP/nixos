@@ -4,7 +4,7 @@
     audio.enable = true;
     apparmor.enable = true;
     bluetooth.enable = true;
-    desktop.enable = true;
+    plasma5.enable = true;
 
     programs = {
       enable = true;

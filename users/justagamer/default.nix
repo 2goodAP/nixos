@@ -1,7 +1,5 @@
 {pkgs, ...}: {
-  imports = [
-    ../common.nix
-  ];
+  imports = [../common.nix];
 
   tgap.user.desktop.gaming.enable = true;
 }
