@@ -152,7 +152,7 @@
         font = {
           package = pkgs.noto-nerd-font;
           name = "Noto Sans Regular Nerd Font Complete";
-          size = 11;
+          size = 12;
         };
         iconTheme = {
           package = pkgs.libsForQt5.breeze-icons;
