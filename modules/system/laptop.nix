@@ -48,8 +48,6 @@
         '';
 
         logind.extraConfig = ''
-          IdleAction=suspend-then-hibernate
-          IdleActionSec=10min
           HandleLidSwitch=suspend-then-hibernate
           HandleLidSwitchDocked=ignore
           HandleHibernateKey=hibernate

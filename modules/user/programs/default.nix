@@ -7,18 +7,53 @@
   options.tgap.user.programs = let
     inherit (lib) mkEnableOption;
   in {
-    enable = mkEnableOption {
-      description = "Whether or not to enable common base applications.";
-    };
+    enable = mkEnableOption "Whether or not to enable common base applications.";
+
+    jupyter.enable = mkEnableOption "Whether or not to enable jupyter user-settings.";
   };
 
   config = let
     cfg = config.tgap.user.programs;
-    inherit (lib) mkIf;
+    inherit (lib) mkIf mkMerge;
   in
-    mkIf cfg.enable {
-      home.packages = with pkgs; [
-        transmission
-      ];
-    };
+    mkIf cfg.enable (mkMerge [
+      {
+        programs.beets = {
+          enable = true;
+          settings = {
+            # Path to the music directory and the music library
+            directory = "~/Music";
+            library = "~/.local/share/beets/beets-music-library.db";
+
+            # Move the music files instead of copying to save space
+            import = {
+              move = "yes";
+            };
+
+            # Plugins
+            plugins = "chroma edit fetchart fromfilename zero";
+
+            # Settings for the 'zero' plugin
+            zero = {
+              fields = "comments images day month";
+              # Regexp to identify comments
+              comments = "[EAC, LAME, from.+collection, 'ripped by']";
+              update_database = true;
+            };
+          };
+        };
+
+        home.packages = with pkgs; [
+          transmission
+        ];
+      }
+
+      (mkIf cfg.jupyter.enable {
+        home.file.jupyter-settings = {
+          source = ./jupyter-settings;
+          target = ".jupyter/lab/user-settings";
+          recursive = true;
+        };
+      })
+    ]);
 }

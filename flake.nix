@@ -2,7 +2,7 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/c103991d2b06ebe182b6c0154caa3e9ce21f16cd";
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     home-manager = {
@@ -113,9 +113,10 @@
                   useGlobalPkgs = true;
                   useUserPackages = true;
                   sharedModules = [userModules];
+                  backupFileExtension = "hm.bak";
 
                   extraSpecialArgs = {
-                    sysDesktop = config.tgap.system.desktop.enable;
+                    sysPlasma5 = config.tgap.system.plasma5.enable;
                     sysQmk = config.tgap.system.programs.qmk.enable;
                     sysStateVersion = config.system.stateVersion;
                   };
@@ -211,6 +212,7 @@
                   useGlobalPkgs = true;
                   useUserPackages = true;
                   sharedModules = [userModules];
+                  backupFileExtension = "hm.bak";
 
                   extraSpecialArgs = {
                     sysDesktop = config.tgap.system.desktop.enable;

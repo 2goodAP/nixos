@@ -64,6 +64,7 @@
 
           grub = let
             gkbFile = "grub/colemak_dh.gkb";
+            shellEFI = "shellx64.efi";
 
             # Generate colemak_dh GRUB shell keyboard layout.
             grub-mkgkb = pkgs.runCommandLocal "grub-mkgkb" {} ''
@@ -79,10 +80,11 @@
             extraEntries = ''
               if [ ''${grub_platform} == "efi" ]; then
                 menuentry "UEFI Shell" --id "uefi-shell" {
-                  search --no-floppy --file --set=root /shellx64.efi
+                  insmod fat
                   insmod chain
 
-                  chainloader /shellx64.efi
+                  search --no-floppy --file --set=root /${shellEFI}
+                  chainloader /${shellEFI}
                 }
 
                 menuentry "UEFI Firmware Settings" --id "uefi-firmware" {
@@ -101,6 +103,7 @@
             extraConfig = ''
               # Change the keyboard layout (for supported keyboards).
               insmod keylayouts
+
               terminal_input at_keyboard console
               keymap ($drive1)/@boot/${gkbFile}
             '';
