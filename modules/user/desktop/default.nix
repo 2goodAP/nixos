@@ -147,37 +147,5 @@
           "${kitty_mod}+m" = "detach_tab ask";
         };
       };
-
-      gtk = {
-        enable = true;
-        font = {
-          package = pkgs.noto-nerd-font;
-          name = "Noto Sans Regular Nerd Font Complete";
-          size = 12;
-        };
-        iconTheme = {
-          package = pkgs.libsForQt5.breeze-icons;
-          name = "Breeze";
-        };
-        theme = {
-          package = pkgs.libsForQt5.breeze-gtk;
-          name = "Breeze";
-        };
-      };
-
-      qt = {
-        enable = true;
-        style = {
-          package = pkgs.libsForQt5.breeze-qt;
-          name = "Breeze";
-        };
-      };
-
-      home.pointerCursor = {
-        gtk.enable = true;
-        package = pkgs.libsForQt5.breeze-qt5;
-        name = "Breeze_Snow";
-        size = 24;
-      };
     };
 }
