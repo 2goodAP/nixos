@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  imports = [../common.nix];
+  imports = [../common];
 
   tgap.user.programs.jupyter.enable = true;
 

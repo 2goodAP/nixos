@@ -48,7 +48,7 @@
           "enable_audio_bell" = false;
 
           # Window layout
-          "enabled_layouts" = "splits, grid, tall, stack";
+          "enabled_layouts" = "splits, grid, stack";
           "window_padding_width" = "0 2";
           "active_border_color" = "#2e7de9";
           "inactive_border_color" = "#c4c8da";
@@ -102,7 +102,8 @@
           "${kitty_mod}+apostrophe" = "next_layout";
 
           # Create new windows by smartly splitting the space used by existing ones.
-          "${kitty_mod}+Return" = "launch --location=split";
+          "${kitty_mod}+Return" = "launch --location=hsplit";
+          "alt+shift+Return" = "launch --location=vsplit";
 
           # Use Vim keybindings for navigating and moving kitty windows.
           "${kitty_mod}+h" = "neighboring_window left";
