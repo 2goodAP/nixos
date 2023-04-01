@@ -1,6 +1,7 @@
 [ActivityManager][Global Shortcuts]
 switch-to-activity-6ea9c254-9f00-4c6e-b480-5467e040d13b=
 switch-to-activity-e48527e3-d76a-44d7-a85b-a9d7f0cd81d8=
+switch-to-activity-f8ebf1af-1681-4e10-8b59-9a44f9257071=
 
 [KDE Keyboard Layout Switcher][Global Shortcuts]
 Switch to Next Keyboard Layout=Meta+Shift+N
@@ -9,10 +10,10 @@ Switch to Next Keyboard Layout=Meta+Shift+N
 AboutApp=
 AboutKDE=
 Activate Next Tab=Ctrl+PgDown; Ctrl+]
-Activate Previous Tab=Ctrl+[; Ctrl+PgUp
+Activate Previous Tab=Ctrl+PgUp; Ctrl+[
 ActualSize=Ctrl+=
 AddBookmark=Ctrl+B
-Back=Alt+Left; Back
+Back=Back; Alt+Left
 BackwardWord=Ctrl+Left
 Begin=Ctrl+Home
 BeginningOfLine=Home
@@ -20,9 +21,9 @@ Clear=
 Close=Ctrl+W; Ctrl+Esc
 ConfigureNotifications=
 ConfigureToolbars=
-Copy=Ctrl+C; Ctrl+Ins
+Copy=Ctrl+Ins; Ctrl+C
 CreateFolder=F10
-Cut=Shift+Del; Ctrl+X
+Cut=Ctrl+X; Shift+Del
 DeleteFile=Shift+Del
 DeleteWordBack=Ctrl+Backspace
 DeleteWordForward=Ctrl+Del
@@ -46,7 +47,7 @@ Goto=
 GotoLine=Ctrl+G
 GotoPage=
 Help=F1
-Home=Alt+Home; Home Page
+Home=Home Page; Alt+Home
 KeyBindings=Ctrl+Alt+,
 Mail=
 MoveToTrash=Del
@@ -114,7 +115,7 @@ decrease_microphone_volume=Microphone Volume Down
 decrease_volume=Volume Down
 increase_microphone_volume=Microphone Volume Up
 increase_volume=Volume Up
-mic_mute=Meta+Volume Mute; Microphone Mute
+mic_mute=Microphone Mute; Meta+Volume Mute
 mute=Volume Mute
 
 [ksmserver][Global Shortcuts]
@@ -129,7 +130,7 @@ Activate Window Demanding Attention=Meta+Ctrl+A
 Decrease Opacity=
 Edit Tiles=Meta+T
 Expose=Ctrl+F9
-ExposeAll=Launch (C); Ctrl+F10
+ExposeAll=Ctrl+F10; Launch (C)
 ExposeClass=Ctrl+F7
 ExposeClassCurrentDesktop=
 Increase Opacity=
@@ -147,7 +148,7 @@ Show Desktop=Meta+D
 ShowDesktopGrid=Ctrl+F8
 Suspend Compositing=Alt+Shift+F12
 Switch One Desktop Down=Meta+Alt+J
-Switch One Desktop Up=
+Switch One Desktop Up=Meta+Alt+K
 Switch One Desktop to the Left=Meta+Alt+H
 Switch One Desktop to the Right=Meta+Alt+L
 Switch Window Down=Meta+J
@@ -323,6 +324,7 @@ activate task manager entry 6=Meta+6
 activate task manager entry 7=Meta+7
 activate task manager entry 8=Meta+8
 activate task manager entry 9=Meta+9
+activate widget 4=Alt+F1
 clear-history=
 clipboard_action=Meta+Ctrl+X
 cycle-panels=Meta+Alt+P
