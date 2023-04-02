@@ -54,8 +54,8 @@
         vimAlias = cfg.aliases;
 
         runtime = {
-          "init.lua".source = ./init.lua;
-          "lua/extraConfig.lua".text = cfg.luaExtraConfig;
+          "nvim/init.lua".source = ./init.lua;
+          "nvim/lua/extraConfig.lua".text = cfg.luaExtraConfig;
         };
       };
 

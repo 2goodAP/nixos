@@ -187,14 +187,14 @@
         programs.fish = {
           enable = true;
           shellInit = ''
+            # Tide vi-mode prompt icon.
             set --global tide_character_icon '>'
-            set --global tide_character_vi_icon_default '<'
-            set --global tide_character_vi_icon_replace 'R'
-            set --global tide_character_vi_icon_visual 'V'
-
             set --global tide_vi_mode_icon_insert '>'
+            set --global tide_character_vi_icon_default '<'
             set --global tide_vi_mode_icon_default '<'
+            set --global tide_character_vi_icon_replace 'R'
             set --global tide_vi_mode_icon_replace 'R'
+            set --global tide_character_vi_icon_visual 'V'
             set --global tide_vi_mode_icon_visual 'V'
           '';
           interactiveShellInit = ''

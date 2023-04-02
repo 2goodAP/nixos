@@ -23,8 +23,8 @@ vim.opt.smartcase = true
 vim.opt.ignorecase = true
 
 -- Handle tab width and expansion.
-vim.opt.tabstop=4
-vim.opt.shiftwidth=0
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 0
 vim.opt.expandtab = true
 
 -- Highlight the current cursor line.
@@ -64,7 +64,7 @@ vim.keymap.set(
   't', '<C-j>', [[<C-\><C-n><C-w>j]],
   {desc = 'Navigate to down split in Terminal mode.'}
 )
-im.keymap.set(
+vim.keymap.set(
   't', '<C-k>', [[<C-\><C-n><C-w>k]],
   {desc = 'Navigate to up split in Terminal mode.'}
 )
