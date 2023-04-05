@@ -44,6 +44,7 @@
         };
 
         home.packages = with pkgs; [
+          cmus
           transmission
         ];
       }
