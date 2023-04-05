@@ -28,7 +28,9 @@
 
               engines = {
                 Startpage = {
-                  urls = [{template = "https://startpage.com/sp/search?query={searchTerms}";}];
+                  urls = [
+                    {template = "https://startpage.com/sp/search?query={searchTerms}";}
+                  ];
                   definedAliases = ["@startpage" "@sp"];
                 };
               };
@@ -59,7 +61,6 @@
                 + ''],''
                 + ''"toolbar-menubar": ["menubar-items"],''
                 + ''"TabsToolbar": [''
-                + ''"firefox-view-button",''
                 + ''"tabbrowser-tabs",''
                 + ''"new-tab-button",''
                 + ''"alltabs-button"''
