@@ -7,6 +7,7 @@
 }: {
   imports = [
     ./applications.nix
+    ./firefox
   ];
 
   config = let

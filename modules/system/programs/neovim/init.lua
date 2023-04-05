@@ -266,6 +266,3 @@ if vim.env.TERM == 'linux' then
 else
   vim.opt.background = 'light'
 end
-
--- Load extra plugin-specific configurations.
-require("extraConfig")

@@ -21,7 +21,7 @@
   in {
     enable = mkEnableOption "Whether or not to enable neovim.";
 
-    aliases = mkEnableOption "Whether or not to enable vi and vim aliases.";
+    alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
     luaExtraConfig = mkOption {
       description = "The lua configuration to source into neovim.";
@@ -50,12 +50,25 @@
       programs.neovim = {
         enable = true;
         defaultEditor = true;
-        viAlias = cfg.aliases;
-        vimAlias = cfg.aliases;
+        viAlias = cfg.alias;
+        vimAlias = cfg.alias;
+        withPython3 = true;
+        withNodeJs = true;
 
-        runtime = {
-          "nvim/init.lua".source = ./init.lua;
-          "nvim/lua/extraConfig.lua".text = cfg.luaExtraConfig;
+        configure = {
+          customRC = ''
+            luafile ${./init.lua}
+
+            " Add plugin specific extra lua configuration.
+            lua << EOF
+              ${cfg.luaExtraConfig}
+            EOF
+          '';
+
+          packages.nixPlugins = {
+            start = cfg.startPackages;
+            opt = cfg.optPackages;
+          };
         };
       };
 

@@ -20,67 +20,6 @@
     mkMerge [
       (mkIf (sysPlasma5 && cfg.applications.enable) {
         programs = {
-          chromium = {
-            enable = true;
-            package = pkgs.ungoogled-chromium;
-            commandLineArgs = [
-              # Hardware Acceleration
-              "--ignore-gpu-blocklist"
-              "--enable-gpu-rasterization"
-              "--enable-zero-copy"
-              # Native Wayland
-              "--ozone-platform-hint=auto"
-            ];
-            extensions = [
-              {id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";} # uBlock Origin
-              {id = "gcbommkclmclpchllfjekcdonpmejbdp";} # HTTPS Everywhere
-              {id = "ldpochfccmkkmhdbclfhpagapcfdljkj";} # Decentraleyes
-              {id = "pooaemmkohlphkekccfajnbcokjlbehk";} # Smart Clean
-            ];
-          };
-
-          firefox = {
-            enable = true;
-            # profiles = {
-            #   default = {
-            #     id = 0;
-            #     name = "default";
-            #     settings = {
-            #     };
-            #     search = {
-            #       engines = {
-            #       };
-            #       order = [
-            #       ];
-            #       default = "";
-            #       force = true;
-            #     };
-            #     extensions = [
-            #     ];
-            #     bookmarks = {
-            #     };
-            #     extraconfig = ''
-            #     '';
-            #   };
-            #   alternate = {
-            #     id = 1;
-            #     name = "alternate ";
-            #     settings = {
-            #     };
-            #     search = {
-            #       engines = {
-            #       };
-            #       order = [
-            #       ];
-            #       default = "";
-            #       force = true;
-            #     };
-            #     extensions = [
-            #     ];
-            #   };
-            # };
-          };
-
           mpv = {
             enable = true;
             config = {
@@ -144,6 +83,7 @@
           libreoffice-fresh
           nextcloud-client
           speedcrunch
+          tor-browser-bundle-bin
           zoom-us
         ];
       })
