@@ -59,7 +59,6 @@
                 + ''],''
                 + ''"toolbar-menubar": ["menubar-items"],''
                 + ''"TabsToolbar": [''
-                + ''"firefox-view-button",''
                 + ''"tabbrowser-tabs",''
                 + ''"new-tab-button",''
                 + ''"alltabs-button"''

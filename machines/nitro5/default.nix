@@ -16,16 +16,15 @@
       initialPassword = "NixOS-root.";
     };
 
-    aashishp = {
+    twogoodap = {
       isNormalUser = true;
-      initialPassword = "NixOS-aashishp.";
+      initialPassword = "NixOS-twogoodap.";
       extraGroups = [
         "audio"
         "cups"
         "disk"
         "docker"
         "networkmanager"
-        "nixbld"
         "video"
         "wheel"
       ];
@@ -40,7 +39,6 @@
         "disk"
         "docker"
         "networkmanager"
-        "nixbld"
         "video"
         "wheel"
       ];
@@ -83,7 +81,7 @@
     };
 
     users = {
-      aashishp.imports = [../../users/aashishp];
+      twogoodap.imports = [../../users/twogoodap];
       workerap.imports = [../../users/workerap];
     };
   };
