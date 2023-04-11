@@ -8,6 +8,7 @@
   imports = [
     ./applications.nix
     ./firefox
+    ./keepassxc
   ];
 
   config = let

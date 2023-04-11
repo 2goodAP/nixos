@@ -79,7 +79,6 @@
 
         home.packages = with pkgs; [
           gimp
-          keepassxc
           libreoffice-fresh
           nextcloud-client
           speedcrunch
