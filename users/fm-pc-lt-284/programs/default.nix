@@ -5,6 +5,7 @@
   ...
 }: {
   imports = [
+    ./kitty.nix
     ./neovim
   ];
 
@@ -91,8 +92,6 @@
       };
     };
 
-    gpg-agent.enable = true;
-
     tmux = {
       enable = true;
       terminal = "screen-256color";
@@ -139,13 +138,17 @@
     };
   };
 
+  services.gpg-agent.enable = true;
+
   home.packages = with pkgs; [
     # Hardware
+    cryptsetup
     gptfdisk
     ntfs3g
 
     # Programs
     busybox
+    dex
     fd
     glow
     jq

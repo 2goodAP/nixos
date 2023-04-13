@@ -4,7 +4,10 @@
   sysStateVersion,
   ...
 }: {
-  imports = [../common];
+  imports = [
+    ../common
+    ./programs
+  ];
 
   tgap.user.programs.jupyter.enable = true;
 

@@ -14,11 +14,13 @@
     root = {
       isSystemUser = true;
       initialPassword = "NixOS-root.";
+      createHome = true;
     };
 
     twogoodap = {
       isNormalUser = true;
       initialPassword = "NixOS-twogoodap.";
+      createHome = true;
       extraGroups = [
         "audio"
         "cups"
@@ -33,6 +35,7 @@
     workerap = {
       isNormalUser = true;
       initialPassword = "NixOS-workerap.";
+      createHome = true;
       extraGroups = [
         "audio"
         "cups"
@@ -47,6 +50,7 @@
     justagamer = {
       isNormalUser = true;
       initialPassword = "NixOS-justagamer.";
+      createHome = true;
       extraGroups = [
         "audio"
         "disk"
