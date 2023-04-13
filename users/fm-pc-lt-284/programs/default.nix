@@ -1,7 +1,8 @@
 {
   config,
-  lib,
+  options,
   pkgs,
+  sysPlasma5,
   ...
 }: {
   imports = [
@@ -138,7 +139,18 @@
     };
   };
 
-  services.gpg-agent.enable = true;
+  services.gpg-agent = let
+    setIf = cond: tVal: fVal:
+      if cond
+      then tVal
+      else fVal;
+  in {
+    enable = true;
+    pinentryFlavor =
+      setIf sysPlasma5
+      "qt"
+      options.services.gpg-agent.pinentryFlavor.default;
+  };
 
   home.packages = with pkgs; [
     # Hardware
