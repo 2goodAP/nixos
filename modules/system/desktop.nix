@@ -15,10 +15,23 @@
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
-      environment.systemPackages = with pkgs; [
-        kitty
-        wl-clipboard
-      ];
+      environment = {
+        systemPackages = with pkgs; [
+          kitty
+          wl-clipboard
+        ];
+
+        plasma5.excludePackages = with pkgs.libsForQt5; [
+          ark
+          elisa
+          khelpcenter
+          konsole
+          okular
+          oxygen
+          plasma-browser-integration
+          print-manager
+        ];
+      };
 
       fonts.fonts = [
         (pkgs.nerdfonts.override {
@@ -36,17 +49,9 @@
 
         xserver.desktopManager.plasma5 = {
           enable = true;
+          phononBackend = "vlc";
           runUsingSystemd = true;
           useQtScaling = true;
-          excludePackages = with pkgs.libsForQt5; [
-            ark
-            elisa
-            khelpcenter
-            konsole
-            okular
-            oxygen
-            plasma-browser-integration
-          ];
         };
       };
     };

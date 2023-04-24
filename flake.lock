@@ -5,11 +5,11 @@
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
-        "lastModified": 1677714448,
-        "narHash": "sha256-Hq8qLs8xFu28aDjytfxjdC96bZ6pds21Yy09mSC156I=",
+        "lastModified": 1680392223,
+        "narHash": "sha256-n3g7QFr85lDODKt250rkZj2IFS3i4/8HBU2yKHO3tqw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "dc531e3a9ce757041e1afaff8ee932725ca60002",
+        "rev": "dcc36e45d054d7bb554c9cdab69093debd91a0b5",
         "type": "github"
       },
       "original": {
@@ -22,15 +22,14 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "utils": "utils"
+        ]
       },
       "locked": {
-        "lastModified": 1678006026,
-        "narHash": "sha256-cGOfrU7JsKHAWXbPVDTOu2yyMb7GeWdUtJQNQSqht+w=",
+        "lastModified": 1682273416,
+        "narHash": "sha256-YvRc5TOyf92Fcvt6cYfsqxfjqalAUME3Klv4IbdhkBE=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "68ba59578352815ac372b17fb3df9db39afb1407",
+        "rev": "a5a294a622a7d3a837aaa145334e4d813c1bc5b1",
         "type": "github"
       },
       "original": {
@@ -44,14 +43,14 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "utils": "utils_2"
+        "utils": "utils"
       },
       "locked": {
-        "lastModified": 1677433142,
-        "narHash": "sha256-351eG11Cl4CjKxRoiVvjWAD9nQWLlCxLlltcJWvXGa0=",
+        "lastModified": 1682244572,
+        "narHash": "sha256-6XufGqQfPX+5QN1fz4HGdHASXY6TCe8GTYW1AxBWJgY=",
         "owner": "nbfc-linux",
         "repo": "nbfc-linux",
-        "rev": "7954b30531593849fc3b11c760930baf891f5ad1",
+        "rev": "706066a1415fa0498f23336e628152e90d776e0a",
         "type": "github"
       },
       "original": {
@@ -62,28 +61,28 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1679127651,
-        "narHash": "sha256-VF6qepEa3AmUpOTBkvXqfIlHoqPgdtmGQ1S5fL/R7e8=",
+        "lastModified": 1682181988,
+        "narHash": "sha256-CYWhlNi16cjGzMby9h57gpYE59quBcsHPXiFgX4Sw5k=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c103991d2b06ebe182b6c0154caa3e9ce21f16cd",
+        "rev": "6c43a3495a11e261e5f41e5d7eda2d71dae1b2fe",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
-        "rev": "c103991d2b06ebe182b6c0154caa3e9ce21f16cd",
         "type": "github"
       }
     },
     "nixpkgs-lib": {
       "locked": {
         "dir": "lib",
-        "lastModified": 1679944645,
-        "narHash": "sha256-e5Qyoe11UZjVfgRfwNoSU57ZeKuEmjYb77B9IVW7L/M=",
+        "lastModified": 1680213900,
+        "narHash": "sha256-cIDr5WZIj3EkKyCgj/6j3HBH4Jj1W296z7HTcWj1aMA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4bb072f0a8b267613c127684e099a70e1f6ff106",
+        "rev": "e3652e0735fbec227f342712f180f4f21f0594f2",
         "type": "github"
       },
       "original": {
@@ -96,11 +95,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1680588174,
-        "narHash": "sha256-MrMsiwohIrGx3R4qX/162+fqx8EQe5lpMc4YTahJDAQ=",
+        "lastModified": 1682320606,
+        "narHash": "sha256-R9tB0d8huRFCPbwtlnc1RwUMU98Zs4TjqwiPHS+jCqw=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b34f9bde6cbcb5d50e638d08e7d3f9ed7b88340b",
+        "rev": "dde696e9d66234fe8e86b7806fb21b43598e0568",
         "type": "github"
       },
       "original": {
@@ -119,21 +118,6 @@
       }
     },
     "utils": {
-      "locked": {
-        "lastModified": 1667395993,
-        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "utils_2": {
       "locked": {
         "lastModified": 1623875721,
         "narHash": "sha256-A8BU7bjS5GirpAUv4QA+QnJ4CceLHkcXdRp4xITDB0s=",
