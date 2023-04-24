@@ -19,6 +19,8 @@
       default = "fish";
     };
 
+    cms.enable = mkEnableOption "Whether to enable color management systems.";
+
     fd.enable = mkEnableOption "Whether to enable fd, an alternative to find.";
 
     glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
@@ -32,6 +34,7 @@
 
   config = let
     cfg = config.tgap.system.programs;
+    nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
     inherit (lib) mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
@@ -48,6 +51,7 @@
             jq
             p7zip
             ranger
+            toybox
             unrar
             unzip
             wget
@@ -219,12 +223,17 @@
         ];
       })
 
+      (mkIf cfg.cms.enable {
+        environment.systemPackages = optionals nvidia [pkgs.argyllcms];
+        services.colord.enable = !nvidia;
+      })
+
       (mkIf cfg.virtualization.enable {
         virtualisation = {
           docker = {
             enable = true;
             enableOnBoot = false;
-            enableNvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
+            enableNvidia = nvidia;
             storageDriver = "overlay2";
             rootless.enable = true;
           };
