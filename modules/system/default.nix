@@ -42,7 +42,7 @@
           xserver = {
             layout = "us,us,np";
             xkbVariant = "altgr-intl,colemak_dh,";
-            xkbOptions = "grp:alt_shift_toggle";
+            xkbOptions = "grp:alt_caps_toggle";
           };
         };
 
