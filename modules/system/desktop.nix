@@ -15,14 +15,15 @@
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
-      environment.systemPackages = [pkgs.kitty];
+      environment.systemPackages = with pkgs; [
+        kitty
+        wl-clipboard
+      ];
 
-      fonts.fonts = with pkgs; [
-        caskaydia-cove-nerd-font
-        fira-code-nerd-font
-        noto-nerd-font
-        open-sans
-        roboto
+      fonts.fonts = [
+        (pkgs.nerdfonts.override {
+          fonts = ["CascadiaCode" "FiraCode" "Noto"];
+        })
       ];
 
       programs = {

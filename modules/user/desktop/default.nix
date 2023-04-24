@@ -8,13 +8,24 @@
   imports = [
     ./applications.nix
     ./firefox
+    ./keepassxc
   ];
+
+  options.tgap.user.desktop = let
+    inherit (lib) mkOption types;
+  in {
+    terminal = mkOption {
+      description = "The terminal emulator program to enable.";
+      type = types.enum ["kitty" null];
+      default = "kitty";
+    };
+  };
 
   config = let
     cfg = config.tgap.user.desktop;
     inherit (lib) mkIf;
   in
-    mkIf sysPlasma5 {
+    mkIf (sysPlasma5 && cfg.terminal == "kitty") {
       programs.kitty = {
         enable = true;
 

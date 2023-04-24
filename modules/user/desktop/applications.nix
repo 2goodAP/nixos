@@ -15,7 +15,7 @@
 
   config = let
     cfg = config.tgap.user.desktop;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) mkIf mkMerge optionals;
   in
     mkMerge [
       (mkIf (sysPlasma5 && cfg.applications.enable) {
@@ -77,15 +77,15 @@
           };
         };
 
-        home.packages = with pkgs; [
-          gimp
-          keepassxc
-          libreoffice-fresh
-          nextcloud-client
-          speedcrunch
-          tor-browser-bundle-bin
-          zoom-us
-        ];
+        home.packages =
+          (with pkgs; [
+            gimp
+            nextcloud-client
+            speedcrunch
+            tor-browser-bundle-bin
+            zoom-us
+          ])
+          ++ optionals sysPlasma5 [pkgs.libreoffice-qt];
       })
 
       (mkIf (sysPlasma5 && cfg.gaming.enable) {

@@ -42,6 +42,25 @@
             ];
 
             settings = {
+              "browser.ctrlTab.sortByRecentlyUsed" = true;
+
+              "browser.newtabpage.activity-stream.feeds.topsites" = false;
+              "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = false;
+              "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = false;
+              "browser.newtabpage.activity-stream.section.highlights.includeVisited" = false;
+
+              "browser.privatebrowsing.autostart" = true;
+
+              "browser.safebrowsing.downloads.enabled" = false;
+              "browser.safebrowsing.downloads.remote.block_potentially_unwanted" = false;
+              "browser.safebrowsing.downloads.remote.block_uncommon" = false;
+              "browser.safebrowsing.malware.enabled" = false;
+              "browser.safebrowsing.phishing.enabled" = false;
+
+              "browser.tabs.warnOnClose" = true;
+
+              "browser.toolbars.bookmarks.visibility" = "never";
+
               "browser.uiCustomization.state" =
                 ''{''
                 + ''"placements": {''
@@ -85,6 +104,17 @@
                 + ''"currentVersion": 19,''
                 + ''"newElementCount": 3''
                 + ''}'';
+
+              "browser.urlbar.suggest.history" = false;
+              "browser.urlbar.suggest.topsites" = false;
+
+              "places.history.enabled" = false;
+
+              "privacy.donottrackheader.enabled" = true;
+
+              "signon.generation.enabled" = false;
+              "signon.management.page.breach-alerts.enabled" = false;
+              "signon.rememberSignons" = false;
             };
 
             extraConfig = ''
