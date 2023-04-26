@@ -71,6 +71,9 @@
         set --global tide_vi_mode_icon_replace 'R'
         set --global tide_character_vi_icon_visual 'V'
         set --global tide_vi_mode_icon_visual 'V'
+
+        # Extra config for `pyenv init -`.
+        set -U fish_user_paths $HOME/.pyenv/bin $fish_user_paths
       '';
       interactiveShellInit = ''
         fish_vi_key_bindings
