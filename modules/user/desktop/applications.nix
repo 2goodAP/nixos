@@ -10,6 +10,8 @@
   in {
     applications.enable = mkEnableOption "Whether or not to enable common desktop apps.";
 
+    nixosApplications.enable = mkEnableOption "Whether or not to enable desktop apps for NixOS only.";
+
     gaming.enable = mkEnableOption "Whether or not to enable gaming-related apps.";
   };
 
@@ -80,12 +82,17 @@
         home.packages =
           (with pkgs; [
             gimp
-            nextcloud-client
             speedcrunch
             tor-browser-bundle-bin
-            zoom-us
           ])
           ++ optionals sysPlasma5 [pkgs.libreoffice-qt];
+      })
+
+      (mkIf (sysPlasma5 && cfg.nixosApplications.enable) {
+        home.packages = with pkgs; [
+          nextcloud-client
+          zoom-us
+        ];
       })
 
       (mkIf (sysPlasma5 && cfg.gaming.enable) {

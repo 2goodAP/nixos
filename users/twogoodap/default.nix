@@ -6,7 +6,10 @@
 }: {
   imports = [../common];
 
-  tgap.user.programs.jupyter.enable = true;
+  tgap.user = {
+    desktop.nixosApplications.enable = true;
+    programs.jupyter.enable = true;
+  };
 
   home.packages = lib.optionals sysQmk [
     pkgs.via
