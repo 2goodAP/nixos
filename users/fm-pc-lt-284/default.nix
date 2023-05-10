@@ -10,7 +10,6 @@
   ];
 
   fonts.fontconfig.enable = true;
-  tgap.user.programs.jupyter.enable = true;
 
   home.packages = with pkgs; [
     insomnia
