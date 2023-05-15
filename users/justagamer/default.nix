@@ -8,5 +8,7 @@
 
   home.packages = with pkgs; [
     cemu
+    citra-nightly
+    ryujinx
   ];
 }

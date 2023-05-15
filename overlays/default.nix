@@ -1,1 +1,3 @@
-[]
+[
+  (import ./emulators.nix)
+]
