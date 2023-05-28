@@ -12,10 +12,10 @@
       kitty_mod = "ctrl+shift";
     in ''
       # Fonts
-      font_family Fira Code Regular Nerd Font Complete
-      bold_font Fira Code SemiBold Nerd Font Complete
-      italic_font Caskaydia Cove Nerd Font Complete SemiLight Italic
-      bold_italic_font Caskaydia Cove Nerd Font Complete SemiBold Italic
+      font_family FiraCode Nerd Font
+      bold_font FiraCode Nerd Font SemBd
+      italic_font CaskaydiaCove NF SemiLight Italic
+      bold_italic_font CaskaydiaCove NF SemiBold Italic
 
       font_size 11.75
       disable_ligatures cursor
@@ -130,11 +130,11 @@
       map ${kitty_mod}+m detach_tab ask
 
       # Extra font configuration.
-      font_features FiraCodeNerdFontComplete-Regular +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
-      font_features FiraCodeNerdFontComplete-SemiBold +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
+      font_features FiraCodeNF-Reg +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
+      font_features FiraCodeNF-SemBd +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
 
-      font_features CaskaydiaCoveNerdFontComplete-SemiLightItalic +calt +ss01
-      font_features CaskaydiaCoveNerdFontComplete-SemiBoldItalic +calt +ss01
+      font_features CaskaydiaCoveNF-SemiLightItalic +calt +ss01
+      font_features CaskaydiaCoveNF-SemiBoldItalic +calt +ss01
     '';
   };
 }
