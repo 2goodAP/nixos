@@ -163,7 +163,7 @@
 
     # Programs
     busybox
-    dex
+    htop
     fd
     glow
     jq

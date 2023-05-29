@@ -48,6 +48,7 @@
 
             # Programs
             busybox
+            htop
             jq
             p7zip
             ranger
