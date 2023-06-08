@@ -8,38 +8,38 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     type = mkOption {
-      description = "The type of boot to perform.";
       type = types.enum ["encrypted-boot-btrfs"];
+      description = "The type of boot to perform.";
     };
 
     bootPartLabel = mkOption {
-      description = "The partlabel for the boot partition.";
       type = types.str;
       default = "LinuxBootPartition";
+      description = "The partlabel for the boot partition.";
     };
 
     swapPartLabel = mkOption {
-      description = "The partlabel for the swap partition.";
       type = types.str;
       default = "LinuxSwapPartition";
+      description = "The partlabel for the swap partition.";
     };
 
     priDataPartLabel = mkOption {
-      description = "The partlabel for the primary data partition.";
       type = types.str;
       default = "LinuxPriDataPartition";
+      description = "The partlabel for the primary data partition.";
     };
 
     secDataPartLabel = mkOption {
-      description = "The partlabel for the secondary data partition.";
       type = types.str;
       default = null;
+      description = "The partlabel for the secondary data partition.";
     };
 
     espMountPoint = mkOption {
-      description = "The mount point of the ESP.";
       type = types.str;
       default = "/efi";
+      description = "The mount point of the ESP.";
     };
 
     useOSProber = mkEnableOption "Whether or not to enable grub os-prober.";

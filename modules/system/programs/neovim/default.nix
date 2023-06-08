@@ -24,21 +24,21 @@
     alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
     luaExtraConfig = mkOption {
-      description = "The lua configuration to source into neovim.";
       type = types.lines;
       default = "";
+      description = "The lua configuration to source into neovim.";
     };
 
     startPackages = mkOption {
-      description = "The packages to load into neovim during startup.";
       type = types.listOf types.package;
       default = [];
+      description = "The packages to load into neovim during startup.";
     };
 
     optPackages = mkOption {
-      description = "The packages to load optionally into neovim.";
       type = types.listOf types.package;
       default = [];
+      description = "The packages to load optionally into neovim.";
     };
   };
 

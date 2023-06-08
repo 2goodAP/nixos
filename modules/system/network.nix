@@ -8,30 +8,30 @@
     inherit (lib) mkOption types;
   in {
     enable = mkOption {
-      description = "Whether or not to enable networking services.";
       type = types.bool;
       default = true;
+      description = "Whether or not to enable networking services.";
     };
 
     hostName = mkOption {
-      description = "The hostname of the laptop.";
       type = types.str;
+      description = "The hostname of the laptop.";
     };
 
     nameservers = mkOption {
-      description = "The list of nameservers.";
       type = types.listOf types.str;
+      description = "The list of nameservers.";
     };
 
     interfaces = mkOption {
-      description = "The network interface chips present in the laptop.";
       type = types.listOf types.str;
+      description = "The network interface chips present in the laptop.";
     };
 
     wifiRandMacAddress = mkOption {
-      description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
       type = types.bool;
       default = true;
+      description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
     };
   };
 

@@ -15,9 +15,9 @@
     inherit (lib) mkOption types;
   in {
     terminal = mkOption {
-      description = "The terminal emulator program to enable.";
       type = types.enum ["kitty" null];
       default = "kitty";
+      description = "The terminal emulator program to enable.";
     };
   };
 

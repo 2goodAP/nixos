@@ -14,9 +14,9 @@
     enable = mkEnableOption "Whether or not to enable common system-wide programs.";
 
     defaultShell = mkOption {
-      description = "The default shell assigned to user accounts.";
       type = types.enum ["bash" "fish"];
       default = "fish";
+      description = "The default shell assigned to user accounts.";
     };
 
     cms.enable = mkEnableOption "Whether to enable color management systems.";
