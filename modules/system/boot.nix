@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  options,
   pkgs,
   ...
 }: {
@@ -46,7 +45,6 @@
 
   config = let
     cfg = config.tgap.system.boot;
-    opts = options.tgap.system.boot;
     inherit (lib) mkIf mkMerge;
   in
     mkIf (cfg.type == "encrypted-boot-btrfs") {
@@ -74,7 +72,7 @@
               };
             }
 
-            (mkIf (opts.secDataPartLabel.default != null) {
+            (mkIf (cfg.secDataPartLabel != null) {
               sec_data_crypt = {
                 allowDiscards = true;
                 device = "/dev/dis/by-partlabel/${cfg.secDataPartLabel}";
