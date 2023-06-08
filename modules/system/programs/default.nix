@@ -29,7 +29,7 @@
 
     qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
 
-    virtualization.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
+    virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
   };
 
   config = let
@@ -229,7 +229,7 @@
         services.colord.enable = !nvidia;
       })
 
-      (mkIf cfg.virtualization.enable {
+      (mkIf cfg.virtualisation.enable {
         virtualisation = {
           docker = {
             enable = true;

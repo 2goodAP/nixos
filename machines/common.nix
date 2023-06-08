@@ -13,7 +13,7 @@
       neovim.enable = true;
       ripgrep.enable = true;
       qmk.enable = true;
-      virtualization.enable = true;
+      virtualisation.enable = true;
     };
   };
 }
