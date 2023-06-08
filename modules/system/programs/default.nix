@@ -45,6 +45,7 @@
             # Hardware
             gptfdisk
             ntfs3g
+            parted
 
             # Programs
             busybox
