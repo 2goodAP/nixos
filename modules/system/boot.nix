@@ -75,7 +75,7 @@
             (mkIf (cfg.secDataPartLabel != null) {
               sec_data_crypt = {
                 allowDiscards = true;
-                device = "/dev/dis/by-partlabel/${cfg.secDataPartLabel}";
+                device = "/dev/disk/by-partlabel/${cfg.secDataPartLabel}";
               };
             })
           ];
