@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  options,
   pkgs,
   ...
 }: {
@@ -12,6 +13,30 @@
       type = types.enum ["encrypted-boot-btrfs"];
     };
 
+    bootPartLabel = mkOption {
+      description = "The partlabel for the boot partition.";
+      type = types.str;
+      default = "LinuxBootPartition";
+    };
+
+    swapPartLabel = mkOption {
+      description = "The partlabel for the swap partition.";
+      type = types.str;
+      default = "LinuxSwapPartition";
+    };
+
+    priDataPartLabel = mkOption {
+      description = "The partlabel for the primary data partition.";
+      type = types.str;
+      default = "LinuxPriDataPartition";
+    };
+
+    secDataPartLabel = mkOption {
+      description = "The partlabel for the secondary data partition.";
+      type = types.str;
+      default = null;
+    };
+
     espMountPoint = mkOption {
       description = "The mount point of the ESP.";
       type = types.str;
@@ -21,7 +46,8 @@
 
   config = let
     cfg = config.tgap.system.boot;
-    inherit (lib) mkIf;
+    opts = options.tgap.system.boot;
+    inherit (lib) mkIf mkMerge;
   in
     mkIf (cfg.type == "encrypted-boot-btrfs") {
       boot = {
@@ -30,22 +56,31 @@
         initrd = let
           bootKeyFile = "/boot/crypto_keyfile.bin";
         in {
-          luks.devices = {
-            boot_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxBootPartition";
-              fallbackToPassword = true;
-              keyFile = bootKeyFile;
-            };
-            swap_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxSwapPartition";
-            };
-            data_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxDataPartition";
-            };
-          };
+          luks.devices = mkMerge [
+            {
+              boot_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.bootPartLabel}";
+                fallbackToPassword = true;
+                keyFile = bootKeyFile;
+              };
+              swap_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.swapPartLabel}";
+              };
+              pri_data_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.priDataPartLabel}";
+              };
+            }
+
+            (mkIf (opts.secDataPartLabel.default != null) {
+              sec_data_crypt = {
+                allowDiscards = true;
+                device = "/dev/dis/by-partlabel/${cfg.secDataPartLabel}";
+              };
+            })
+          ];
 
           secrets."${bootKeyFile}" = bootKeyFile;
         };
@@ -131,31 +166,37 @@
         };
 
         "/" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@"];
         };
 
+        "/nix" = {
+          device = "/dev/mapper/pri_data_crypt";
+          fsType = "btrfs";
+          options = ["compress=lzo" "noatime" "subvol=@nix"];
+        };
+
         "/home" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@home"];
         };
 
         "/var" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@var"];
         };
 
         "/tmp" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@tmp"];
         };
 
         "/.snapshots" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@snapshots"];
         };
