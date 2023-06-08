@@ -6,11 +6,15 @@
   ...
 }: {
   options.tgap.user.desktop = let
-    inherit (lib) mkEnableOption;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     applications.enable = mkEnableOption "Whether or not to enable common desktop apps.";
 
-    nixosApplications.enable = mkEnableOption "Whether or not to enable desktop apps for NixOS only.";
+    nixosApplications.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether or not to enable desktop apps for NixOS only.";
+    };
 
     gaming.enable = mkEnableOption "Whether or not to enable gaming-related apps.";
   };
@@ -90,6 +94,7 @@
 
       (mkIf (sysPlasma5 && cfg.nixosApplications.enable) {
         home.packages = with pkgs; [
+          gparted
           nextcloud-client
           zoom-us
         ];

@@ -9,7 +9,7 @@
     ./programs
   ];
 
-  fonts.fontconfig.enable = true;
+  tgap.user.desktop.nixosApplications.enable = false;
 
   home.packages = with pkgs; [
     insomnia
