@@ -150,7 +150,7 @@
 
       fileSystems = {
         "${cfg.espMountPoint}" = {
-          device = "/dev/disk/by-partlabel/EFISystemPartition";
+          device = "/dev/disk/by-partlabel/LinuxEFIPartition";
           fsType = "vfat";
         };
 
