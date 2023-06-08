@@ -5,7 +5,7 @@
   ...
 }: {
   options.tgap.system.boot = let
-    inherit (lib) mkOption types;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     type = mkOption {
       description = "The type of boot to perform.";
@@ -41,6 +41,8 @@
       type = types.str;
       default = "/efi";
     };
+
+    useOSProber = mkEnableOption "Whether or not to enable grub os-prober.";
   };
 
   config = let
@@ -107,6 +109,7 @@
           in {
             enable = true;
             efiSupport = true;
+            useOSProber = cfg.useOSProber;
             devices = ["nodev"];
             enableCryptodisk = true;
             extraGrubInstallArgs = ["--removable" "--bootloader-id=GRUB"];

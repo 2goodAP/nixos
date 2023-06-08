@@ -63,6 +63,7 @@
 
   tgap.system = {
     boot = {
+      useOSProber = true;
       type = "encrypted-boot-btrfs";
       secDataPartLabel = "LinuxSecDataPartition";
     };
