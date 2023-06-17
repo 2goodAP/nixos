@@ -88,6 +88,7 @@
             gimp
             speedcrunch
             tor-browser-bundle-bin
+            wev
           ])
           ++ optionals sysPlasma5 [pkgs.libreoffice-qt];
       })
