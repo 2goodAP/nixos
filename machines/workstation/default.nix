@@ -46,19 +46,6 @@
         "wheel"
       ];
     };
-
-    justagamer = {
-      isNormalUser = true;
-      initialPassword = "NixOS-justagamer.";
-      createHome = true;
-      extraGroups = [
-        "audio"
-        "disk"
-        "networkmanager"
-        "video"
-        "wheel"
-      ];
-    };
   };
 
   tgap.system = {
@@ -98,7 +85,6 @@
     users = {
       twogoodap.imports = [../../users/twogoodap];
       workerap.imports = [../../users/workerap];
-      justagamer.imports = [../../users/justagamer];
     };
   };
 }
