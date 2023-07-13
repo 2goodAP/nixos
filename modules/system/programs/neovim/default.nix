@@ -7,6 +7,7 @@
   imports = [
     ./lsp
     ./autocompletion.nix
+    ./colorscheme.nix
     ./filetype.nix
     ./git.nix
     ./motion.nix
@@ -57,7 +58,7 @@
 
         configure = {
           customRC = ''
-            luafile ${./init.lua}
+            luafile ${./lua/init.lua}
 
             " Add plugin specific extra lua configuration.
             lua << EOF
@@ -69,6 +70,12 @@
             start = cfg.startPackages;
             opt = cfg.optPackages;
           };
+        };
+
+        runtime = {
+          "ftplugin/javascript.lua".text = "vim.bo.tabstop = 2";
+          "ftplugin/lua.lua".text = "vim.bo.tabstop = 2";
+          "ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
         };
       };
 

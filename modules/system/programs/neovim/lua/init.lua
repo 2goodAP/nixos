@@ -259,10 +259,3 @@ vim.keymap.set(
 
 -- Hide netrw directory listing banner.
 vim.g.netrw_banner = false
-
--- Set background to dark if running in a Linux Console.
-if vim.env.TERM == 'linux' then
-  vim.opt.background = 'dark'
-else
-  vim.opt.background = 'light'
-end

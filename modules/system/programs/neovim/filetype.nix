@@ -21,6 +21,7 @@
   config = let
     cfg = config.tgap.system.programs.neovim.filetype;
     inherit (lib) mkIf optionals;
+    inherit (lib.strings) optionalString;
   in
     mkIf cfg.enable {
       tgap.system.programs.glow.enable = cfg.glow.enable;
@@ -36,33 +37,26 @@
           optionals cfg.neorg.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugs.neorg]
         );
 
-      tgap.system.programs.neovim.luaExtraConfig = let
-        writeIf = cond: msg:
-          if cond
-          then msg
-          else "";
-      in ''
-        ${writeIf cfg.glow.enable ''
-          vim.api.nvim_create_augroup('MarkdownGroup')
-          vim.api.nvim_clear_autocmd({group = 'MarkdownGroup'})
+      tgap.system.programs.neovim.luaExtraConfig = ''
+        ${optionalString cfg.glow.enable ''
+          vim.api.nvim_create_augroup("MarkdownGroup", {clear = true})
           vim.api.nvim_create_autocmd(
-            {'BufEnter', 'BufWinEnter'},
+            {"BufNewFile", "BufRead", "BufEnter", "BufWinEnter"},
             {
-              pattern = {'*.md'},
-              command = function() require('glow').setup() end,
+              pattern = {"*.md"},
+              command = function() require("glow").setup() end,
               group = "MarkdownGroup"
             }
           )
         ''}
 
-        ${writeIf cfg.neorg.enable ''
-          vim.api.nvim_create_augroup('NeorgGroup')
-          vim.api.nvim_clear_autocmd({group = 'NeorgGroup'})
+        ${optionalString cfg.neorg.enable ''
+          vim.api.nvim_create_augroup("NeorgGroup", {clear = true})
           vim.api.nvim_create_autocmd(
-            {'BufEnter', 'BufWinEnter'},
+            {"BufNewFile", "BufRead", "BufEnter", "BufWinEnter"},
             {
-              pattern = {'*.norg'},
-              command = function() require('neorg').setup() end,
+              pattern = {"*.norg"},
+              command = function() require("neorg").setup() end,
               group = "NeorgGroup"
             }
           )

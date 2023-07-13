@@ -10,10 +10,17 @@
       enable = true;
       fd.enable = true;
       glow.enable = true;
-      neovim.enable = true;
       ripgrep.enable = true;
       qmk.enable = true;
       virtualisation.enable = true;
+
+      neovim = {
+        enable = true;
+        treesitter = {
+          enable = true;
+          extPlugins.enable = true;
+        };
+      };
     };
   };
 }
