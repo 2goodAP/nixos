@@ -241,8 +241,8 @@
           };
 
           virtualbox = {
-            guest.enable = true;
             host.enable = true;
+            guest.enable = false;
           };
         };
       })
