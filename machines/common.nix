@@ -18,7 +18,7 @@
         enable = true;
         treesitter = {
           enable = true;
-          extPlugins.enable = true;
+          extraPlugins.enable = true;
         };
       };
     };

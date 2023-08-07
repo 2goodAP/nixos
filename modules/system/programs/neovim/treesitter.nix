@@ -9,7 +9,7 @@
   in {
     enable = mkEnableOption "Whether or not to enable core tree-sitter features for neovim.";
 
-    extPlugins.enable = mkEnableOption "Whether oor not to enable extra tree-sitter features for neovim.";
+    extraPlugins.enable = mkEnableOption "Whether oor not to enable extra tree-sitter features for neovim.";
   };
 
   config = let
@@ -75,7 +75,7 @@
               ]
           ))
         ])
-        ++ (optionals cfg.treesitter.extPlugins (with pkgs.vimPlugins; [
+        ++ (optionals cfg.treesitter.extraPlugins.enable (with pkgs.vimPlugins; [
           nvim-autopairs
           nvim-treesitter-context
           nvim-treesitter-textobjects
@@ -137,7 +137,7 @@
         vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
         vim.opt.foldenable = false  -- Disable folding at startup.
 
-        ${optionalString cfg.treesitter.extPlugins ''
+        ${optionalString cfg.treesitter.extraPlugins.enable ''
           -- nvim-autopairs
           require("nvim-autopairs").setup({
             check_ts = true,
