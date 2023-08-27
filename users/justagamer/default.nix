@@ -4,8 +4,7 @@
   tgap.user.desktop.gaming.enable = true;
 
   home.packages = with pkgs; [
-    cemu
-    citra-nightly
+    rpcs3
     ryujinx
   ];
 }

@@ -104,7 +104,8 @@
       (mkIf (sysPlasma5 && cfg.gaming.enable) {
         home.packages = with pkgs; [
           gamemode
-          lutris
+          gamescope
+          lutris-free
           mangohud
           winetricks
           wineWowPackages.stagingFull
