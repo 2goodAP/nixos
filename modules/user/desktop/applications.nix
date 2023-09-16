@@ -102,11 +102,51 @@
       })
 
       (mkIf (sysPlasma5 && cfg.gaming.enable) {
+        programs.mangohud = {
+          enable = true;
+
+          settings = {
+            legacy_layout = false;
+
+            toggle_fps_limit = "Shift_R+F8";
+            toggle_logging = "Shift_R+F9";
+            toggle_hud = "Shift_R+F10";
+
+            gpu_stats = true;
+            gpu_temp = true;
+            gpu_core_clock = true;
+            gpu_mem_clock = true;
+            gpu_power = true;
+            gpu_load_change = true;
+            gpu_name = true;
+            gpu_load_value = "50,90";
+            vram = true;
+
+            cpu_stats = true;
+            cpu_temp = true;
+            cpu_power = true;
+            cpu_mhz = true;
+            cpu_load_change = true;
+            core_load_change = true;
+            cpu_load_value = "50,90";
+            procmem = true;
+            procmem_shared = true;
+            ram = true;
+
+            fps = true;
+            frame_timing = true;
+
+            background_alpha = 0.8;
+            font_size = 24;
+            round_corners = 5;
+            output_folder = "~/.local/share/MangoHud";
+          };
+        };
+
         home.packages = with pkgs; [
           gamemode
           gamescope
           lutris-free
-          mangohud
           winetricks
           wineWowPackages.stagingFull
         ];

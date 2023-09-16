@@ -12,25 +12,25 @@
       description = "The type of boot to perform.";
     };
 
-    bootPartLabel = mkOption {
+    bootPartlabel = mkOption {
       type = types.str;
       default = "LinuxBootPartition";
       description = "The partlabel for the boot partition.";
     };
 
-    swapPartLabel = mkOption {
+    swapPartlabel = mkOption {
       type = types.str;
       default = "LinuxSwapPartition";
       description = "The partlabel for the swap partition.";
     };
 
-    priDataPartLabel = mkOption {
+    priDataPartlabel = mkOption {
       type = types.str;
       default = "LinuxPriDataPartition";
       description = "The partlabel for the primary data partition.";
     };
 
-    secDataPartLabel = mkOption {
+    secDataPartlabel = mkOption {
       type = types.str;
       default = null;
       description = "The partlabel for the secondary data partition.";
@@ -60,24 +60,24 @@
             {
               boot_crypt = {
                 allowDiscards = true;
-                device = "/dev/disk/by-partlabel/${cfg.bootPartLabel}";
+                device = "/dev/disk/by-partlabel/${cfg.bootPartlabel}";
                 fallbackToPassword = true;
                 keyFile = bootKeyFile;
               };
               swap_crypt = {
                 allowDiscards = true;
-                device = "/dev/disk/by-partlabel/${cfg.swapPartLabel}";
+                device = "/dev/disk/by-partlabel/${cfg.swapPartlabel}";
               };
               pri_data_crypt = {
                 allowDiscards = true;
-                device = "/dev/disk/by-partlabel/${cfg.priDataPartLabel}";
+                device = "/dev/disk/by-partlabel/${cfg.priDataPartlabel}";
               };
             }
 
-            (mkIf (cfg.secDataPartLabel != null) {
+            (mkIf (cfg.secDataPartlabel != null) {
               sec_data_crypt = {
                 allowDiscards = true;
-                device = "/dev/disk/by-partlabel/${cfg.secDataPartLabel}";
+                device = "/dev/disk/by-partlabel/${cfg.secDataPartlabel}";
               };
             })
           ];
