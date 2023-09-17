@@ -17,7 +17,7 @@
     terminal = mkOption {
       type = types.enum ["kitty" null];
       default = "kitty";
-      description = "The terminal emulator program to enable.";
+      description = "The terminal emulator program to install.";
     };
   };
 

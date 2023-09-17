@@ -8,15 +8,18 @@
   options.tgap.user.desktop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    applications.enable = mkEnableOption "Whether or not to enable common desktop apps.";
+    applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
 
     nixosApplications.enable = mkOption {
       type = types.bool;
       default = true;
-      description = "Whether or not to enable desktop apps for NixOS only.";
+      description = "Whether or not to install desktop apps for NixOS only.";
     };
 
-    gaming.enable = mkEnableOption "Whether or not to enable gaming-related apps.";
+    gaming = {
+      enable = mkEnableOption "Whether or not to install gaming-related apps.";
+      steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
+    };
   };
 
   config = let
@@ -143,13 +146,15 @@
           };
         };
 
-        home.packages = with pkgs; [
-          gamemode
-          gamescope
-          lutris-free
-          winetricks
-          wineWowPackages.stagingFull
-        ];
+        home.packages =
+          (with pkgs; [
+            gamemode
+            gamescope
+            lutris-free
+            winetricks
+            wineWowPackages.stagingFull
+          ])
+          ++ (optionals cfg.gaming.steam.enable [pkgs.steam]);
       })
     ];
 }

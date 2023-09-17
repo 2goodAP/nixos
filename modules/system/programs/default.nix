@@ -11,7 +11,7 @@
   options.tgap.system.programs = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to enable common system-wide programs.";
+    enable = mkEnableOption "Whether or not to install common system-wide programs.";
 
     defaultShell = mkOption {
       type = types.enum ["bash" "fish"];

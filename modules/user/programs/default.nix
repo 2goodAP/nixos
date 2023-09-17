@@ -7,7 +7,7 @@
   options.tgap.user.programs = let
     inherit (lib) mkEnableOption;
   in {
-    enable = mkEnableOption "Whether or not to enable common base applications.";
+    enable = mkEnableOption "Whether or not to install common base applications.";
 
     jupyter.enable = mkEnableOption "Whether or not to enable jupyter user-settings.";
   };
