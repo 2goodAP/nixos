@@ -77,6 +77,13 @@
       '';
       interactiveShellInit = ''
         fish_vi_key_bindings
+
+        # >>> mamba initialize >>>
+        # !! Contents within this block are managed by 'mamba init' !!
+        set -gx MAMBA_EXE "$HOME/.local/bin/micromamba"
+        set -gx MAMBA_ROOT_PREFIX "$HOME/.local/share/micromamba"
+        $MAMBA_EXE shell hook --shell fish --root-prefix $MAMBA_ROOT_PREFIX | source
+        # <<< mamba initialize <<<
       '';
     };
 
