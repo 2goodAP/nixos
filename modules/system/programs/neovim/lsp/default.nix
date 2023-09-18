@@ -33,10 +33,10 @@
         );
 
       tgap.system.programs.neovim.luaExtraConfig = let
-        writeIfElse = cond: trueMsg: falseMsg:
+        writeIfElse = cond: trueStr: falseStr:
           if cond
-          then trueMsg
-          else falseMsg;
+          then trueStr
+          else falseStr;
       in ''
           -- Mappings.
           -- See `:help vim.diagnostic.*` for documentation on

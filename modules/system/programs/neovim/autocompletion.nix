@@ -19,6 +19,7 @@
   config = let
     cfg = config.tgap.system.programs.neovim;
     inherit (lib) mkIf optionals;
+    inherit (lib.strings) optionalString;
   in
     mkIf cfg.autocompletion.enable {
       tgap.system.programs.neovim.startPackages = with pkgs.vimPlugins;
@@ -49,12 +50,7 @@
           optionals cfg.git.enable [pkgs.vimPlugins.cmp-git]
         );
 
-      tgap.system.programs.neovim.luaExtraConfig = let
-        writeIf = cond: msg:
-          if cond
-          then msg
-          else "";
-      in ''
+      tgap.system.programs.neovim.luaExtraConfig = ''
         -- Set up nvim-cmp.
         local cmp = require('cmp')
         local luasnip = require('luasnip')
@@ -97,19 +93,19 @@
 
           sources = cmp.config.sources({
         ${
-          writeIf cfg.autocompletion.dictionary.enable ''
+          optionalString cfg.autocompletion.dictionary.enable ''
             {name = 'dictionary'},
           ''
         }
         ${
-          writeIf cfg.lsp.enable ''
+          optionalString cfg.lsp.enable ''
             {name = 'nvim_lsp'},
             {name = 'nvim_lsp_document_symbol'},
             {name = 'nvim_lsp_signature_help'},
           ''
         }
         ${
-          writeIf cfg.autocompletion.snippets.enable ''
+          optionalString cfg.autocompletion.snippets.enable ''
             {name = 'luasnip'},
           ''
         }
@@ -127,7 +123,7 @@
           },
         })
 
-        ${writeIf cfg.autocompletion.dictionary.enable ''
+        ${optionalString cfg.autocompletion.dictionary.enable ''
           require("cmp_dictionary").setup({
             dic = {
               spelllang = {
@@ -148,7 +144,7 @@
           )
         ''}
 
-        ${writeIf cfg.git.enable ''
+        ${optionalString cfg.git.enable ''
           -- Set configuration for 'gitcommit' filetype.
           cmp.setup.filetype('gitcommit', {
             sources = cmp.config.sources({

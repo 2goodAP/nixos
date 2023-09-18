@@ -17,6 +17,7 @@
   config = let
     cfg = config.tgap.system.programs.neovim.git;
     inherit (lib) mkIf optionals;
+    inherit (lib.strings) optionalString;
   in
     mkIf cfg.enable {
       tgap.system.programs.neovim.startPackages =
@@ -33,15 +34,10 @@
           optionals cfg.which-key.enable [pkgs.vimPlugins.which-key-nvim]
         );
 
-      tgap.system.programs.neovim.luaExtraConfig = let
-        writeIf = cond: msg:
-          if cond
-          then msg
-          else "";
-      in ''
-        ${writeIf cfg.neogit.enable "require('neogit').setup()"}
+      tgap.system.programs.neovim.luaExtraConfig = ''
+        ${optionalString cfg.neogit.enable "require('neogit').setup()"}
 
-        ${writeIf cfg.gitsigns.enable "require('gitsigns').setup()"}
+        ${optionalString cfg.gitsigns.enable "require('gitsigns').setup()"}
       '';
     };
 }

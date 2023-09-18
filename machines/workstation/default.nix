@@ -62,7 +62,10 @@
   };
 
   tgap.system = {
-    boot.type = "encrypted-boot-btrfs";
+    boot = {
+      type = "encrypted-boot-btrfs";
+      secDataPartlabel = "LinuxSecDataPartition";
+    };
 
     network = {
       enable = true;

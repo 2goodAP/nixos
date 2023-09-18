@@ -7,6 +7,7 @@
   imports = [
     ./lsp
     ./autocompletion.nix
+    ./colorscheme.nix
     ./filetype.nix
     ./git.nix
     ./motion.nix
@@ -19,26 +20,26 @@
   options.tgap.system.programs.neovim = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to enable neovim.";
+    enable = mkEnableOption "Whether or not to install neovim.";
 
     alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
     luaExtraConfig = mkOption {
-      description = "The lua configuration to source into neovim.";
       type = types.lines;
       default = "";
+      description = "The lua configuration to source into neovim.";
     };
 
     startPackages = mkOption {
-      description = "The packages to load into neovim during startup.";
       type = types.listOf types.package;
       default = [];
+      description = "The packages to load into neovim during startup.";
     };
 
     optPackages = mkOption {
-      description = "The packages to load optionally into neovim.";
       type = types.listOf types.package;
       default = [];
+      description = "The packages to load optionally into neovim.";
     };
   };
 
@@ -57,7 +58,7 @@
 
         configure = {
           customRC = ''
-            luafile ${./init.lua}
+            luafile ${./lua/init.lua}
 
             " Add plugin specific extra lua configuration.
             lua << EOF
@@ -69,6 +70,12 @@
             start = cfg.startPackages;
             opt = cfg.optPackages;
           };
+        };
+
+        runtime = {
+          "ftplugin/javascript.lua".text = "vim.bo.tabstop = 2";
+          "ftplugin/lua.lua".text = "vim.bo.tabstop = 2";
+          "ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
         };
       };
 

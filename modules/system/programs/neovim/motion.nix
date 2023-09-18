@@ -23,6 +23,7 @@
   config = let
     cfg = config.tgap.system.programs.neovim.motion;
     inherit (lib) mkIf optionals;
+    inherit (lib.strings) optionalString;
   in
     mkIf cfg.enable {
       tgap.system.programs.neovim.startPackages =
@@ -44,19 +45,14 @@
           optionals cfg.which-key.enable [pkgs.vimPlugins.which-key-nvim]
         );
 
-      tgap.system.programs.neovim.luaExtraConfig = let
-        writeIf = cond: msg:
-          if cond
-          then msg
-          else "";
-      in ''
-        ${writeIf cfg.comment.enable "require('Comment').setup()"}
+      tgap.system.programs.neovim.luaExtraConfig = ''
+        ${optionalString cfg.comment.enable "require('Comment').setup()"}
 
-        ${writeIf cfg.hop.enable "require('hop').setup()"}
+        ${optionalString cfg.hop.enable "require('hop').setup()"}
 
-        ${writeIf cfg.surround.enable "require('nvim-surround').setup()"}
+        ${optionalString cfg.surround.enable "require('nvim-surround').setup()"}
 
-        ${writeIf cfg.which-key.enable "require('which-key').setup()"}
+        ${optionalString cfg.which-key.enable "require('which-key').setup()"}
       '';
     };
 }

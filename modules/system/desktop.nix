@@ -33,7 +33,7 @@
         ];
       };
 
-      fonts.fonts = [
+      fonts.packages = [
         (pkgs.nerdfonts.override {
           fonts = ["CascadiaCode" "FiraCode" "Noto"];
         })

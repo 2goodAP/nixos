@@ -5,23 +5,49 @@
   ...
 }: {
   options.tgap.system.boot = let
-    inherit (lib) mkOption types;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     type = mkOption {
-      description = "The type of boot to perform.";
       type = types.enum ["encrypted-boot-btrfs"];
+      description = "The type of boot to perform.";
+    };
+
+    bootPartlabel = mkOption {
+      type = types.str;
+      default = "LinuxBootPartition";
+      description = "The partlabel for the boot partition.";
+    };
+
+    swapPartlabel = mkOption {
+      type = types.str;
+      default = "LinuxSwapPartition";
+      description = "The partlabel for the swap partition.";
+    };
+
+    priDataPartlabel = mkOption {
+      type = types.str;
+      default = "LinuxPriDataPartition";
+      description = "The partlabel for the primary data partition.";
+    };
+
+    secDataPartlabel = mkOption {
+      type = types.str;
+      default = null;
+      description = "The partlabel for the secondary data partition.";
     };
 
     espMountPoint = mkOption {
-      description = "The mount point of the ESP.";
       type = types.str;
       default = "/efi";
+      description = "The mount point of the ESP.";
     };
+
+    useOSProber = mkEnableOption "Whether or not to enable grub os-prober.";
   };
 
   config = let
     cfg = config.tgap.system.boot;
-    inherit (lib) mkIf;
+    inherit (lib) mkIf mkMerge;
   in
     mkIf (cfg.type == "encrypted-boot-btrfs") {
       boot = {
@@ -30,22 +56,31 @@
         initrd = let
           bootKeyFile = "/boot/crypto_keyfile.bin";
         in {
-          luks.devices = {
-            boot_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxBootPartition";
-              fallbackToPassword = true;
-              keyFile = bootKeyFile;
-            };
-            swap_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxSwapPartition";
-            };
-            data_crypt = {
-              allowDiscards = true;
-              device = "/dev/disk/by-partlabel/LinuxDataPartition";
-            };
-          };
+          luks.devices = mkMerge [
+            {
+              boot_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.bootPartlabel}";
+                fallbackToPassword = true;
+                keyFile = bootKeyFile;
+              };
+              swap_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.swapPartlabel}";
+              };
+              pri_data_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.priDataPartlabel}";
+              };
+            }
+
+            (mkIf (cfg.secDataPartlabel != null) {
+              sec_data_crypt = {
+                allowDiscards = true;
+                device = "/dev/disk/by-partlabel/${cfg.secDataPartlabel}";
+              };
+            })
+          ];
 
           secrets."${bootKeyFile}" = bootKeyFile;
         };
@@ -74,6 +109,7 @@
           in {
             enable = true;
             efiSupport = true;
+            useOSProber = cfg.useOSProber;
             devices = ["nodev"];
             enableCryptodisk = true;
             extraGrubInstallArgs = ["--removable" "--bootloader-id=GRUB"];
@@ -114,7 +150,7 @@
 
       fileSystems = {
         "${cfg.espMountPoint}" = {
-          device = "/dev/disk/by-partlabel/EFISystemPartition";
+          device = "/dev/disk/by-partlabel/LinuxEFIPartition";
           fsType = "vfat";
         };
 
@@ -131,31 +167,37 @@
         };
 
         "/" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@"];
         };
 
+        "/nix" = {
+          device = "/dev/mapper/pri_data_crypt";
+          fsType = "btrfs";
+          options = ["compress=lzo" "noatime" "subvol=@nix"];
+        };
+
         "/home" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@home"];
         };
 
         "/var" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@var"];
         };
 
         "/tmp" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@tmp"];
         };
 
         "/.snapshots" = {
-          device = "/dev/mapper/data_crypt";
+          device = "/dev/mapper/pri_data_crypt";
           fsType = "btrfs";
           options = ["compress=lzo" "noatime" "subvol=@snapshots"];
         };

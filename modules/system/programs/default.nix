@@ -11,12 +11,12 @@
   options.tgap.system.programs = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to enable common system-wide programs.";
+    enable = mkEnableOption "Whether or not to install common system-wide programs.";
 
     defaultShell = mkOption {
-      description = "The default shell assigned to user accounts.";
       type = types.enum ["bash" "fish"];
       default = "fish";
+      description = "The default shell assigned to user accounts.";
     };
 
     cms.enable = mkEnableOption "Whether to enable color management systems.";
@@ -29,7 +29,7 @@
 
     qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
 
-    virtualization.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
+    virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
   };
 
   config = let
@@ -45,6 +45,7 @@
             # Hardware
             gptfdisk
             ntfs3g
+            parted
 
             # Programs
             busybox
@@ -229,7 +230,7 @@
         services.colord.enable = !nvidia;
       })
 
-      (mkIf cfg.virtualization.enable {
+      (mkIf cfg.virtualisation.enable {
         virtualisation = {
           docker = {
             enable = true;
@@ -240,8 +241,8 @@
           };
 
           virtualbox = {
-            guest.enable = true;
             host.enable = true;
+            guest.enable = false;
           };
         };
       })

@@ -6,13 +6,20 @@
   ...
 }: {
   options.tgap.user.desktop = let
-    inherit (lib) mkEnableOption;
+    inherit (lib) mkEnableOption mkOption types;
   in {
-    applications.enable = mkEnableOption "Whether or not to enable common desktop apps.";
+    applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
 
-    nixosApplications.enable = mkEnableOption "Whether or not to enable desktop apps for NixOS only.";
+    nixosApplications.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether or not to install desktop apps for NixOS only.";
+    };
 
-    gaming.enable = mkEnableOption "Whether or not to enable gaming-related apps.";
+    gaming = {
+      enable = mkEnableOption "Whether or not to install gaming-related apps.";
+      steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
+    };
   };
 
   config = let
@@ -84,25 +91,70 @@
             gimp
             speedcrunch
             tor-browser-bundle-bin
+            wev
           ])
           ++ optionals sysPlasma5 [pkgs.libreoffice-qt];
       })
 
       (mkIf (sysPlasma5 && cfg.nixosApplications.enable) {
         home.packages = with pkgs; [
+          gparted
           nextcloud-client
           zoom-us
         ];
       })
 
       (mkIf (sysPlasma5 && cfg.gaming.enable) {
-        home.packages = with pkgs; [
-          gamemode
-          lutris
-          mangohud
-          winetricks
-          wineWowPackages.stagingFull
-        ];
+        programs.mangohud = {
+          enable = true;
+
+          settings = {
+            legacy_layout = false;
+
+            toggle_fps_limit = "Shift_R+F8";
+            toggle_logging = "Shift_R+F9";
+            toggle_hud = "Shift_R+F10";
+
+            gpu_stats = true;
+            gpu_temp = true;
+            gpu_core_clock = true;
+            gpu_mem_clock = true;
+            gpu_power = true;
+            gpu_load_change = true;
+            gpu_name = true;
+            gpu_load_value = "50,90";
+            vram = true;
+
+            cpu_stats = true;
+            cpu_temp = true;
+            cpu_power = true;
+            cpu_mhz = true;
+            cpu_load_change = true;
+            core_load_change = true;
+            cpu_load_value = "50,90";
+            procmem = true;
+            procmem_shared = true;
+            ram = true;
+
+            fps = true;
+            frame_timing = true;
+
+            background_alpha = 0.8;
+            font_size = 24;
+            round_corners = 5;
+            output_folder = "~/.local/share/MangoHud";
+          };
+        };
+
+        home.packages =
+          (with pkgs; [
+            gamemode
+            gamescope
+            lutris-free
+            winetricks
+            wineWowPackages.stagingFull
+          ])
+          ++ (optionals cfg.gaming.steam.enable [pkgs.steam]);
       })
     ];
 }

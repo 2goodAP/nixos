@@ -1,14 +1,13 @@
 {pkgs, ...}: {
   imports = [../common];
 
-  tgap.user.desktop = {
-    nixosApplications.enable = true;
-    gaming.enable = true;
+  tgap.user.desktop.gaming = {
+    enable = true;
+    steam.enable = true;
   };
 
   home.packages = with pkgs; [
-    cemu
-    citra-nightly
+    rpcs3
     ryujinx
   ];
 }
