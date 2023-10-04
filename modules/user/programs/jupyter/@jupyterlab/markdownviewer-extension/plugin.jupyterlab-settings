@@ -1,0 +1,8 @@
+{
+    "fontFamily": "NotoSans Nerd Font",
+    "fontSize": 15,
+    "lineHeight": 1.2,
+    "lineWidth": 90,
+    "hideFrontMatter": true,
+    "renderTimeout": 1000
+}

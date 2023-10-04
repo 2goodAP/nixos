@@ -46,7 +46,6 @@
         networkmanager = {
           enable = true;
           enableStrongSwan = true;
-          firewallBackend = "nftables";
           insertNameservers = cfg.nameservers;
           wifi.scanRandMacAddress = cfg.wifiRandMacAddress;
         };

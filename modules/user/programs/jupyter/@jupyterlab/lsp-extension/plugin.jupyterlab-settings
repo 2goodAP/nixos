@@ -1,0 +1,21 @@
+{
+    // Language Servers (Experimental)
+    // @jupyterlab/lsp-extension:plugin
+    // Language Server Protocol settings.
+    // **********************************
+
+    // Language Server
+    // Language-server specific configuration, keyed by implementation
+    "languageServers": {
+        "pylsp": {
+            "rank": 50,
+            "configuration": {
+                "pylsp.plugins.pydocstyle.enabled": true,
+                "pylsp.plugins.pycodestyle.enabled": true,
+                "pylsp.plugins.pylint.enabled": true,
+                "pylsp.plugins.black.enabled": true,
+                "pylsp.plugins.isort.enabled": true
+            }
+        }
+    }
+}

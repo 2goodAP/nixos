@@ -1,0 +1,13 @@
+{
+    "defaultConfig": {
+        "autoClosingBrackets": true,
+        "codeFolding": true,
+        "highlightActiveLine": true,
+        "highlightTrailingWhitespace": true,
+        "customStyles": {
+            "fontFamily": "FiraCode Nerd Font",
+            "fontSize": 14,
+            "lineHeight": 1.2
+        }
+    }
+}

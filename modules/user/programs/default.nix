@@ -51,7 +51,7 @@
 
       (mkIf cfg.jupyter.enable {
         home.file.jupyter-settings = {
-          source = ./jupyter-settings;
+          source = ./jupyter;
           target = ".jupyter/lab/user-settings";
           recursive = true;
         };
