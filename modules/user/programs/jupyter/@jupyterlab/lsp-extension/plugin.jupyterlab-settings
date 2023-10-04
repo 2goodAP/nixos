@@ -1,11 +1,7 @@
 {
-    // Language Servers (Experimental)
-    // @jupyterlab/lsp-extension:plugin
-    // Language Server Protocol settings.
-    // **********************************
-
-    // Language Server
-    // Language-server specific configuration, keyed by implementation
+    "activate": "on",
+    "setTrace": "off",
+    "logAllCommunication": false,
     "languageServers": {
         "pylsp": {
             "rank": 50,
