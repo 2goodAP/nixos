@@ -8,10 +8,11 @@
 
     programs = {
       enable = true;
+      android-tools.enable = true;
       fd.enable = true;
       glow.enable = true;
-      ripgrep.enable = true;
       qmk.enable = true;
+      ripgrep.enable = true;
       virtualisation.enable = true;
 
       neovim = {

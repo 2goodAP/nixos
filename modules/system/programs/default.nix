@@ -19,15 +19,17 @@
       description = "The default shell assigned to user accounts.";
     };
 
+    android-tools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+
     cms.enable = mkEnableOption "Whether to enable color management systems.";
 
     fd.enable = mkEnableOption "Whether to enable fd, an alternative to find.";
 
     glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
 
-    ripgrep.enable = mkEnableOption "Whether to enable ripgrep, an alternative to grep.";
-
     qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+
+    ripgrep.enable = mkEnableOption "Whether to enable ripgrep, an alternative to grep.";
 
     virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
   };
@@ -60,16 +62,19 @@
             zip
           ])
           ++ (
+            optionals cfg.android-tools.enable [pkgs.android-tools]
+          )
+          ++ (
             optionals cfg.fd.enable [pkgs.fd]
           )
           ++ (
             optionals cfg.glow.enable [pkgs.glow]
           )
           ++ (
-            optionals cfg.ripgrep.enable [pkgs.ripgrep]
+            optionals cfg.qmk.enable [pkgs.qmk]
           )
           ++ (
-            optionals cfg.qmk.enable [pkgs.qmk]
+            optionals cfg.ripgrep.enable [pkgs.ripgrep]
           );
 
         programs = {
