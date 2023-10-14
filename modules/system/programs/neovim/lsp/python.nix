@@ -10,18 +10,15 @@
   in
     mkIf (cfg.enable && (builtins.elem "python" cfg.languages)) {
       environment.systemPackages = [
-        pkgs.python3.withPackages
-        (pygs: [
-          pygs.bandit
-          pygs.pyls-isort
-          pygs.pylsp-mypy
-          pygs.python-lsp-black
-          pygs.python-lsp-server.override
-          {
-            withAutopep8 = false;
-            withYapf = false;
-          }
-        ])
+        (
+          pkgs.python3.withPackages (pygs: [
+            pygs.bandit
+            pygs.pyls-isort
+            pygs.pylsp-mypy
+            pygs.python-lsp-black
+            pygs.python-lsp-server
+          ])
+        )
       ];
 
       tgap.system.programs.neovim.luaExtraConfig = ''

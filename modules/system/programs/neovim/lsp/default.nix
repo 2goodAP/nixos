@@ -37,7 +37,7 @@
       tgap.system.programs.neovim.startPackages =
         [
           pkgs.vimPlugins.nvim-lspconfig
-          pkgs.vimPlugins.null-ls
+          pkgs.vimPlugins.null-ls-nvim
         ]
         ++ (
           optionals cfg.lsp.lspsaga.enable [pkgs.vimPlugins.lspsaga-nvim]

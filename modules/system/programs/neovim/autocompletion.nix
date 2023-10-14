@@ -156,7 +156,7 @@
         ''}
 
         -- Set configuration for 'lua' filetype.
-        cmp.setup.filetype('lua', {
+        cmp.setup.filetype('lua'), {
           sources = cmp.config.sources({
             {name = 'nvim_lua'},
           }, {

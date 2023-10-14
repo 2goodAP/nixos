@@ -34,7 +34,7 @@
           optionals cfg.glow.enable [pkgs.vimPlugins.glow-nvim]
         )
         ++ (
-          optionals cfg.neorg.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugs.neorg]
+          optionals cfg.neorg.enable [pkgs.vimPlugins.plenary-nvim pkgs.vimPlugins.neorg]
         );
 
       tgap.system.programs.neovim.luaExtraConfig = ''
