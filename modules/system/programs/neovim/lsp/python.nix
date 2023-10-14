@@ -4,17 +4,11 @@
   pkgs,
   ...
 }: {
-  options.tgap.system.programs.neovim.lsp.languages = let
-    inherit (lib) mkEnableOption;
-  in {
-    python = mkEnableOption "Whether or not to enable python-specific lsp tools.";
-  };
-
   config = let
     cfg = config.tgap.system.programs.neovim.lsp;
     inherit (lib) mkIf;
   in
-    mkIf (cfg.enable && cfg.languages.python) {
+    mkIf (cfg.enable && (builtins.elem "python" cfg.languages)) {
       environment.systemPackages = [
         pkgs.python3.withPackages
         (pygs: [

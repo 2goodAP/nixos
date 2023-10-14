@@ -4,10 +4,24 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ./cpp.nix
+    ./lua.nix
+    ./nix.nix
+    ./python.nix
+    ./typescript.nix
+  ];
+
   options.tgap.system.programs.neovim.lsp = let
-    inherit (lib) mkIf mkEnableOption optionals;
+    inherit (lib) mkIf mkEnableOption mkOption optionals types;
   in {
     enable = mkEnableOption "Whether or not to enable lsp-related plugins.";
+
+    languages = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "The extra language servers to be installed. Supported languages are 'cpp', 'lua', 'nix', 'python', 'typescript'.";
+    };
 
     lspsaga.enable = mkEnableOption "Whether or not to enable lspsaga.nvim.";
 

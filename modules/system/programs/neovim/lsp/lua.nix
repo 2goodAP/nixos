@@ -4,17 +4,11 @@
   pkgs,
   ...
 }: {
-  options.tgap.system.programs.neovim.lsp.languages = let
-    inherit (lib) mkEnableOption;
-  in {
-    lua = mkEnableOption "Whether or not to enable lua-specific lsp tools.";
-  };
-
   config = let
     cfg = config.tgap.system.programs.neovim.lsp;
     inherit (lib) mkIf;
   in
-    mkIf (cfg.enable && cfg.languages.lua) {
+    mkIf (cfg.enable && (builtins.elem "lua" cfg.languages)) {
       environment.systemPackages = [pkgs.sumneko-lua-language-server];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
