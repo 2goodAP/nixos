@@ -8,7 +8,7 @@
 
     programs = {
       enable = true;
-      android-tools.enable = true;
+      androidTools.enable = true;
       fd.enable = true;
       glow.enable = true;
       qmk.enable = true;
@@ -31,17 +31,24 @@
           neorg.enable = true;
         };
 
-        lsp = {
-          enable = true;
+        langtools = {
           languages = [
             "cpp"
+            "haskell"
             "lua"
             "nix"
             "python"
+            "rust"
             "typescript"
           ];
-          lspsaga.enable = true;
-          lspSignature.enable = true;
+
+          dap.enable = true;
+
+          lsp = {
+            enable = true;
+            lspsaga.enable = true;
+            lspSignature.enable = true;
+          };
         };
 
         treesitter = {

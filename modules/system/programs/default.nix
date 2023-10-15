@@ -19,7 +19,7 @@
       description = "The default shell assigned to user accounts.";
     };
 
-    android-tools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+    androidTools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
 
     cms.enable = mkEnableOption "Whether to enable color management systems.";
 
@@ -62,7 +62,7 @@
             zip
           ])
           ++ (
-            optionals cfg.android-tools.enable [pkgs.android-tools]
+            optionals cfg.androidTools.enable [pkgs.android-tools]
           )
           ++ (
             optionals cfg.fd.enable [pkgs.fd]

@@ -40,7 +40,7 @@
           ])
         )
         ++ (
-          optionals cfg.lsp.enable (with pkgs.vimPlugins; [
+          optionals cfg.langtools.lsp.enable (with pkgs.vimPlugins; [
             cmp-nvim-lsp
             cmp-nvim-lsp-signature-help
             cmp-nvim-lsp-document-symbol
@@ -53,7 +53,9 @@
       tgap.system.programs.neovim.luaExtraConfig = ''
         -- Set up nvim-cmp.
         local cmp = require('cmp')
-        local luasnip = require('luasnip')
+        ${optionalStrings cfg.autocompletion.snippets.enable ''
+          local luasnip = require('luasnip')
+        ''}
 
         cmp.setup({
           mapping = cmp.mapping.preset.insert({
@@ -67,8 +69,10 @@
             ["<Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_next_item()
+            ${optionalStrings cfg.autocompletion.snippets.enable ''
               elseif luasnip.expand_or_jumpable() then
                 luasnip.expand_or_jump()
+            ''}
               else
                 fallback()
               end
@@ -76,20 +80,24 @@
             ["<S-Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_prev_item()
+            ${optionalStrings cfg.autocompletion.snippets.enable ''
               elseif luasnip.jumpable(-1) then
                 luasnip.jump(-1)
+            ''}
               else
                 fallback()
               end
             end, { "i", "s" }),
           }),
 
+        ${optionalStrings cfg.autocompletion.snippets.enable ''
           snippet = {
             -- REQUIRED - you must specify a snippet engine
             expand = function(args)
               luasnip.lsp_expand(args.body)
             end,
           },
+        ''}
 
           sources = cmp.config.sources({
         ${
@@ -98,7 +106,7 @@
           ''
         }
         ${
-          optionalString cfg.lsp.enable ''
+          optionalString cfg.langtools.lsp.enable ''
             {name = 'nvim_lsp'},
             {name = 'nvim_lsp_document_symbol'},
             {name = 'nvim_lsp_signature_help'},
@@ -140,7 +148,7 @@
               vim.opt.spelllang = opts.args
               vim.cmd('CmpDictionaryUpdate')
             end,
-            {nargs = 1},
+            {nargs = 1}
           )
         ''}
 
@@ -156,7 +164,7 @@
         ''}
 
         -- Set configuration for 'lua' filetype.
-        cmp.setup.filetype('lua'), {
+        cmp.setup.filetype('lua', {
           sources = cmp.config.sources({
             {name = 'nvim_lua'},
           }, {
@@ -165,7 +173,7 @@
         })
 
         -- Use buffer source for `/` and `?`.
-        for _, v in pairs({'/', '?'})
+        for _, v in pairs({'/', '?'}) do
           cmp.setup.cmdline(v, {
             mapping = cmp.mapping.preset.cmdline(),
             sources = {

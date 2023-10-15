@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./lsp
+    ./langtools
     ./autocompletion.nix
     ./colorscheme.nix
     ./filetype.nix
@@ -74,7 +74,6 @@
 
         runtime = {
           "ftplugin/javascript.lua".text = "vim.bo.tabstop = 2";
-          "ftplugin/lua.lua".text = "vim.bo.tabstop = 2";
           "ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
         };
       };
