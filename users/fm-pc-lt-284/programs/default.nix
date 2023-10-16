@@ -174,6 +174,7 @@
     fd
     glow
     jq
+    lazygit
     p7zip
     ranger
     ripgrep
