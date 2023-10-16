@@ -18,8 +18,7 @@
 
   config = let
     cfg = config.tgap.system.programs.neovim;
-    inherit (lib) mkIf optionals;
-    inherit (lib.strings) optionalString;
+    inherit (lib) mkIf optionals optionalString;
   in
     mkIf cfg.autocompletion.enable {
       tgap.system.programs.neovim.startPackages = with pkgs.vimPlugins;
@@ -28,6 +27,7 @@
           cmp-cmdline
           cmp-nvim-lua
           cmp-path
+          cmp-under-comparator
           nvim-cmp
         ]
         ++ (
@@ -52,24 +52,24 @@
 
       tgap.system.programs.neovim.luaExtraConfig = ''
         -- Set up nvim-cmp.
-        local cmp = require('cmp')
-        ${optionalStrings cfg.autocompletion.snippets.enable ''
-          local luasnip = require('luasnip')
+        local cmp = require("cmp")
+        ${optionalString cfg.autocompletion.snippets.enable ''
+          local luasnip = require("luasnip")
         ''}
 
         cmp.setup({
           mapping = cmp.mapping.preset.insert({
-            ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-            ['<C-f>'] = cmp.mapping.scroll_docs(4),
-            ['<C-Space>'] = cmp.mapping.complete(),
-            ['<C-e>'] = cmp.mapping.abort(),
+            ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+            ["<C-f>"] = cmp.mapping.scroll_docs(4),
+            ["<C-Space>"] = cmp.mapping.complete(),
+            ["<C-e>"] = cmp.mapping.abort(),
             -- Accept currently selected item. Set `select` to `false`
             -- to only confirm explicitly selected items.
-            ['<CR>'] = cmp.mapping.confirm({ select = true }),
+            ["<CR>"] = cmp.mapping.confirm({ select = true }),
             ["<Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_next_item()
-            ${optionalStrings cfg.autocompletion.snippets.enable ''
+            ${optionalString cfg.autocompletion.snippets.enable ''
               elseif luasnip.expand_or_jumpable() then
                 luasnip.expand_or_jump()
             ''}
@@ -80,7 +80,7 @@
             ["<S-Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_prev_item()
-            ${optionalStrings cfg.autocompletion.snippets.enable ''
+            ${optionalString cfg.autocompletion.snippets.enable ''
               elseif luasnip.jumpable(-1) then
                 luasnip.jump(-1)
             ''}
@@ -90,7 +90,7 @@
             end, { "i", "s" }),
           }),
 
-        ${optionalStrings cfg.autocompletion.snippets.enable ''
+        ${optionalString cfg.autocompletion.snippets.enable ''
           snippet = {
             -- REQUIRED - you must specify a snippet engine
             expand = function(args)
@@ -102,32 +102,45 @@
           sources = cmp.config.sources({
         ${
           optionalString cfg.autocompletion.dictionary.enable ''
-            {name = 'dictionary'},
+            {name = "dictionary"},
           ''
         }
         ${
           optionalString cfg.langtools.lsp.enable ''
-            {name = 'nvim_lsp'},
-            {name = 'nvim_lsp_document_symbol'},
-            {name = 'nvim_lsp_signature_help'},
+            {name = "nvim_lsp"},
+            {name = "nvim_lsp_document_symbol"},
+            {name = "nvim_lsp_signature_help"},
           ''
         }
         ${
           optionalString cfg.autocompletion.snippets.enable ''
-            {name = 'luasnip'},
+            {name = "luasnip"},
           ''
         }
           }, {
-            {name = 'buffer'},
+            {name = "buffer"},
           }),
 
           view = {
-            entries = {name = 'custom', selection_order = 'near_cursor'}
+            entries = {name = "custom", selection_order = "near_cursor"}
           },
 
           window = {
             autocompletion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
+          },
+
+          sorting = {
+            comparators = {
+              cmp.config.compare.offset,
+              cmp.config.compare.exact,
+              cmp.config.compare.score,
+              require("cmp-under-comparator").under,
+              cmp.config.compare.kind,
+              cmp.config.compare.sort_text,
+              cmp.config.compare.length,
+              cmp.config.compare.order,
+            },
           },
         })
 
@@ -143,58 +156,58 @@
 
           -- Set up a command for switching languages.
           vim.api.nvim_create_user_command(
-            'SwitchLang',
+            "SwitchLang",
             function(opts)
               vim.opt.spelllang = opts.args
-              vim.cmd('CmpDictionaryUpdate')
+              vim.cmd("CmpDictionaryUpdate")
             end,
             {nargs = 1}
           )
         ''}
 
         ${optionalString cfg.git.enable ''
-          -- Set configuration for 'gitcommit' filetype.
-          cmp.setup.filetype('gitcommit', {
+          -- Set configuration for "gitcommit" filetype.
+          cmp.setup.filetype("gitcommit", {
             sources = cmp.config.sources({
-              { name = 'cmp_git' },
+              { name = "cmp_git" },
             }, {
-              { name = 'buffer' },
+              { name = "buffer" },
             })
           })
         ''}
 
-        -- Set configuration for 'lua' filetype.
-        cmp.setup.filetype('lua', {
+        -- Set configuration for "lua" filetype.
+        cmp.setup.filetype("lua", {
           sources = cmp.config.sources({
-            {name = 'nvim_lua'},
+            {name = "nvim_lua"},
           }, {
-            {name = 'buffer'},
+            {name = "buffer"},
           })
         })
 
         -- Use buffer source for `/` and `?`.
-        for _, v in pairs({'/', '?'}) do
+        for _, v in pairs({"/", "?"}) do
           cmp.setup.cmdline(v, {
             mapping = cmp.mapping.preset.cmdline(),
             sources = {
-              {name = 'buffer'}
+              {name = "buffer"}
             },
             view = {
-              entries = {name = 'wildmenu', separator = ' | '}
+              entries = {name = "wildmenu", separator = " | "}
             },
           })
         end
 
-        -- Use cmdline & path source for ':'.
-        cmp.setup.cmdline(':', {
+        -- Use cmdline & path source for ":".
+        cmp.setup.cmdline(":", {
           mapping = cmp.mapping.preset.cmdline(),
           sources = cmp.config.sources({
-            {name = 'path'}
+            {name = "path"}
           }, {
-            {name = 'cmdline'}
+            {name = "cmdline"}
           }),
           view = {
-            entries = {name = 'wildmenu', separator = ' | '}
+            entries = {name = "wildmenu", separator = " | "}
           },
         })
       '';

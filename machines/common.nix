@@ -25,13 +25,16 @@
         };
 
         filetype = {
-          enable = true;
           editorconfig.enable = true;
           glow.enable = true;
           neorg.enable = true;
         };
 
+        git.enable = true;
+
         langtools = {
+          dap.enable = true;
+
           languages = [
             "cpp"
             "haskell"
@@ -42,8 +45,6 @@
             "typescript"
           ];
 
-          dap.enable = true;
-
           lsp = {
             enable = true;
             lspsaga.enable = true;
@@ -51,10 +52,21 @@
           };
         };
 
+        motion = {
+          enable = true;
+          leap.enable = true;
+        };
+
+        statusline.enable = true;
+        tabline.enable = true;
+        telescope.enable = true;
+
         treesitter = {
           enable = true;
           extraPlugins.enable = true;
         };
+
+        ui.enable = true;
       };
     };
   };

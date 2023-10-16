@@ -53,6 +53,7 @@
             busybox
             htop
             jq
+            lazygit
             p7zip
             ranger
             toybox

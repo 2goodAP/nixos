@@ -21,7 +21,7 @@
       tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.tokyonight-nvim];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
-        vim.cmd([[colorscheme tokyonight]])
+        vim.cmd("colorscheme tokyonight")
       '';
     };
 }

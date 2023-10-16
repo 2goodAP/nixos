@@ -26,8 +26,8 @@
             options = {
               ${optionalString (hasInfix "tokyonight" cfg.colorscheme) "theme = tokyonight,"}
               icons_enabled = false,
-              component_separators = {left = "|", right = "|"},
-              section_separators = {left = "|", right = "|"},
+              component_separators = "|",
+              section_separators = "",
             }
           })
         '';
@@ -38,15 +38,17 @@
 
         tgap.system.programs.neovim.luaExtraConfig = ''
           require("bufferline").setup({
-            -- LSP Indicators
-            diagnostics_indicator = function(count, level, diagnostics_dict, context)
-              local s = " "
-              for e, n in pairs(diagnostics_dict) do
-                local sym = e == "error" and "x " or (e == "warning" and "o " or "i")
-                s = s .. n .. sym
-              end
-              return s
-            end
+            options = {
+              -- LSP Indicators
+              diagnostics_indicator = function(count, level, diagnostics_dict, context)
+                local s = " "
+                for e, n in pairs(diagnostics_dict) do
+                  local sym = e == "error" and "x " or (e == "warning" and "o " or "i")
+                  s = s .. n .. sym
+                end
+                return s
+              end,
+            }
           })
         '';
       })
