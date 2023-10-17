@@ -1,6 +1,6 @@
-[KeePassXC Auto-Launch to VD4]
-Description=KeePassXC Auto-Launch to VD4
-desktops=cb178b6d-d224-403b-8759-cda6d5bc6121
+[KeePassXC Auto-Launch to Specific VD]
+Description=KeePassXC Auto-Launch to Specific VD
+desktops=16f4bad9-bc6f-4bd3-ae03-5a92f68b9f32
 desktopsrule=2
 wmclass=KeePassXC
 wmclassmatch=2
