@@ -16,10 +16,7 @@
   in
     mkIf cfg.enable {
       environment = {
-        systemPackages = with pkgs; [
-          kitty
-          wl-clipboard
-        ];
+        systemPackages = [pkgs.wl-clipboard];
 
         plasma5.excludePackages = with pkgs.libsForQt5; [
           ark

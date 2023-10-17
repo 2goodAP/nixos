@@ -26,8 +26,9 @@
     cfg = config.tgap.user.desktop;
     inherit (lib) mkIf mkMerge optionals;
   in
-    mkMerge [
-      (mkIf (sysPlasma5 && cfg.applications.enable) {
+
+    mkIf sysPlasma5 (mkMerge [
+      (mkIf cfg.applications.enable {
         programs = {
           mpv = {
             enable = true;
@@ -89,22 +90,21 @@
         home.packages =
           (with pkgs; [
             gimp
+            libreoffice-qt
             speedcrunch
             tor-browser-bundle-bin
             wev
           ])
-          ++ optionals sysPlasma5 [pkgs.libreoffice-qt];
+          ++ (
+            optionals cfg.nixosApplications.enable (with pkgs; [
+              gparted
+              nextcloud-client
+              zoom-us
+            ])
+          );
       })
 
-      (mkIf (sysPlasma5 && cfg.nixosApplications.enable) {
-        home.packages = with pkgs; [
-          gparted
-          nextcloud-client
-          zoom-us
-        ];
-      })
-
-      (mkIf (sysPlasma5 && cfg.gaming.enable) {
+      (mkIf cfg.gaming.enable {
         programs.mangohud = {
           enable = true;
 
@@ -156,5 +156,5 @@
           ])
           ++ (optionals cfg.gaming.steam.enable [pkgs.steam]);
       })
-    ];
+    ]);
 }
