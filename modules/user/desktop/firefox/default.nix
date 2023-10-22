@@ -29,7 +29,7 @@
               engines = {
                 Startpage = {
                   urls = [
-                    {template = "https://startpage.com/sp/search?query={searchTerms}";}
+                    {template = "https://www.startpage.com/sp/search?query={searchTerms}&abp=1&t=light&lui=english&prfe=8248e70cd4db24a655713454e687a846b356ab6136b42142c55afc10919ed7872a95b4fa5f8f923c4f56dfe54b1eabeced0c2df702f7264f2ea021fdf96e7d64aaf2ebc59ba008d23de46f0f";}
                   ];
                   definedAliases = ["@startpage" "@sp"];
                 };
