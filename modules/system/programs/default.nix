@@ -198,6 +198,8 @@
 
         programs.fish = {
           enable = true;
+          interactiveShellInit = "fish_vi_key_bindings";
+
           shellInit = ''
             # Tide vi-mode prompt icon.
             set --global tide_character_icon '>'
@@ -209,26 +211,22 @@
             set --global tide_character_vi_icon_visual 'V'
             set --global tide_vi_mode_icon_visual 'V'
           '';
-          interactiveShellInit = ''
-            fish_vi_key_bindings
-          '';
         };
-        environment.systemPackages = with pkgs; [
-          fishPlugins.bass
-          fishPlugins.colored-man-pages
-          fishPlugins.done
-          fishPlugins.fishtape_3
-          fishPlugins.forgit
-          fishPlugins.pisces
-          fishPlugins.puffer
-          fishPlugins.sponge
-          fishPlugins.tide
-
-          fishPlugins.fzf-fish
-          fzf
-          fishPlugins.grc
-          grc
-        ];
+        environment.systemPackages =
+          [pkgs.fzf pkgs.grc]
+          ++ (with pkgs.fishPlugins; [
+            bass
+            colored-man-pages
+            done
+            fishtape_3
+            forgit
+            pisces
+            puffer
+            sponge
+            tide
+            fzf-fish
+            grc
+          ]);
       })
 
       (mkIf cfg.cms.enable {

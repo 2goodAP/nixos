@@ -20,6 +20,8 @@
       {
         programs.beets = {
           enable = true;
+          package = pkgs.beets-unstable;
+
           settings = {
             # Path to the music directory and the music library
             directory = "~/Music";
@@ -44,7 +46,7 @@
         };
 
         home.packages = with pkgs; [
-          cmus
+          musikcube
           transmission
         ];
       }
