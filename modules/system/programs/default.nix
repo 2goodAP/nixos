@@ -238,14 +238,14 @@
             set -g fish_pager_color_selected_background --background=$selection
 
             # Tide vi-mode Prompt Icon
-            set --global tide_character_icon '>'
-            set --global tide_vi_mode_icon_insert '>'
-            set --global tide_character_vi_icon_default '<'
-            set --global tide_vi_mode_icon_default '<'
-            set --global tide_character_vi_icon_replace 'R'
-            set --global tide_vi_mode_icon_replace 'R'
-            set --global tide_character_vi_icon_visual 'V'
-            set --global tide_vi_mode_icon_visual 'V'
+            set -g tide_character_icon '>'
+            set -g tide_vi_mode_icon_insert '>'
+            set -g tide_character_vi_icon_default '<'
+            set -g tide_vi_mode_icon_default '<'
+            set -g tide_character_vi_icon_replace 'R'
+            set -g tide_vi_mode_icon_replace 'R'
+            set -g tide_character_vi_icon_visual 'V'
+            set -g tide_vi_mode_icon_visual 'V'
           '';
         };
         environment.systemPackages =
