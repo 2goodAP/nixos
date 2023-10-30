@@ -26,7 +26,6 @@
     cfg = config.tgap.user.desktop;
     inherit (lib) mkIf mkMerge optionals;
   in
-
     mkIf sysPlasma5 (mkMerge [
       (mkIf cfg.applications.enable {
         programs = {
