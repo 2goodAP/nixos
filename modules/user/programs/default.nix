@@ -49,6 +49,12 @@
           musikcube
           transmission
         ];
+
+        home.file.musikcube-settings = {
+          source = ./musikcube;
+          target = ".config/musikcube";
+          recursive = true;
+        };
       }
 
       (mkIf cfg.jupyter.enable {

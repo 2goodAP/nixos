@@ -40,8 +40,68 @@
             };
           };
 
-          zathura = {
+          sioyek = {
             enable = true;
+            bindings = {
+              next_page = "J";
+              previous_page = "K";
+              screen_down = "<C-j>";
+              screen_up = "<C-k>";
+              "goto_top_of_page;goto_right" = "<C-u>";
+              "goto_bottom_of_page;goto_left" = "<C-d>";
+            };
+            config = {
+              #shared_database_path = "$HOME/Nextcloud/Utilities/Sioyek/shared.db";
+              startup_commands = "fit_page_to_width;toggle_visual_scroll";
+
+              should_load_tutorial_when_no_other_file = "1";
+              should_warn_about_user_key_override = "1";
+
+              single_main_window_size = "960 960";
+              main_window_size = "960 960";
+              helper_window_size = "900 900";
+              rerender_overview = "1";
+              prerender_next_page_presentation = "1";
+
+              search_url_a = "https://arxiv.org/search/?searchtype=all&source=header&query=";
+              search_url_g = "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=";
+              search_url_s = "https://www.startpage.com/sp/search?abp=1&t=light&lui=english&prfe=8248e70cd4db24a655713454e687a846b356ab6136b42142c55afc10919ed7872a95b4fa5f8f923c4f56dfe54b1eabeced0c2df702f7264f2ea021fdf96e7d64aaf2ebc59ba008d23de46f0f&query=";
+              middle_click_search_engine = "a";
+              shift_middle_click_search_engine = "s";
+
+              super_fast_search = "1";
+              case_sensitive_search = "0";
+
+              collapsed_toc = "1";
+              create_table_of_contents_if_not_exists = "1";
+              max_created_toc_size = "5000";
+              sort_bookmarks_by_location = "1";
+
+              zoom_inc_factor = "1.1";
+              wheel_zoom_on_cursor = "1";
+
+              background_color = "0.882 0.886 0.906";
+              text_highlight_color = "0.6 0.655 0.875";
+              search_highlight_color = "0.776 0.263 0.263";
+              synctex_highlight_color = "0.345 0.459 0.224";
+              custom_background_color = "0.882 0.886 0.906";
+              custom_text_color = "0.216 0.376 0.749";
+              status_bar_color = "0.180 0.490 0.914";
+              status_bar_text_color = "0.914 0.914 0.925";
+              page_separator_width = "2";
+              ui_background_color = "0.769 0.784 0.855";
+              ui_text_color = "0.216 0.376 0.749";
+              ui_selected_background_color = "0.180 0.490 0.914";
+              ui_selected_text_color = "0.914 0.914 0.925";
+
+              ui_font = "Noto Sans Regular Nerd Font Complete";
+              font_size = "14";
+              status_bar_font_size = "14";
+            };
+          };
+
+          zathura = {
+            enable = false;
             options = {
               "font" = "Noto Sans Regular Nerd Font Complete 11";
 
@@ -102,6 +162,11 @@
               zoom-us
             ])
           );
+
+        home.file.speedcrunch-settings = {
+          source = ./speedcrunch/SpeedCrunch.ini;
+          target = ".config/SpeedCrunch/SpeedCrunch.ini";
+        };
       })
 
       (mkIf cfg.gaming.enable {
