@@ -2,7 +2,7 @@
   "AppQuitKey": "^D",
   "AsyncTrackListQueries": true,
   "AutoHideCommandBar": false,
-  "AutoUpdateCheck": true,
+  "AutoUpdateCheck": false,
   "CategoryTrackListSortOrder": 0,
   "ColorTheme": "solarized light",
   "DisableAlbumArtistFallback": false,
