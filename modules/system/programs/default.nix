@@ -51,6 +51,7 @@
 
             # Programs
             busybox
+            git-filter-repo
             htop
             jq
             lazygit
