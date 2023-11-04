@@ -18,7 +18,7 @@
     "sideBySideLeftMarginOverride": "10px",
     "sideBySideRightMarginOverride": "10px",
     "sideBySideOutputRatio": 1,
-    "windowingMode": "defer",
+    "windowingMode": "full",
     "codeCellConfig": {},
     "markdownCellConfig": {
         "lineNumbers": false
