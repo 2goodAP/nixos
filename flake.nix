@@ -2,8 +2,9 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
+    hyprland.url = "github:hypr/Hyprland";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
@@ -17,12 +18,12 @@
   };
 
   outputs = {
-    self,
-    nixpkgs,
     flake-parts,
-    nur,
     home-manager,
     nbfc-linux,
+    nixpkgs,
+    nixpkgs-wayland,
+    nur,
     ...
   } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -30,7 +31,7 @@
 
       flake.nixosConfigurations = let
         inherit (nixpkgs) lib;
-        overlays = import ./overlays;
+        overlays = import ./overlays ++ [nixpkgs-wayland.overlay];
         system = "x86_64-linux";
         systemModules = import ./modules/system;
       in {
@@ -53,10 +54,12 @@
                 substituters = [
                   "https://cache.nixos.org/"
                   "https://cuda-maintainers.cachix.org/"
+                  "https://nixpkgs-wayland.cachix.org/"
                 ];
                 trusted-public-keys = [
                   "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
                   "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+                  "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
                 ];
               };
 
@@ -99,10 +102,12 @@
                 substituters = [
                   "https://cache.nixos.org/"
                   "https://cuda-maintainers.cachix.org/"
+                  "https://nixpkgs-wayland.cachix.org/"
                 ];
                 trusted-public-keys = [
                   "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
                   "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+                  "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
                 ];
               };
 

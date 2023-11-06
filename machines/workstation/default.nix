@@ -1,5 +1,6 @@
 {
   hostName,
+  hyprland,
   nur,
   ...
 }: {config, ...}: {
