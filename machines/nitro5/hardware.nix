@@ -14,10 +14,11 @@
         "sd_mod"
         "rtsx_pci_sdmmc"
       ];
-      kernelModules = ["dm-snapshot" "i915"];
+      kernelModules = ["dm-snapshot"];
     };
 
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     kernelModules = ["kvm-intel"];
   };
 
