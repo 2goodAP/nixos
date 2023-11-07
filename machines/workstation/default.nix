@@ -1,6 +1,5 @@
 {
   hostName,
-  hyprland,
   nur,
   ...
 }: {config, ...}: {
@@ -82,11 +81,11 @@
     backupFileExtension = "hm.bak";
 
     sharedModules = [
-      # Custom user modules.
-      (import ../../modules/user)
-
       # NUR modules for `config.nur` options.
       nur.nixosModules.nur
+
+      # Custom user modules.
+      (import ../../modules/user)
     ];
 
     extraSpecialArgs = {
