@@ -4,7 +4,7 @@
   ...
 }: {
   # Disable installing kitty using home-manager.
-  tgap.user.desktop.terminal = null;
+  tgap.home.desktop.terminal = null;
 
   home.file.kitty-conf = {
     target = ".config/kitty/kitty.conf";

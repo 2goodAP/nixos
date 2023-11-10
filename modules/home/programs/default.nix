@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  options.tgap.user.programs = let
+  options.tgap.home.programs = let
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to install common base applications.";
@@ -13,7 +13,7 @@
   };
 
   config = let
-    cfg = config.tgap.user.programs;
+    cfg = config.tgap.home.programs;
     inherit (lib) mkIf mkMerge;
   in
     mkIf cfg.enable (mkMerge [

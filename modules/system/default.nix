@@ -18,8 +18,6 @@
     apparmor.enable = mkEnableOption "Whether or not to enable apparmor.";
 
     audio.enable = mkEnableOption "Whether or not to enable audio-related services.";
-
-    bluetooth.enable = mkEnableOption "Whether or not to enable bluetooth-related services.";
   };
 
   config = let
@@ -69,13 +67,6 @@
           };
           jack.enable = true;
           pulse.enable = true;
-        };
-      })
-
-      (mkIf cfg.bluetooth.enable {
-        hardware = {
-          bluetooth.enable = true;
-          xpadneo.enable = true;
         };
       })
 

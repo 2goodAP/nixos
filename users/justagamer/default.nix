@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [../common];
 
-  tgap.user.desktop.gaming = {
+  tgap.home.desktop.gaming = {
     enable = true;
     steam.enable = true;
   };

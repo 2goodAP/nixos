@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [../common];
 
-  tgap.user.programs.jupyter.enable = true;
+  tgap.home.programs.jupyter.enable = true;
 
   home.packages = with pkgs; [
     insomnia

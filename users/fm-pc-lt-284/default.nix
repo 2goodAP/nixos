@@ -9,7 +9,7 @@
     ./programs
   ];
 
-  tgap.user.desktop.nixosApplications.enable = false;
+  tgap.home.desktop.nixosApplications.enable = false;
 
   home.packages = with pkgs; [
     insomnia

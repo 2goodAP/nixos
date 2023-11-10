@@ -5,7 +5,7 @@
   sysPlasma5,
   ...
 }: {
-  options.tgap.user.desktop = let
+  options.tgap.home.desktop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
     applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
@@ -23,7 +23,7 @@
   };
 
   config = let
-    cfg = config.tgap.user.desktop;
+    cfg = config.tgap.home.desktop;
     inherit (lib) mkIf mkMerge optionals;
   in
     mkIf sysPlasma5 (mkMerge [

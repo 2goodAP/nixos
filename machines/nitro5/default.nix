@@ -1,8 +1,8 @@
 {
   hostName,
-  nur,
+  mkHomeSettings,
   ...
-}: {config, ...}: {
+}: {config, lib, ...}: {
   imports = [
     ./hardware.nix
     ../common.nix
@@ -64,25 +64,7 @@
     };
   };
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "hm.bak";
-
-    sharedModules = [
-      # Custom user modules.
-      (import ../../modules/user)
-
-      # NUR modules for `config.nur` options.
-      nur.nixosModules.nur
-    ];
-
-    extraSpecialArgs = {
-      sysPlasma5 = config.tgap.system.plasma5.enable;
-      sysQmk = config.tgap.system.programs.qmk.enable;
-      sysStateVersion = config.system.stateVersion;
-    };
-
+  home-manager = lib.recursiveUpdate (mkHomeSettings {inherit config;}) {
     users = {
       twogoodap.imports = [../../users/twogoodap];
       workerap.imports = [../../users/workerap];

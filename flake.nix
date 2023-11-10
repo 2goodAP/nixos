@@ -3,16 +3,30 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
+
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nbfc-linux = {
       url = "github:nbfc-linux/nbfc-linux";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprland.url = "github:hyprwm/hyprland";
+    hy3 = {
+      url = "github:outfoxxed/hy3";
+      inputs.hyprland.follows = "hyprland";
+    };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland";
     };
   };
 
@@ -34,7 +48,7 @@
         system = "x86_64-linux";
         systemModules = import ./modules/system;
 
-        nixSettings = {
+        systemSettings = {
           nix.settings = {
             experimental-features = ["nix-command" "flakes"];
             max-jobs = 12;
@@ -42,11 +56,13 @@
             substituters = [
               "https://cache.nixos.org"
               "https://cuda-maintainers.cachix.org"
+              "https://hyprland.cachix.org"
               "https://nixpkgs-wayland.cachix.org"
             ];
             trusted-public-keys = [
               "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
               "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+              "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
               "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
             ];
           };
@@ -56,18 +72,37 @@
             inherit overlays;
           };
         };
+
+        mkHomeSettings = {config, ...}: {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "hm.bak";
+
+          sharedModules = [
+            # NUR modules for `config.nur` options.
+            nur.nixosModules.nur
+
+            # Custom user modules.
+            (import ./modules/home)
+          ];
+
+          extraSpecialArgs = {
+            inherit inputs;
+            sysPlasma5 = config.tgap.system.plasma5.enable;
+            sysQmk = config.tgap.system.programs.qmk.enable;
+            sysStateVersion = config.system.stateVersion;
+          };
+        };
       in {
         nitro5 = lib.nixosSystem {
           inherit system;
-          specialArgs = {inherit inputs;};
 
           modules = [
-            # Custom system modules.
-            systemModules
             # Home-Manager modules.
             home-manager.nixosModules.home-manager
+
             # nix and nixpkgs specific settings.
-            (lib.recursiveUpdate nixSettings {
+            (lib.recursiveUpdate systemSettings {
               nixpkgs.overlays =
                 overlays
                 ++ [
@@ -76,31 +111,33 @@
                   })
                 ];
             })
+            # Custom system modules.
+            systemModules
 
             # System-specific configuraitons.
             (import ./machines/nitro5 {
               hostName = "nitro5-nix";
-              inherit nur;
+              inherit mkHomeSettings;
             })
           ];
         };
 
         workstation = lib.nixosSystem {
           inherit system;
-          specialArgs = {inherit inputs;};
 
           modules = [
-            # Custom system modules.
-            systemModules
             # Home-Manager modules.
             home-manager.nixosModules.home-manager
+
             # nix and nixpkgs specific settings.
-            nixSettings
+            systemSettings
+            # Custom system modules.
+            systemModules
 
             # System-specific configuraitons.
             (import ./machines/workstation {
               hostName = "workstation-nix";
-              inherit nur;
+              inherit mkHomeSettings;
             })
           ];
         };

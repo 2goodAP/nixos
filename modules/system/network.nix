@@ -4,73 +4,88 @@
   pkgs,
   ...
 }: {
-  options.tgap.system.network = let
-    inherit (lib) mkOption types;
+  options.tgap.system = let
+    inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether or not to enable networking services.";
-    };
+    bluetooth.enable = mkEnableOption "Whether or not to enable bluetooth-related services.";
 
-    hostName = mkOption {
-      type = types.str;
-      description = "The hostname of the laptop.";
-    };
+    network = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether or not to enable networking services.";
+      };
 
-    nameservers = mkOption {
-      type = types.listOf types.str;
-      description = "The list of nameservers.";
-    };
+      hostName = mkOption {
+        type = types.str;
+        description = "The hostname of the laptop.";
+      };
 
-    interfaces = mkOption {
-      type = types.listOf types.str;
-      description = "The network interface chips present in the laptop.";
-    };
+      nameservers = mkOption {
+        type = types.listOf types.str;
+        description = "The list of nameservers.";
+      };
 
-    wifiRandMacAddress = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
+      interfaces = mkOption {
+        type = types.listOf types.str;
+        description = "The network interface chips present in the laptop.";
+      };
+
+      wifiRandMacAddress = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
+      };
     };
   };
 
   config = let
-    cfg = config.tgap.system.network;
-    inherit (lib) mkIf;
+    cfg = config.tgap.system;
+    inherit (lib) mkIf mkMerge;
   in
-    mkIf cfg.enable {
-      networking = {
-        inherit (cfg) hostName nameservers;
+    mkMerge [
+      (mkIf cfg.bluetooth.enable {
+        hardware = {
+          bluetooth.enable = true;
+          xpadneo.enable = true;
+        };
 
-        networkmanager = {
+        services.blueman.enable = true;
+      })
+
+      (mkIf cfg.network.enable {
+        networking = {
+          inherit (cfg.network) hostName nameservers;
+
+          networkmanager = {
+            enable = true;
+            enableStrongSwan = true;
+            insertNameservers = cfg.network.nameservers;
+            wifi.scanRandMacAddress = cfg.network.wifiRandMacAddress;
+          };
+
+          # Configure the firewall.
+          firewall = {
+            enable = true;
+            package = pkgs.iptables-nftables-compat;
+          };
+        };
+
+        # Enable NTP.
+        services = {
+          ntp.enable = true;
+          timesyncd.enable = true;
+        };
+
+        # Enable systemd-networkd.
+        systemd.network = {
           enable = true;
-          enableStrongSwan = true;
-          insertNameservers = cfg.nameservers;
-          wifi.scanRandMacAddress = cfg.wifiRandMacAddress;
+
+          wait-online = {
+            anyInterface = true;
+            extraArgs = builtins.map (iface: "--interface=${iface}") cfg.network.interfaces;
+          };
         };
-
-        # Configure the firewall.
-        firewall = {
-          enable = true;
-          package = pkgs.iptables-nftables-compat;
-        };
-      };
-
-      # Enable NTP.
-      services = {
-        ntp.enable = true;
-        timesyncd.enable = true;
-      };
-
-      # Enable systemd-networkd.
-      systemd.network = {
-        enable = true;
-
-        wait-online = {
-          anyInterface = true;
-          extraArgs = builtins.map (iface: "--interface=${iface}") cfg.interfaces;
-        };
-      };
-    };
+      })
+    ];
 }

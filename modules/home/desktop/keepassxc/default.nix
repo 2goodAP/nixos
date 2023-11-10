@@ -6,7 +6,7 @@
   ...
 }: {
   config = let
-    cfg = config.tgap.user.desktop;
+    cfg = config.tgap.home.desktop;
     inherit (lib) mkIf;
   in
     mkIf (sysPlasma5 && cfg.applications.enable) {

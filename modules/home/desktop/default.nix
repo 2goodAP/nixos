@@ -8,10 +8,11 @@
   imports = [
     ./applications.nix
     ./firefox
+    ./hyprland
     ./keepassxc
   ];
 
-  options.tgap.user.desktop = let
+  options.tgap.home.desktop = let
     inherit (lib) mkOption types;
   in {
     terminal = mkOption {
@@ -22,7 +23,7 @@
   };
 
   config = let
-    cfg = config.tgap.user.desktop;
+    cfg = config.tgap.home.desktop;
     inherit (lib) mkIf;
   in
     mkIf (sysPlasma5 && cfg.terminal == "kitty") {
