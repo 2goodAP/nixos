@@ -64,7 +64,10 @@
             zip
           ])
           ++ (
-            optionals cfg.androidTools.enable [pkgs.android-tools]
+            optionals cfg.androidTools.enable (with pkgs; [
+              android-file-transfer
+              android-tools
+            ])
           )
           ++ (
             optionals cfg.fd.enable [pkgs.fd]

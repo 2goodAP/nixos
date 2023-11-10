@@ -76,6 +76,7 @@
           "ftplugin/javascript.lua".text = "vim.bo.tabstop = 2";
           "ftplugin/lua.lua".text = "vim.bo.tabstop = 2";
           "ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
+          "ftplugin/yuck.lua".text = "vim.bo.tabstop = 2";
         };
       };
 
