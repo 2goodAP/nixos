@@ -16,7 +16,7 @@
 
   config = let
     cfg = config.tgap.home.desktop.hyprland;
-    inherit (lib) getExe mkIf;
+    inherit (lib) getExe getExe' mkIf;
   in
     mkIf cfg.enable {
       programs = {
@@ -40,6 +40,7 @@
         blueman-applet.enable = true;
         mako.enable = true;
         network-manager-applet.enable = true;
+        playerctld.enable = true;
         swayosd.enable = true;
 
         cliphist = {
@@ -161,7 +162,8 @@
               "$super, C, killactive,"
               "$super, M, exit,"
               "$super, V, togglefloating,"
-              "$super, R, exec, ${getExe pkgs.wofi} --show drun"
+              ''$super, R, exec, ${getExe' pkgs.rofi-wayland "rofi"} -show combi \
+                  -modes combi -combi-modes window,drun,run''
               "$super, P, pseudo," # dwindle
               "$super, J, togglesplit," # dwindle
 
@@ -242,6 +244,7 @@
         hyprland-per-window-layout
         hyprpaper
         hyprpicker
+        libnotify
         wallust
         watershot
         wev

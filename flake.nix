@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    lanzaboote.url = "github:nix-community/lanzaboote";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
@@ -33,6 +34,7 @@
   outputs = {
     flake-parts,
     home-manager,
+    lanzaboote,
     nbfc-linux,
     nixpkgs,
     nixpkgs-wayland,
@@ -98,10 +100,12 @@
           inherit system;
 
           modules = [
-            # Home-Manager modules.
+            # home-manager module
             home-manager.nixosModules.home-manager
+            # lanzaboote nixos module
+            lanzaboote.nixosModules.lanzaboote
 
-            # nix and nixpkgs specific settings.
+            # nix and nixpkgs specific settings
             (lib.recursiveUpdate systemSettings {
               nixpkgs.overlays =
                 overlays
@@ -111,10 +115,10 @@
                   })
                 ];
             })
-            # Custom system modules.
+            # custom system modules
             systemModules
 
-            # System-specific configuraitons.
+            # system-specific configuraitons
             (import ./machines/nitro5 {
               hostName = "nitro5-nix";
               inherit mkHomeSettings;
@@ -126,15 +130,17 @@
           inherit system;
 
           modules = [
-            # Home-Manager modules.
+            # home-manager modules
             home-manager.nixosModules.home-manager
+            # lanzaboote nixos module
+            lanzaboote.nixosModules.lanzaboote
 
-            # nix and nixpkgs specific settings.
+            # nix and nixpkgs specific settings
             systemSettings
-            # Custom system modules.
+            # custom system modules
             systemModules
 
-            # System-specific configuraitons.
+            # system-specific configuraitons
             (import ./machines/workstation {
               hostName = "workstation-nix";
               inherit mkHomeSettings;

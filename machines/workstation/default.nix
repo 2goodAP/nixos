@@ -67,8 +67,15 @@
 
   tgap.system = {
     boot = {
-      type = "encrypted-boot-btrfs";
-      secDataPartlabel = "LinuxSecDataPartition";
+      secureBoot.enable = false;
+      encrypted-btrfs = {
+        enable = true;
+        boot.keyFile = "/boot/crypto_keyfile.bin";
+        root = {
+          partlabel = "LinuxPriDataPartition";
+          extraPartlabels = ["LinuxSecDataPartition"];
+        };
+      };
     };
 
     network = {

@@ -46,7 +46,7 @@
 
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
-        system.stateVersion = "23.05";
+        system.stateVersion = "23.11";
       }
 
       (mkIf cfg.apparmor.enable {
