@@ -27,6 +27,10 @@
     mkMerge [
       {
         i18n.defaultLocale = "en_US.UTF-8";
+        systemd.oomd.enableUserServices = true;
+        # This value determines the NixOS release from which the default
+        # settings for stateful data on the system are taken.
+        system.stateVersion = "23.11";
 
         console = {
           font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";
@@ -34,7 +38,8 @@
         };
 
         services = {
-          printing.enable = true; # CUPS for printing documents.
+          fstrim.enable = true;
+          printing.enable = true;
           tlp.enable = true;
 
           xserver = {
@@ -43,11 +48,61 @@
             xkbOptions = "grp:alt_caps_toggle";
           };
         };
-
-        # This value determines the NixOS release from which the default
-        # settings for stateful data on the system are taken.
-        system.stateVersion = "23.11";
       }
+
+      (mkIf cfg.boot.encrypted-btrfs.enable {
+        services = {
+          btrfs.autoScrub = {
+            enable = true;
+            fileSystems = ["/"];
+          };
+
+          snapper = {
+            snapshotRootOnBoot = true;
+            configs = {
+              root = {
+                SUBVOLUME = "/";
+                ALLOW_GROUPS = ["wheel"];
+                SYNC_ACL = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "5";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "1";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
+              nix = {
+                SUBVOLUME = "/nix";
+                ALLOW_GROUPS = ["wheel" "nixbld"];
+                SYNC_ACL = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "5";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "1";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
+              home = {
+                SUBVOLUME = "/home";
+                ALLOW_GROUPS = ["disk" "users"];
+                SYNC_ACL = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "7";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "0";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
+            };
+          };
+        };
+      })
 
       (mkIf cfg.apparmor.enable {
         security.apparmor = {
@@ -70,11 +125,14 @@
         };
       })
 
-      (mkIf (cfg.plasma5.enable || cfg.programs.virtualization.enable) {
-        hardware.opengl = {
-          enable = true;
-          driSupport32Bit = true;
-        };
-      })
+      (mkIf (
+          builtins.elem "nvidia" config.services.xserver.videoDrivers
+          || cfg.programs.virtualization.enable
+        ) {
+          hardware.opengl = {
+            enable = true;
+            driSupport32Bit = true;
+          };
+        })
     ];
 }

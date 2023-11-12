@@ -2,7 +2,11 @@
   hostName,
   mkHomeSettings,
   ...
-}: {config, lib, ...}: {
+}: {
+  config,
+  lib,
+  ...
+}: {
   imports = [
     ./hardware.nix
     ../common.nix
@@ -49,7 +53,11 @@
   };
 
   tgap.system = {
-    boot.type = "encrypted-boot-btrfs";
+    boot = {
+      secureBoot.enable = false;
+      encrypted-btrfs.enable = true;
+    };
+
     laptop = {
       enable = true;
       model = "Acer Nitro AN515-51";

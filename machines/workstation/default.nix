@@ -67,13 +67,12 @@
 
   tgap.system = {
     boot = {
-      secureBoot.enable = false;
+      secureBoot.enable = true;
       encrypted-btrfs = {
         enable = true;
-        boot.keyFile = "/boot/crypto_keyfile.bin";
         root = {
-          partlabel = "LinuxPriDataPartition";
-          extraPartlabels = ["LinuxSecDataPartition"];
+          partlabel = "LinuxPriDataPart";
+          extraPartlabels = ["LinuxSecDataPart"];
         };
       };
     };
