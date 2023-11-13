@@ -21,7 +21,6 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to install neovim.";
-
     alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
     luaExtraConfig = mkOption {

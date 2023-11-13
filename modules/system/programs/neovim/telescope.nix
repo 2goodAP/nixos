@@ -4,20 +4,16 @@
   pkgs,
   ...
 }: {
-  options.tgap.system.programs.neovim.telescope = let
+  options.tgap.system.programs.neovim.telescope.enable = let
     inherit (lib) mkEnableOption;
-  in {
-    enable = mkEnableOption "Whether or not to enable telescope.";
-  };
+  in
+    mkEnableOption "Whether or not to enable telescope.";
 
   config = let
     cfg = config.tgap.system.programs.neovim;
     inherit (lib) mkIf optionals optionalString;
   in
     mkIf cfg.telescope.enable {
-      tgap.system.programs.fd.enable = true;
-      tgap.system.programs.ripgrep.enable = true;
-
       tgap.system.programs.neovim.startPackages =
         [
           pkgs.vimPlugins.plenary-nvim

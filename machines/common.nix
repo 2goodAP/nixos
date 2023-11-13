@@ -1,5 +1,5 @@
 # Configurations shared across the various nixos profiles.
-{...}: {
+{
   tgap.system = {
     audio.enable = true;
     apparmor.enable = true;
@@ -9,10 +9,8 @@
     programs = {
       enable = true;
       androidTools.enable = true;
-      fd.enable = true;
       glow.enable = true;
       qmk.enable = true;
-      ripgrep.enable = true;
       virtualisation.enable = true;
 
       neovim = {

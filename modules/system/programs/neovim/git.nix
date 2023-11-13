@@ -4,11 +4,10 @@
   pkgs,
   ...
 }: {
-  options.tgap.system.programs.neovim.git = let
+  options.tgap.system.programs.neovim.git.enable = let
     inherit (lib) mkEnableOption;
-  in {
-    enable = mkEnableOption "Whether or not to enable git-related plugins.";
-  };
+  in
+    mkEnableOption "Whether or not to enable git-related plugins.";
 
   config = let
     cfg = config.tgap.system.programs.neovim.git;

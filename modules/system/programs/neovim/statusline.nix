@@ -8,7 +8,6 @@
     inherit (lib) mkEnableOption;
   in {
     statusline.enable = mkEnableOption "Whether or not to enable lualine.";
-
     tabline.enable = mkEnableOption "Whether or not to enable bufferline.";
   };
 

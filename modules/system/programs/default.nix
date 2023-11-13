@@ -12,26 +12,17 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to install common system-wide programs.";
+    androidTools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+    cms.enable = mkEnableOption "Whether to enable color management systems.";
+    glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
+    qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+    virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
 
     defaultShell = mkOption {
       type = types.enum ["bash" "fish"];
       default = "fish";
       description = "The default shell assigned to user accounts.";
     };
-
-    androidTools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
-
-    cms.enable = mkEnableOption "Whether to enable color management systems.";
-
-    fd.enable = mkEnableOption "Whether to enable fd, an alternative to find.";
-
-    glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
-
-    qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
-
-    ripgrep.enable = mkEnableOption "Whether to enable ripgrep, an alternative to grep.";
-
-    virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
   };
 
   config = let
@@ -51,12 +42,14 @@
 
             # Programs
             busybox
+            fd
             git-filter-repo
             htop
             jq
             lazygit
             p7zip
             ranger
+            ripgrep
             toybox
             unrar
             unzip
@@ -70,16 +63,10 @@
             ])
           )
           ++ (
-            optionals cfg.fd.enable [pkgs.fd]
-          )
-          ++ (
             optionals cfg.glow.enable [pkgs.glow]
           )
           ++ (
             optionals cfg.qmk.enable [pkgs.qmk]
-          )
-          ++ (
-            optionals cfg.ripgrep.enable [pkgs.ripgrep]
           );
 
         programs = {

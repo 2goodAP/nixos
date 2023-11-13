@@ -10,15 +10,15 @@
   in {
     applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
 
+    gaming = {
+      enable = mkEnableOption "Whether or not to install gaming-related apps.";
+      steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
+    };
+
     nixosApplications.enable = mkOption {
       type = types.bool;
       default = true;
       description = "Whether or not to install desktop apps for NixOS only.";
-    };
-
-    gaming = {
-      enable = mkEnableOption "Whether or not to install gaming-related apps.";
-      steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
     };
   };
 

@@ -16,7 +16,6 @@
     inherit (lib) mkEnableOption;
   in {
     apparmor.enable = mkEnableOption "Whether or not to enable apparmor.";
-
     audio.enable = mkEnableOption "Whether or not to enable audio-related services.";
   };
 

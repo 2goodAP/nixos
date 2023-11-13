@@ -21,10 +21,10 @@
   in
     mkIf cfg.enable {
       environment = {
-        systemPackages = [
-          pkgs.acpi
-          pkgs.nbfc-linux
-          pkgs.powertop
+        systemPackages = with pkgs; [
+          acpi
+          nbfc-linux
+          powertop
         ];
 
         etc."nbfc/nbfc.json" = {

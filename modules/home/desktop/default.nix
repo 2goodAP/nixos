@@ -12,15 +12,14 @@
     ./keepassxc
   ];
 
-  options.tgap.home.desktop = let
+  options.tgap.home.desktop.terminal = let
     inherit (lib) mkOption types;
-  in {
-    terminal = mkOption {
+  in
+    mkOption {
       type = types.enum ["kitty" null];
       default = "kitty";
       description = "The terminal emulator program to install.";
     };
-  };
 
   config = let
     cfg = config.tgap.home.desktop;

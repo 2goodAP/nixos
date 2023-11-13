@@ -8,9 +8,7 @@
     inherit (lib) mkEnableOption;
   in {
     enable = mkEnableOption "Whether or not to enable motion-related plugins.";
-
     harpoon.enable = mkEnableOption "Whether or not to enable harpoon.";
-
     leap.enable = mkEnableOption "Whether or not to enable leap.nvim.";
   };
 
