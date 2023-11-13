@@ -75,7 +75,7 @@
               };
               nix = {
                 SUBVOLUME = "/nix";
-                ALLOW_GROUPS = ["wheel" "nixbld"];
+                ALLOW_GROUPS = ["nixbld" "wheel"];
                 SYNC_ACL = true;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
@@ -88,7 +88,7 @@
               };
               home = {
                 SUBVOLUME = "/home";
-                ALLOW_GROUPS = ["disk" "users"];
+                ALLOW_GROUPS = ["users" "wheel"];
                 SYNC_ACL = true;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
