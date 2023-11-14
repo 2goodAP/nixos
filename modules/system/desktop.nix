@@ -30,12 +30,6 @@
         ];
       };
 
-      fonts.packages = [
-        (pkgs.nerdfonts.override {
-          fonts = ["CascadiaCode" "FiraCode" "Noto"];
-        })
-      ];
-
       programs = {
         dconf.enable = true;
         gnupg.agent.pinentryFlavor = "qt";

@@ -1,14 +1,15 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
-  sysPlasma5,
   ...
 }: let
   cfg = config.tgap.home.desktop;
+  osCfg = osConfig.services.xserver.desktopManager.plasma5;
   inherit (lib) mkIf;
 in
-  mkIf (sysPlasma5 && cfg.applications.enable) {
+  mkIf (osCfg.enable && cfg.applications.enable) {
     programs.firefox = {
       enable = true;
 

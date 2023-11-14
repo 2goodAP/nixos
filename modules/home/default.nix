@@ -1,7 +1,7 @@
 {
   lib,
+  osConfig,
   pkgs,
-  sysStateVersion,
   ...
 }: {
   imports = [
@@ -12,7 +12,7 @@
   home = let
     inherit (lib) getExe getExe';
   in {
-    stateVersion = sysStateVersion;
+    stateVersion = osConfig.system.stateVersion;
 
     activation.homeDirPermissions = ''
       ${getExe' pkgs.coreutils "test"} -d $HOME \

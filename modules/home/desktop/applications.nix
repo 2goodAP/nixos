@@ -1,8 +1,8 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
-  sysPlasma5,
   ...
 }: {
   options.tgap.home.desktop = let
@@ -24,9 +24,10 @@
 
   config = let
     cfg = config.tgap.home.desktop;
+    osCfg = osConfig.services.xserver.desktopManager.plasma5;
     inherit (lib) mkIf mkMerge optionals;
   in
-    mkIf sysPlasma5 (mkMerge [
+    mkIf osCfg.enable (mkMerge [
       (mkIf cfg.applications.enable {
         programs = {
           mpv = {
@@ -150,7 +151,6 @@
           (with pkgs; [
             gimp
             libreoffice-qt
-            speedcrunch
             tor-browser-bundle-bin
             wev
           ])
@@ -161,11 +161,6 @@
               zoom-us
             ])
           );
-
-        home.file.speedcrunch-settings = {
-          source = ./speedcrunch/SpeedCrunch.ini;
-          target = ".config/SpeedCrunch/SpeedCrunch.ini";
-        };
       })
 
       (mkIf cfg.gaming.enable {

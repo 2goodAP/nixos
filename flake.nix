@@ -25,10 +25,6 @@
       url = "github:outfoxxed/hy3";
       inputs.hyprland.follows = "hyprland";
     };
-    split-monitor-workspaces = {
-      url = "github:Duckonaut/split-monitor-workspaces";
-      inputs.hyprland.follows = "hyprland";
-    };
   };
 
   outputs = {
@@ -76,9 +72,10 @@
         };
 
         mkHomeSettings = {config, ...}: {
+          backupFileExtension = "hm.bak";
+          extraSpecialArgs = {inherit inputs;};
           useGlobalPkgs = true;
           useUserPackages = true;
-          backupFileExtension = "hm.bak";
 
           sharedModules = [
             # NUR modules for `config.nur` options.
@@ -87,13 +84,6 @@
             # Custom user modules.
             (import ./modules/home)
           ];
-
-          extraSpecialArgs = {
-            inherit inputs;
-            sysPlasma5 = config.tgap.system.plasma5.enable;
-            sysQmk = config.tgap.system.programs.qmk.enable;
-            sysStateVersion = config.system.stateVersion;
-          };
         };
       in {
         nitro5 = lib.nixosSystem {

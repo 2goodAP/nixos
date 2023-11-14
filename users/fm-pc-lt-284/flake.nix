@@ -57,9 +57,9 @@
         ./default.nix
       ];
 
-      extraSpecialArgs = {
-        sysPlasma5 = true;
-        sysStateVersion = "22.11";
+      extraSpecialArgs.osConfig = {
+        services.xserver.desktopManager.plasma5.enable = true;
+        system.stateVersion = "23.11";
       };
     };
   };

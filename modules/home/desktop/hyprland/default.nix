@@ -6,6 +6,11 @@
   ...
 }: {
   imports = [
+    ./apps.nix
+    ./display.nix
+    ./overlays.nix
+    ./theme.nix
+    ./widgets.nix
   ];
 
   options.tgap.home.desktop.hyprland = let
@@ -19,237 +24,96 @@
     inherit (lib) getExe getExe' mkIf;
   in
     mkIf cfg.enable {
-      programs = {
-        swaylock.enable = true;
-        wlogout.enable = true;
-
-        eww = {
-          enable = true;
-          package = pkgs.eww-wayland;
-          configDir = ./bar;
-        };
-        rofi = {
-          enable = true;
-          package = pkgs.rofi-wayland.override {
-            plugins = [pkgs.rofimoji];
-          };
-        };
-      };
-
-      services = {
-        blueman-applet.enable = true;
-        mako.enable = true;
-        network-manager-applet.enable = true;
-        playerctld.enable = true;
-        swayosd.enable = true;
-
-        cliphist = {
-          enable = true;
-          systemdTarget = "hyprland-session.target.";
-        };
-        kanshi = {
-          enable = true;
-          systemdTarget = "hyprland-session.target.";
-        };
-        swayidle = {
-          enable = true;
-          systemdTarget = "hyprland-session.target.";
-        };
-      };
-
-      wayland.windowManager = {
-        hyprland = {
-          enable = true;
-          package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-
-          settings = {
-            monitor = ",highrr,auto,auto,vrr,1";
-
-            env = [
-              # wl-roots
-              "WLR_DRM_DEVICES,/dev/dri/card1:/dev/dri/card0"
-              "WLR_RENDERER,vulkan"
-              # XDG
-              "XDG_CURRENT_DESKTOP,Hyprland"
-              "XDG_SESSION_DESKTOP,Hyprland"
-              "XDG_SESSION_TYPE,wayland"
-              # Toolkit
-              "CLUTTER_BACKEND,wayland"
-              "GDK_BACKEND,wayland"
-              "QT_QPA_PLATFORM,wayland"
-              "SDL_VIDEODRIVER,wayland"
-              # Qt
-              "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-              "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-              # NVIDIA
-              "LIBVA_DRIVER_NAME,nvidia"
-              "__GL_GSYNC_ALLOWED,1"
-              "__GL_VRR_ALLOWED,1"
-              "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-            ];
-
-            input = {
-              kb_layout = "us,us,np";
-              kb_variant = "altgr-intl,colemak_dh,";
-              kb_options = "grp:alt_caps_toggle";
-              follow_mouse = 1;
-              sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
-              touchpad = {
-                natural_scroll = "yes";
-              };
-            };
-
-            general = {
-              gaps_in = 5;
-              gaps_out = 20;
-              border_size = 2;
-              "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-              "col.inactive_border" = "rgba(595959aa)";
-              layout = "dwindle";
-              allow_tearing = false;
-            };
-
-            decoration = {
-              rounding = 10;
-              drop_shadow = "yes";
-              shadow_range = 4;
-              shadow_render_power = 3;
-              "col.shadow" = "rgba(1a1a1aee)";
-              blur = {
-                enabled = true;
-                size = 3;
-                passes = 1;
-              };
-            };
-
-            animations = {
-              enabled = "yes";
-              bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-              animation = [
-                "windows, 1, 7, myBezier"
-                "windowsOut, 1, 7, default, popin 80%"
-                "border, 1, 10, default"
-                "borderangle, 1, 8, default"
-                "fade, 1, 7, default"
-                "workspaces, 1, 6, default"
-              ];
-            };
-
-            dwindle = {
-              pseudotile = "yes";
-              preserve_split = "yes";
-            };
-
-            master = {
-              new_is_master = true;
-            };
-
-            gestures = {
-              workspace_swipe = "off";
-            };
-
-            misc = {
-              force_default_wallpaper = "-1"; # Set to 0 to disable the anime mascot wallpapers
-            };
-
-            "device:epic-mouse-v1" = {
-              sensitivity = -0.5;
-            };
-
-            "$super" = "SUPER";
-            bind = [
-              "$super, Q, exec, ${getExe pkgs.kitty}"
-              "$super, C, killactive,"
-              "$super, M, exit,"
-              "$super, V, togglefloating,"
-              ''$super, R, exec, ${getExe' pkgs.rofi-wayland "rofi"} -show combi \
-                  -modes combi -combi-modes window,drun,run''
-              "$super, P, pseudo," # dwindle
-              "$super, J, togglesplit," # dwindle
-
-              # Move focus with super + arrow keys
-              "$super, left, movefocus, l"
-              "$super, right, movefocus, r"
-              "$super, up, movefocus, u"
-              "$super, down, movefocus, d"
-
-              # Switch workspaces with super + [0-9]
-              "$super, 1, workspace, 1"
-              "$super, 2, workspace, 2"
-              "$super, 3, workspace, 3"
-              "$super, 4, workspace, 4"
-              "$super, 5, workspace, 5"
-              "$super, 6, workspace, 6"
-              "$super, 7, workspace, 7"
-              "$super, 8, workspace, 8"
-              "$super, 9, workspace, 9"
-              "$super, 0, workspace, 10"
-
-              # Move active window to a workspace with super + SHIFT + [0-9]
-              "$super SHIFT, 1, movetoworkspace, 1"
-              "$super SHIFT, 2, movetoworkspace, 2"
-              "$super SHIFT, 3, movetoworkspace, 3"
-              "$super SHIFT, 4, movetoworkspace, 4"
-              "$super SHIFT, 5, movetoworkspace, 5"
-              "$super SHIFT, 6, movetoworkspace, 6"
-              "$super SHIFT, 7, movetoworkspace, 7"
-              "$super SHIFT, 8, movetoworkspace, 8"
-              "$super SHIFT, 9, movetoworkspace, 9"
-              "$super SHIFT, 0, movetoworkspace, 10"
-
-              # Scroll through existing workspaces with super + scroll
-              "$super, mouse_down, workspace, e+1"
-              "$super, mouse_up, workspace, e-1"
-            ];
-
-            # Move/resize windows with super + LMB/RMB and dragging
-            bindm = [
-              "$super, mouse:272, movewindow"
-              "$super, mouse:273, resizewindow"
-            ];
-          };
-        };
-      };
-
-      gtk = {
+      wayland.windowManager.hyprland = {
         enable = true;
-        iconTheme = {
-          name = "Papirus";
-          package = pkgs.papirus-icon-theme;
-        };
-        theme = {
-          name = "Materia Light";
-          package = pkgs.materia-theme;
+
+        package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+        plugins = [inputs.hy3.packages."${pkgs.system}".hy3];
+
+        settings = {
+          input = {
+            kb_layout = "us,us,np";
+            kb_variant = "altgr-intl,colemak_dh,";
+            kb_options = "grp:alt_caps_toggle";
+            follow_mouse = 2;
+            float_switch_override_focus = 0;
+
+            accel_profile = "adaptive";
+            sensitivity = 0;
+            scroll_method = "2fg";
+            touchpad = {
+              natural_scroll = true;
+              middle_button_emulation = true;
+              clickfinger_behavior = true;
+              drag_lock = true;
+            };
+          };
+
+          general = {
+            resize_on_border = true;
+          };
+
+          gestures = {
+            workspace_swipe = true;
+          };
+
+          device = {
+            compx-fantech-heliosgo-pro-wireless-xd5 = {
+              accel_profile = "flat";
+            };
+          };
+
+          bind = [
+            "SUPER, return, exec, ${getExe pkgs.kitty}"
+            "SUPER SHIFT, q, killactive,"
+            "SUPER SHIFT, e, exit,"
+            "SUPER, space, togglefloating,"
+            ''SUPER, r, exec, ${getExe' pkgs.rofi-wayland "rofi"} -show combi \
+              -modes combi -combi-modes window,drun,run''
+            "SUPER, p, pseudo," # dwindle
+            "SUPER, m, togglesplit," # dwindle
+
+            # Move focus with super + arrow keys
+            "SUPER, h, movefocus, l"
+            "SUPER, l, movefocus, r"
+            "SUPER, k, movefocus, u"
+            "SUPER, j, movefocus, d"
+
+            # Switch workspaces with super + [0-9]
+            "SUPER, 1, workspace, 1"
+            "SUPER, 2, workspace, 2"
+            "SUPER, 3, workspace, 3"
+            "SUPER, 4, workspace, 4"
+            "SUPER, 5, workspace, 5"
+            "SUPER, 6, workspace, 6"
+            "SUPER, 7, workspace, 7"
+            "SUPER, 8, workspace, 8"
+            "SUPER, 9, workspace, 9"
+            "SUPER, 0, workspace, 10"
+
+            # Move active window to a workspace with super + SHIFT + [0-9]
+            "SUPER SHIFT, 1, movetoworkspace, 1"
+            "SUPER SHIFT, 2, movetoworkspace, 2"
+            "SUPER SHIFT, 3, movetoworkspace, 3"
+            "SUPER SHIFT, 4, movetoworkspace, 4"
+            "SUPER SHIFT, 5, movetoworkspace, 5"
+            "SUPER SHIFT, 6, movetoworkspace, 6"
+            "SUPER SHIFT, 7, movetoworkspace, 7"
+            "SUPER SHIFT, 8, movetoworkspace, 8"
+            "SUPER SHIFT, 9, movetoworkspace, 9"
+            "SUPER SHIFT, 0, movetoworkspace, 10"
+
+            # Scroll through existing workspaces with super + scroll
+            "SUPER ALT, l, workspace, e+1"
+            "SUPER ALT, h, workspace, e-1"
+          ];
+
+          # Move/resize windows with super + LMB/RMB and dragging
+          bindm = [
+            "SUPER, mouse:272, movewindow"
+            "SUPER, mouse:273, resizewindow"
+          ];
         };
       };
-
-      home.pointerCursor = {
-        gtk.enable = true;
-        name = "Bibata Modern Ice";
-        package = pkgs.bibata-cursors;
-        size = 28;
-      };
-
-      qt = {
-        enable = true;
-        platformTheme = "qtct";
-        style = {
-          name = "Materia Light";
-          package = pkgs.materia-kde-theme;
-        };
-      };
-
-      home.packages = with pkgs; [
-        hyprkeys
-        hyprland-per-window-layout
-        hyprpaper
-        hyprpicker
-        libnotify
-        wallust
-        watershot
-        wev
-        wlr-randr
-        xdg-desktop-portal-hyprland
-      ];
     };
 }

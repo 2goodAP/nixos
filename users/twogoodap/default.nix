@@ -1,11 +1,11 @@
 {
   lib,
+  osConfig,
   pkgs,
-  sysQmk,
   ...
 }: {
   imports = [../common];
 
   tgap.home.programs.jupyter.enable = true;
-  home.packages = lib.optionals sysQmk [pkgs.via];
+  home.packages = lib.optionals osConfig.tgap.system.programs.qmk.enable [pkgs.via];
 }

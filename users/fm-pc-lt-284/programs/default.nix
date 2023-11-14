@@ -1,8 +1,8 @@
 {
   config,
   options,
+  osConfig,
   pkgs,
-  sysPlasma5,
   ...
 }: {
   imports = [
@@ -185,17 +185,12 @@
     };
   };
 
-  services.gpg-agent = let
-    setIf = cond: tVal: fVal:
-      if cond
-      then tVal
-      else fVal;
-  in {
+  services.gpg-agent = {
     enable = true;
     pinentryFlavor =
-      setIf sysPlasma5
-      "qt"
-      options.services.gpg-agent.pinentryFlavor.default;
+      if osConfig.services.xserver.desktopManager.plasma5.enable
+      then "qt"
+      else options.services.gpg-agent.pinentryFlavor.default;
   };
 
   home.packages = with pkgs; [

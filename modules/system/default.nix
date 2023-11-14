@@ -26,6 +26,7 @@
     mkMerge [
       {
         i18n.defaultLocale = "en_US.UTF-8";
+        security.pam.services.swaylock.text = "auth include login";
         systemd.oomd.enableUserServices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.

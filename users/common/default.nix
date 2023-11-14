@@ -7,4 +7,9 @@
     };
     programs.enable = true;
   };
+
+  wayland.windowManager.sway = {
+    enable = true;
+    swaynag.enable = true;
+  };
 }

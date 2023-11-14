@@ -11,11 +11,11 @@
 in
   mkIf (osCfg.enable && cfg.applications.enable) {
     home = {
-      packages = [pkgs.keepassxc];
+      packages = [pkgs.speedcrunch];
 
-      file.keepassxc-settings = {
-        source = ./keepassxc.ini;
-        target = ".config/keepassxc/keepassxc.ini";
+      file.speedcrunch-settings = {
+        source = ./SpeedCrunch.ini;
+        target = ".config/SpeedCrunch/SpeedCrunch.ini";
       };
     };
 }
