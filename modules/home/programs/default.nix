@@ -49,9 +49,9 @@
           transmission
         ];
 
-        home.file.musikcube-settings = {
+        xdg.configFile.musikcube-settings = {
           source = ./musikcube;
-          target = ".config/musikcube";
+          target = "musikcube";
           recursive = true;
         };
       }

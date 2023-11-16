@@ -1,15 +1,7 @@
 # Configurations shared across the various user profiles.
-{
+{pkgs,...}:{
   tgap.home = {
-    desktop = {
-      applications.enable = true;
-      hyprland.enable = true;
-    };
+    desktop.applications.enable = true;
     programs.enable = true;
-  };
-
-  wayland.windowManager.sway = {
-    enable = true;
-    swaynag.enable = true;
   };
 }

@@ -58,8 +58,11 @@
       ];
 
       extraSpecialArgs.osConfig = {
-        services.xserver.desktopManager.plasma5.enable = true;
         system.stateVersion = "23.11";
+        tgap.system.desktop = {
+          enable = true;
+          manager = "plasma";
+        };
       };
     };
   };

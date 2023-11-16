@@ -6,8 +6,9 @@
   # Disable installing kitty using home-manager.
   tgap.home.desktop.terminal = null;
 
-  home.file.kitty-conf = {
-    target = ".config/kitty/kitty.conf";
+  xdg.configFile.kitty-conf = {
+    target = "kitty/kitty.conf";
+
     text = let
       kitty_mod = "ctrl+shift";
     in ''

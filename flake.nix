@@ -44,7 +44,14 @@
         inherit (nixpkgs) lib;
         overlays = import ./overlays ++ [nixpkgs-wayland.overlay];
         system = "x86_64-linux";
-        systemModules = import ./modules/system;
+
+        systemModules = [
+          home-manager.nixosModules.home-manager
+          lanzaboote.nixosModules.lanzaboote
+
+          # custom system modules
+          (import ./modules/system)
+        ];
 
         systemSettings = {
           nix.settings = {
@@ -89,53 +96,41 @@
         nitro5 = lib.nixosSystem {
           inherit system;
 
-          modules = [
-            # home-manager module
-            home-manager.nixosModules.home-manager
-            # lanzaboote nixos module
-            lanzaboote.nixosModules.lanzaboote
-
-            # nix and nixpkgs specific settings
-            (lib.recursiveUpdate systemSettings {
-              nixpkgs.overlays =
-                overlays
-                ++ [
-                  (final: prev: {
-                    nbfc-linux = nbfc-linux.defaultPackage.${system};
-                  })
-                ];
-            })
-            # custom system modules
+          modules =
             systemModules
+            ++ [
+              (lib.recursiveUpdate systemSettings {
+                nixpkgs.overlays =
+                  overlays
+                  ++ [
+                    (final: prev: {
+                      nbfc-linux = nbfc-linux.defaultPackage.${system};
+                    })
+                  ];
+              })
 
-            # system-specific configuraitons
-            (import ./machines/nitro5 {
-              hostName = "nitro5-nix";
-              inherit mkHomeSettings;
-            })
-          ];
+              # system-specific configuraitons
+              (import ./machines/nitro5 {
+                hostName = "nitro5-nix";
+                inherit mkHomeSettings;
+              })
+            ];
         };
 
         workstation = lib.nixosSystem {
           inherit system;
 
-          modules = [
-            # home-manager modules
-            home-manager.nixosModules.home-manager
-            # lanzaboote nixos module
-            lanzaboote.nixosModules.lanzaboote
-
-            # nix and nixpkgs specific settings
-            systemSettings
-            # custom system modules
+          modules =
             systemModules
+            ++ [
+              systemSettings
 
-            # system-specific configuraitons
-            (import ./machines/workstation {
-              hostName = "workstation-nix";
-              inherit mkHomeSettings;
-            })
-          ];
+              # system-specific configuraitons
+              (import ./machines/workstation {
+                hostName = "workstation-nix";
+                inherit mkHomeSettings;
+              })
+            ];
         };
       };
     };

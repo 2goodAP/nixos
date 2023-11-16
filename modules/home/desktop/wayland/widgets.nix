@@ -1,13 +1,14 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.desktop.hyprland;
+  osCfg = osConfig.tgap.system.desktop;
   inherit (lib) mkIf;
 in
-  mkIf cfg.enable {
+  mkIf (osCfg.enable && osCfg.manager == "wayland") {
     programs = {
       eww = {
         enable = true;

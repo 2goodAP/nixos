@@ -24,7 +24,7 @@
 
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.services.xserver.desktopManager.plasma5;
+    osCfg = osConfig.tgap.system.desktop;
     inherit (lib) mkIf mkMerge optionals;
   in
     mkIf osCfg.enable (mkMerge [

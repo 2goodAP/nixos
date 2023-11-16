@@ -1,6 +1,6 @@
 {pkgs, ...}: {
-  home.file.init-lua = {
+  xdg.configFile.init-lua = {
     source = ../../../../modules/system/programs/neovim/lua/init.lua;
-    target = ".config/nvim/init.lua";
+    target = "nvim/init.lua";
   };
 }

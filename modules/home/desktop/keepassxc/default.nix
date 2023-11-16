@@ -6,16 +6,14 @@
   ...
 }: let
   cfg = config.tgap.home.desktop;
-  osCfg = osConfig.services.xserver.desktopManager.plasma5;
+  osCfg = osConfig.tgap.system.desktop;
   inherit (lib) mkIf;
 in
   mkIf (osCfg.enable && cfg.applications.enable) {
-    home = {
-      packages = [pkgs.keepassxc];
+    home.packages = [pkgs.keepassxc];
 
-      file.keepassxc-settings = {
-        source = ./keepassxc.ini;
-        target = ".config/keepassxc/keepassxc.ini";
-      };
+    xdg.configFile.keepassxc-settings = {
+      source = ./keepassxc.ini;
+      target = "keepassxc/keepassxc.ini";
     };
-}
+  }

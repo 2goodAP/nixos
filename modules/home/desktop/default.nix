@@ -8,7 +8,7 @@
   imports = [
     ./applications.nix
     ./firefox
-    ./hyprland
+    ./wayland
     ./keepassxc
     ./speedcrunch
   ];
@@ -17,14 +17,14 @@
     inherit (lib) mkOption types;
   in
     mkOption {
-      type = types.enum ["kitty" null];
+      type = types.nullOr (types.enum ["kitty"]);
       default = "kitty";
       description = "The terminal emulator program to install.";
     };
 
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.services.xserver.desktopManager.plasma5;
+    osCfg = osConfig.tgap.system.desktop;
     inherit (lib) mkIf mkMerge;
   in
     mkIf osCfg.enable (mkMerge [

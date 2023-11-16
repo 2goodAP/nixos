@@ -5,11 +5,11 @@
   ...
 }: {
   imports = [
+    ./programs
     ./boot.nix
     ./desktop.nix
     ./laptop.nix
     ./network.nix
-    ./programs
   ];
 
   options.tgap.system = let
@@ -26,7 +26,6 @@
     mkMerge [
       {
         i18n.defaultLocale = "en_US.UTF-8";
-        security.pam.services.swaylock.text = "auth include login";
         systemd.oomd.enableUserServices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
@@ -48,7 +47,11 @@
             xkbOptions = "grp:alt_caps_toggle";
           };
         };
-      }
+      } 
+      
+      (mkIf (cfg.desktop.enable && cfg.desktop.manager == "wayland") {
+        security.pam.services.swaylock.text = "auth include login";
+      })
 
       (mkIf cfg.boot.encrypted-btrfs.enable {
         services = {
@@ -105,23 +108,23 @@
       })
 
       (mkIf cfg.apparmor.enable {
+        boot.kernelParams = ["lsm=landlock,lockdown,yama,apparmor,bpf"];
+
         security.apparmor = {
           enable = true;
           killUnconfinedConfinables = true;
         };
-
-        boot.kernelParams = ["lsm=landlock,lockdown,yama,apparmor,bpf"];
       })
 
       (mkIf cfg.audio.enable {
         services.pipewire = {
           enable = true;
+          jack.enable = true;
+          pulse.enable = true;
           alsa = {
             enable = true;
             support32Bit = true;
           };
-          jack.enable = true;
-          pulse.enable = true;
         };
       })
 

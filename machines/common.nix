@@ -4,7 +4,10 @@
     audio.enable = true;
     apparmor.enable = true;
     bluetooth.enable = true;
-    plasma5.enable = true;
+    desktop = {
+      enable = true;
+      manager = "wayland";
+    };
 
     programs = {
       enable = true;
