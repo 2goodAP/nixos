@@ -35,11 +35,12 @@ in
         bind = [
           "SUPER, return, exec, ${getExe pkgs.kitty}"
           "SUPER SHIFT, q, killactive,"
-          "SUPER SHIFT, e, exit,"
+          "SUPER SHIFT, e, exec, ${getExe pkgs.wlogout}"
           "SUPER, space, togglefloating,"
           "SUPER, r, exec, ${getExe' pkgs.rofi-wayland "rofi"} -show combi -modes combi -combi-modes window,drun,run"
           "SUPER, p, pseudo," # dwindle
           "SUPER, m, togglesplit," # dwindle
+          "SUPER, x, exec, ${getExe pkgs.swaylock} -edfF"
 
           # Move focus with super + arrow keys
           "SUPER, h, movefocus, l"

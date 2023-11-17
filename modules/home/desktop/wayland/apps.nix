@@ -30,6 +30,7 @@ in
 
     home.packages =
       (with pkgs; [
+        libsForQt5.polkit-kde-agent
         udiskie
         wallust
         watershot
