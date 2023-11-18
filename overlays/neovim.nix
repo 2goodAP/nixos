@@ -1,6 +1,6 @@
 # A user overlay for Neovim with necessary plugins.
-self: super: {
-  neovim = super.neovim.override {
+final: prev: {
+  neovim = final.neovim.override {
     configure = {
       customRC = ''
         lua << EOF

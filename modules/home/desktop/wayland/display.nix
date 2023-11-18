@@ -6,7 +6,6 @@
   ...
 }: let
   cfg = config.tgap.home.desktop.wayland;
-  hyprPkg = config.wayland.windowManager.hyprland.package;
   osCfg = osConfig.tgap.system;
   inherit (lib) getExe getExe' mkIf optionals;
 in
@@ -40,6 +39,11 @@ in
         ];
         timeouts =
           [
+            {
+              timeout = 13 * 60;
+              command = "${getExe' pkgs.sway "swaymsg"} 'output * power off'";
+              resumeCommand = "${getExe' pkgs.sway "swaymsg"} 'output * power on'";
+            }
             {
               timeout = 15 * 60;
               command = "${getExe pkgs.swaylock} -efF";
