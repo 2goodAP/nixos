@@ -30,6 +30,10 @@
         };
       }
 
+      (mkIf (cfg.manager == "wayland") {
+        security.pam.services.swaylock.text = "auth include login";
+      })
+
       (mkIf (cfg.manager == "plasma") {
         environment = {
           systemPackages = [pkgs.wl-clipboard];

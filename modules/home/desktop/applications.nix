@@ -32,6 +32,7 @@
         programs = {
           mpv = {
             enable = true;
+            scripts = [pkgs.mpvScripts.mpris];
             config = {
               profile = "gpu-hq";
               vo = "gpu";

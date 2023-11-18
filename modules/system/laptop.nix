@@ -16,53 +16,57 @@
   };
 
   config = let
-    cfg = config.tgap.system.laptop;
-    inherit (lib) mkIf;
+    cfg = config.tgap.system;
+    inherit (lib) mkIf mkMerge;
   in
-    mkIf cfg.enable {
-      environment = {
-        systemPackages = with pkgs; [
-          acpi
-          nbfc-linux
-          powertop
-        ];
+    mkIf cfg.laptop.enable (mkMerge [
+      {
+        environment = {
+          systemPackages = with pkgs; [
+            acpi
+            nbfc-linux
+            powertop
+          ];
 
-        etc."nbfc/nbfc.json" = {
-          text = ''
-            {"SelectedConfigId": "${cfg.model}"}
-          '';
-          mode = "0644";
+          etc."nbfc/nbfc.json" = {
+            text = ''
+              {"SelectedConfigId": "${cfg.model}"}
+            '';
+            mode = "0644";
+          };
         };
-      };
 
-      programs.light.enable = true;
+        services = {
+          # Hibernate on low battery.
+          # https://wiki.archlinux.org/title/laptop#Hibernate_on_low_battery_level
+          udev.extraRules = ''
+            # Suspend the system when battery level drops to 20% or lower
+            SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-20]", RUN+="${pkgs.systemd}/bin/systemctl -i hibernate"
+          '';
 
-      services = {
-        # Hibernate on low battery.
-        # https://wiki.archlinux.org/title/laptop#Hibernate_on_low_battery_level
-        udev.extraRules = ''
-          # Suspend the system when battery level drops to 20% or lower
-          SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-20]", RUN+="${pkgs.systemd}/bin/systemctl -i hibernate"
-        '';
+          logind.extraConfig = ''
+            HandleLidSwitch=suspend-then-hibernate
+            HandleLidSwitchDocked=ignore
+            HandleHibernateKey=hibernate
+            HandlePowerKey=hibernate
+            HandleSuspendKey=suspend-then-hibernate
+          '';
 
-        logind.extraConfig = ''
-          HandleLidSwitch=suspend-then-hibernate
-          HandleLidSwitchDocked=ignore
-          HandleHibernateKey=hibernate
-          HandlePowerKey=hibernate
-          HandleSuspendKey=suspend-then-hibernate
-        '';
+          auto-cpufreq.enable = true;
+        };
 
-        auto-cpufreq.enable = true;
-      };
+        systemd.services.nbfc_service = {
+          enable = true;
+          description = "NoteBook FanControl service";
+          serviceConfig.Type = "simple";
+          path = [pkgs.kmod];
+          script = "${pkgs.nbfc-linux}/bin/nbfc_service";
+          wantedBy = ["multi-user.target"];
+        };
+      }
 
-      systemd.services.nbfc_service = {
-        enable = true;
-        description = "NoteBook FanControl service";
-        serviceConfig.Type = "simple";
-        path = [pkgs.kmod];
-        script = "${pkgs.nbfc-linux}/bin/nbfc_service";
-        wantedBy = ["multi-user.target"];
-      };
-    };
+      (mkIf (cfg.desktop.enable && cfg.desktop.manager == "wayland") {
+        programs.light.enable = true;
+      })
+    ]);
 }

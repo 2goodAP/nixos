@@ -1,6 +1,4 @@
 {
-  config,
-  inputs,
   lib,
   osConfig,
   pkgs,
@@ -9,8 +7,8 @@
   imports = [
     ./apps.nix
     ./display.nix
-    ./hyprland.nix
     ./overlays.nix
+    ./sway.nix
     ./widgets.nix
   ];
 
@@ -18,8 +16,8 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     windowManager = mkOption {
-      type = types.enum ["hyprland"];
-      default = "hyprland";
+      type = types.enum ["sway"];
+      default = "sway";
       description = "The wayland window manager to use.";
     };
 
