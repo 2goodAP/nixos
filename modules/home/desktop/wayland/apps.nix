@@ -7,9 +7,15 @@
 }: let
   cfg = config.tgap.home.desktop.wayland;
   osCfg = osConfig.tgap.system.desktop;
-  inherit (lib) mkIf optionals;
+  inherit (lib) mkIf;
 in
   mkIf (osCfg.enable && osCfg.manager == "wayland") {
+    home.packages = with pkgs; [
+      watershot
+      wev
+      wl-clipboard
+    ];
+
     programs = {
       rofi = {
         enable = true;
@@ -26,23 +32,13 @@ in
         enable = true;
         systemdTarget = cfg.systemdTarget;
       };
-    };
 
-    home.packages =
-      (with pkgs; [
-        libsForQt5.polkit-kde-agent
-        udiskie
-        wallust
-        watershot
-        wev
-        wl-clipboard
-      ])
-      ++ (
-        optionals (cfg.windowManager == "hyprland") (with pkgs; [
-          hyprkeys
-          hyprland-per-window-layout
-          hyprpaper
-          hyprpicker
-        ])
-      );
+      udiskie = {
+        enable = true;
+        settings = {
+          icon_names.media = ["media-optical"];
+          program_options.udisks_version = 2;
+        };
+      };
+    };
   }

@@ -7,7 +7,6 @@
 }: let
   cfg = config.tgap.home.desktop.wayland;
   osCfg = osConfig.tgap.system;
-  sovSock = "$XDG_RUNTIME_DIR/sov.sock";
   inherit (lib) getExe getExe' mkIf mkOptionDefault optionalAttrs;
 in
   mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "wayland" && cfg.windowManager == "sway") {
@@ -17,11 +16,9 @@ in
       enable = true;
       extraOptions = ["--unsupported-gpu"];
       swaynag.enable = true;
-      systemd.xdgAutostart = true;
       wrapperFeatures.gtk = true;
 
       config = {
-        assigns."5" = [{app_id = "org.keepassxc.KeePassXC";}];
         bindkeysToCode = true;
         modifier = "Mod4";
         workspaceLayout = "tabbed";
@@ -80,9 +77,15 @@ in
               "${mod}+Shift+a" = "focus child";
               "${mod}+Shift+e" = "exec ${getExe pkgs.wlogout}";
               "${mod}+Tab" = "workspace back_and_forth";
+              "${mod}+i" = ''
+                exec ${getExe pkgs.cliphist} list \
+                  | ${getExe' pkgs.rofi-wayland "rofi"} -dmenu \
+                  | ${getExe pkgs.cliphist} decode \
+                  | ${getExe' pkgs.wl-clipboard "wl-copy"}
+              '';
 
-              "--no-repeat ${mod}+grave" = "exec 'echo 1 > ${sovSock}'";
-              "--release ${mod}+grave" = "exec 'echo 0 > ${sovSock}'";
+              "--no-repeat ${mod}+grave" = "exec 'echo 1 > $XDG_RUNTIME_DIR/${cfg.socks.sov}'";
+              "--release ${mod}+grave" = "exec 'echo 0 > $XDG_RUNTIME_DIR/${cfg.socks.sov}'";
               "--locked ${mod}+Shift+n" = "input type:keyboard xkb_switch_layout next";
               "--locked ${mod}+Shift+p" = "input type:keyboard xkb_switch_layout prev";
 
@@ -109,12 +112,10 @@ in
         };
 
         startup = [
-          {command = "${getExe' pkgs.keepassxc "keepassxc"}";}
+          {command = "${getExe pkgs.nextcloud-client}";}
           {
             command = ''
-              ${getExe' pkgs.coreutils "rm"} -f ${sovSock} \
-                && ${getExe' pkgs.coreutils "mkfifo"} ${sovSock} \
-                && ${getExe' pkgs.coreutils "tail"} -f ${sovSock} | ${getExe pkgs.sov}
+              ${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
             '';
           }
         ];
@@ -122,12 +123,31 @@ in
         window = {
           border = 4;
           titlebar = false;
+
+          commands = [
+            {
+              command = "title_format '[XWayland] %title'";
+              criteria = {shell = "xwayland";};
+            }
+            {
+              command = "floating enable";
+              criteria = {
+                app_id = ".*[Kk]ee[Pp]ass(XC|xc).*";
+                title = ".*[Aa]ccess\\s*[Rr]equest.*";
+              };
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = ".*[Nn]extcloud.*";};
+            }
+          ];
         };
       };
 
       extraConfig = ''
         default_orientation auto
         hide_edge_borders smart_no_gaps
+        workspace 5; exec ${getExe' pkgs.keepassxc "keepassxc"}
       '';
 
       extraSessionCommands = ''
