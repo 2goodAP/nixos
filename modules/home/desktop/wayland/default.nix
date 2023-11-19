@@ -9,6 +9,7 @@
     ./display.nix
     ./overlays.nix
     ./sway.nix
+    ./theme.nix
     ./widgets.nix
   ];
 
@@ -25,6 +26,12 @@
       type = types.str;
       default = "graphical-session.target";
       description = "The systemd target to bind wayland services to.";
+    };
+
+    socks.sov = mkOption {
+      type = types.str;
+      default = "sov.sock";
+      description = "The FIFO buffer name for the sov systemd socket.";
     };
   };
 

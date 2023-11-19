@@ -29,6 +29,10 @@ in
 
         events = [
           {
+            event = "after-resume";
+            command = ''${getExe' pkgs.sway "swaymsg"} "output * power on"'';
+          }
+          {
             event = "before-sleep";
             command = "${getExe pkgs.swaylock} -efF";
           }
@@ -40,9 +44,13 @@ in
         timeouts =
           [
             {
+              timeout = 30;
+              command = ''if ${getExe' pkgs.procps "pgrep"} -x swaylock; \
+                then ${getExe' pkgs.sway "swaymsg"} "output * power off"; fi'';
+            }
+            {
               timeout = 13 * 60;
-              command = "${getExe' pkgs.sway "swaymsg"} 'output * power off'";
-              resumeCommand = "${getExe' pkgs.sway "swaymsg"} 'output * power on'";
+              command = ''${getExe' pkgs.sway "swaymsg"} "output * power off"'';
             }
             {
               timeout = 15 * 60;
