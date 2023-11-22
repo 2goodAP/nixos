@@ -131,6 +131,10 @@ in
             }
             {
               command = "floating enable";
+              criteria = {app_id = ".*blueman-manager.*";};
+            }
+            {
+              command = "floating enable";
               criteria = {
                 app_id = ".*[Kk]ee[Pp]ass(XC|xc).*";
                 title = ".*[Aa]ccess\\s*[Rr]equest.*";
@@ -139,6 +143,10 @@ in
             {
               command = "floating enable";
               criteria = {app_id = ".*[Nn]extcloud.*";};
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = "pavucontrol";};
             }
           ];
         };
@@ -167,11 +175,9 @@ in
         export CLUTTER_BACKEND=wayland
         export GDK_BACKEND=wayland
         export QT_QPA_PLATFORM=wayland
-        export SDL_VIDEODRIVER=wayland
+        #export SDL_VIDEODRIVER=wayland
         # Java
         _JAVA_AWT_WM_NONREPARENTING=1
-        # SDL
-        export SDL_DYNAMIC_API=${pkgs.SDL2}/lib/libSDL2.so
         # Qt
         export QT_AUTO_SCREEN_SCALE_FACTOR=1
         export QT_QPA_PLATFORMTHEME=qt5ct
