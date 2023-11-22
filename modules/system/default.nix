@@ -64,45 +64,49 @@
             fileSystems = ["/"];
           };
 
-          snapper.configs = {
-            root = {
-              SUBVOLUME = "/";
-              ALLOW_GROUPS = ["wheel"];
-              SYNC_ACL = true;
-              TIMELINE_CREATE = true;
-              TIMELINE_CLEANUP = true;
-              TIMELINE_LIMIT_HOURLY = "12";
-              TIMELINE_LIMIT_DAILY = "5";
-              TIMELINE_LIMIT_WEEKLY = "2";
-              TIMELINE_LIMIT_MONTHLY = "1";
-              TIMELINE_LIMIT_YEARLY = "0";
-              EMPTY_PRE_POST_CLEANUP = true;
-            };
-            nix = {
-              SUBVOLUME = "/nix";
-              ALLOW_GROUPS = ["nixbld" "wheel"];
-              SYNC_ACL = true;
-              TIMELINE_CREATE = true;
-              TIMELINE_CLEANUP = true;
-              TIMELINE_LIMIT_HOURLY = "12";
-              TIMELINE_LIMIT_DAILY = "5";
-              TIMELINE_LIMIT_WEEKLY = "2";
-              TIMELINE_LIMIT_MONTHLY = "1";
-              TIMELINE_LIMIT_YEARLY = "0";
-              EMPTY_PRE_POST_CLEANUP = true;
-            };
-            home = {
-              SUBVOLUME = "/home";
-              ALLOW_GROUPS = ["users" "wheel"];
-              SYNC_ACL = true;
-              TIMELINE_CREATE = true;
-              TIMELINE_CLEANUP = true;
-              TIMELINE_LIMIT_HOURLY = "12";
-              TIMELINE_LIMIT_DAILY = "7";
-              TIMELINE_LIMIT_WEEKLY = "2";
-              TIMELINE_LIMIT_MONTHLY = "0";
-              TIMELINE_LIMIT_YEARLY = "0";
-              EMPTY_PRE_POST_CLEANUP = true;
+          snapper = {
+            snapshotRootOnBoot = true;
+            configs = {
+              root = {
+                SUBVOLUME = "/";
+                ALLOW_GROUPS = ["wheel"];
+                SYNC_ACL = true;
+                NUMBER_CLEANUP = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "5";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "1";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
+              nix = {
+                SUBVOLUME = "/nix";
+                ALLOW_GROUPS = ["nixbld" "wheel"];
+                SYNC_ACL = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "5";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "1";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
+              home = {
+                SUBVOLUME = "/home";
+                ALLOW_GROUPS = ["users" "wheel"];
+                SYNC_ACL = true;
+                TIMELINE_CREATE = true;
+                TIMELINE_CLEANUP = true;
+                TIMELINE_LIMIT_HOURLY = "12";
+                TIMELINE_LIMIT_DAILY = "7";
+                TIMELINE_LIMIT_WEEKLY = "2";
+                TIMELINE_LIMIT_MONTHLY = "0";
+                TIMELINE_LIMIT_YEARLY = "0";
+                EMPTY_PRE_POST_CLEANUP = true;
+              };
             };
           };
         };
