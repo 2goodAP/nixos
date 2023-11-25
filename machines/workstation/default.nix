@@ -77,6 +77,11 @@
       };
     };
 
+    desktop.gaming = {
+      enable = true;
+      vkDeviceID = "2782";
+    };
+
     network = {
       enable = true;
       inherit hostName;

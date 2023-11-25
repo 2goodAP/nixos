@@ -47,10 +47,6 @@
           name = "Papirus";
           package = pkgs.papirus-icon-theme;
         };
-        theme = {
-          name = "Materia Light";
-          package = pkgs.materia-theme;
-        };
       };
 
       home.pointerCursor = {
@@ -62,12 +58,7 @@
 
       qt = {
         enable = true;
-
         platformTheme = "qtct";
-        style = {
-          name = "Materia Light";
-          package = pkgs.materia-kde-theme;
-        };
       };
     };
 }

@@ -1,10 +1,6 @@
 {pkgs, ...}: {
   imports = [../common];
-
-  tgap.home.desktop.gaming = {
-    enable = true;
-    steam.enable = true;
-  };
+  tgap.home.desktop.steam.enable = true;
 
   home.packages = with pkgs; [
     rpcs3
