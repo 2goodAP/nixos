@@ -121,19 +121,24 @@ in
           "XDG_CURRENT_DESKTOP,Hyprland"
           "XDG_SESSION_DESKTOP,Hyprland"
           "XDG_SESSION_TYPE,wayland"
-          # Toolkit
-          "CLUTTER_BACKEND,wayland"
-          "GDK_BACKEND,wayland"
-          "QT_QPA_PLATFORM,wayland"
-          "SDL_VIDEODRIVER,wayland"
-          # Qt
-          "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-          "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
           # NVIDIA
+          "GBM_BACKEND,nvidia"
           "LIBVA_DRIVER_NAME,nvidia"
           "__GL_GSYNC_ALLOWED,1"
           "__GL_VRR_ALLOWED,1"
           "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+          # Toolkit
+          "CLUTTER_BACKEND,wayland"
+          "GDK_BACKEND,wayland"
+          "QT_QPA_PLATFORM,wayland"
+          #"SDL_VIDEODRIVER,wayland"
+          # Java
+          "_JAVA_AWT_WM_NONREPARENTING,1"
+          # Qt
+          "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+          "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+          # Firefox
+          "MOZ_ENABLE_WAYLAND,1"
         ];
 
         general = {
