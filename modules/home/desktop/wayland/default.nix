@@ -7,6 +7,7 @@
   imports = [
     ./apps.nix
     ./display.nix
+    ./hyprland.nix
     ./overlays.nix
     ./sway.nix
     ./theme.nix
@@ -51,7 +52,7 @@
 
       home.pointerCursor = {
         gtk.enable = true;
-        name = "Bibata Modern Ice";
+        name = "Bibata-Modern-Ice";
         package = pkgs.bibata-cursors;
         size = 28;
       };

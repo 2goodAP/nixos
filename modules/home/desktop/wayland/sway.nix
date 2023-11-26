@@ -9,7 +9,11 @@
   osCfg = osConfig.tgap.system;
   inherit (lib) getExe getExe' mkIf mkOptionDefault optionalAttrs;
 in
-  mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "wayland" && cfg.windowManager == "sway") {
+  mkIf (
+    osCfg.desktop.enable
+    && osCfg.desktop.manager == "wayland"
+    && cfg.windowManager == "sway"
+  ) {
     tgap.home.desktop.wayland.systemdTarget = "sway-session.target";
 
     wayland.windowManager.sway = {
@@ -42,17 +46,11 @@ in
         input = {
           "type:pointer".accel_profile = "flat";
 
-          "type:keyboard" = (
-            if osCfg.laptop.enable
-            then {
-              xkb_layout = "us,us,np";
-              xkb_variant = "altgr-intl,colemak_dh,";
-            }
-            else {
-              xkb_layout = "us,np";
-              xkb_variant = "altgr-intl,";
-            }
-          );
+          "type:keyboard" = {
+            xkb_layout = osConfig.services.xserver.layout;
+            xkb_variant = osConfig.services.xserver.xkbVariant;
+            xkb_options = osConfig.services.xserver.xkbOptions;
+          };
 
           "type:touchpad" = {
             accel_profile = "adaptive";
@@ -146,7 +144,7 @@ in
             }
             {
               command = "floating enable";
-              criteria = {app_id = "pavucontrol";};
+              criteria = {app_id = ".*pavucontrol.*";};
             }
           ];
         };

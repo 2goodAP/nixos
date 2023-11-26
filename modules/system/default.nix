@@ -53,7 +53,7 @@
                 xkbVariant = "altgr-intl,";
               }
             )
-            // {xkbOptions = "grp:alt_caps_toggle";};
+            // {xkbOptions = "grp:ctrls_toggle";};
         };
       }
 
