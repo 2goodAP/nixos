@@ -140,11 +140,19 @@ in
             }
             {
               command = "floating enable";
-              criteria = {app_id = ".*[Nn]extcloud.*";};
+              criteria = {app_id = ".*nextcloud.*";};
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = ".*soffice.*"; title = "[Oo]pen.*";};
             }
             {
               command = "floating enable";
               criteria = {app_id = ".*pavucontrol.*";};
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = ".*polkit-kde-authentication-agent.*";};
             }
           ];
         };

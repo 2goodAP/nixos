@@ -255,18 +255,22 @@ in
         misc = {
           force_default_wallpaper = "-1"; # Set to 0 to disable the anime mascot wallpapers
           focus_on_activate = true;
+          key_press_enables_dpms = true;
+          mouse_move_enables_dpms = true;
         };
 
         monitor =
-          "Microstep MSI G273Q CA8A462800094, "
-          + "2560x1440@165Hz, auto, auto, vrr, 1";
+          "desc:Microstep MSI G273Q CA8A462800094,"
+          + " 2560x1440@165Hz, auto, auto, vrr, 1";
 
         windowrulev2 = [
           "float, class:^(.*blueman-manager.*)$"
           ("float, class:^(.*[Kk]ee[Pp]ass(XC|xc).*)$,"
             + " title:^(.*[Aa]ccess\\s*[Rr]equest.*)$")
-          "float, class:^(.*[Nn]extcloud.*)$"
+          "float, class:^(.*nextcloud.*)$"
           "float, class:^(.*pavucontrol.*)$"
+          "float, class:^(.*polkit-kde-authentication-agent.*)$"
+          "float, class:^(.*soffice.*)$, title:^([Oo]pen.*)$"
         ];
       };
     };
