@@ -25,7 +25,6 @@
           systemPackages = with pkgs; [
             acpi
             nbfc-linux
-            powertop
           ];
 
           etc."nbfc/nbfc.json" = {
@@ -37,12 +36,7 @@
         };
 
         services = {
-          # Hibernate on low battery.
-          # https://wiki.archlinux.org/title/laptop#Hibernate_on_low_battery_level
-          udev.extraRules = ''
-            # Suspend the system when battery level drops to 20% or lower
-            SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-20]", RUN+="${pkgs.systemd}/bin/systemctl -i hibernate"
-          '';
+          auto-cpufreq.enable = true;
 
           logind.extraConfig = ''
             HandleLidSwitch=suspend-then-hibernate
@@ -52,7 +46,12 @@
             HandleSuspendKey=suspend-then-hibernate
           '';
 
-          auto-cpufreq.enable = true;
+          # Hibernate on low battery.
+          # https://wiki.archlinux.org/title/laptop#Hibernate_on_low_battery_level
+          udev.extraRules = ''
+            # Suspend the system when battery level drops to 20% or lower
+            SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", ATTR{capacity}=="[0-20]", RUN+="${pkgs.systemd}/bin/systemctl -i hibernate"
+          '';
         };
 
         systemd.services.nbfc_service = {

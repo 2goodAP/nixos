@@ -13,13 +13,21 @@
 
   config = let
     cfg = config.tgap.home.programs;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) mkIf mkMerge recursiveUpdate;
   in
     mkIf cfg.enable (mkMerge [
       {
         programs.beets = {
           enable = true;
-          package = pkgs.beets-unstable;
+
+          package = pkgs.beets-unstable.override (old: {
+            pluginOverrides = recursiveUpdate old.pluginOverrides {
+              replaygain = {
+                enable = false;
+                testPaths = "test/plugins/test_replaygain.py";
+              };
+            };
+          });
 
           settings = {
             # Path to the music directory and the music library

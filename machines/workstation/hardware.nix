@@ -21,8 +21,6 @@
     kernelModules = ["kvm-intel"];
   };
 
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-
   hardware = {
     enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = true;

@@ -21,11 +21,16 @@
 
   config = let
     cfg = config.tgap.system;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) mkDefault mkIf mkMerge;
   in
     mkMerge [
       {
         i18n.defaultLocale = "en_US.UTF-8";
+        powerManagement.cpuFreqGovernor = mkDefault (
+          if cfg.laptop.enable
+          then "userspace"
+          else "schedutil"
+        );
         systemd.oomd.enableUserServices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
@@ -39,7 +44,6 @@
         services = {
           fstrim.enable = true;
           printing.enable = true;
-          tlp.enable = true;
 
           xserver =
             (

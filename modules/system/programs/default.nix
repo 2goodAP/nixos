@@ -39,6 +39,8 @@
             gptfdisk
             ntfs3g
             parted
+            s-tui
+            config.boot.kernelPackages.turbostat
 
             # Programs
             busybox

@@ -177,6 +177,7 @@ in
         env = [
           # wl-roots
           "WLR_RENDERER,vulkan"
+          "WLR_NO_HARDWARE_CURSORS,1"
           # XDG
           "XDG_CURRENT_DESKTOP,Hyprland"
           "XDG_SESSION_DESKTOP,Hyprland"
