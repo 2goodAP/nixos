@@ -45,11 +45,25 @@
         system = "x86_64-linux";
 
         systemModules = [
-          ({
-            config,
-            lib,
-            ...
-          }: {
+          # nixos settings
+          {
+            nixpkgs.config.allowUnfree = true;
+
+            home-manager = {
+              backupFileExtension = "hm.bak";
+              extraSpecialArgs = {inherit inputs;};
+              useGlobalPkgs = true;
+              useUserPackages = true;
+
+              sharedModules = [
+                # nur modules for `config.nur` options
+                nur.nixosModules.nur
+
+                # custom home-manager modules
+                (import ./modules/home)
+              ];
+            };
+
             nix.settings = {
               experimental-features = ["nix-command" "flakes"];
               max-jobs = 12;
@@ -68,8 +82,20 @@
               ];
             };
 
+            users.users.root = {
+              createHome = true;
+              isSystemUser = true;
+              initialPassword = "NixOS-root.";
+            };
+          }
+
+          # overlays
+          ({
+            config,
+            lib,
+            ...
+          }: {
             nixpkgs = {
-              config.allowUnfree = true;
               inherit (import ./overlays {inherit config inputs lib system;}) overlays;
             };
           })
@@ -82,20 +108,10 @@
           (import ./modules/system)
         ];
 
-        mkHomeSettings = {config, ...}: {
-          backupFileExtension = "hm.bak";
-          extraSpecialArgs = {inherit inputs;};
-          useGlobalPkgs = true;
-          useUserPackages = true;
-
-          sharedModules = [
-            # NUR modules for `config.nur` options.
-            nur.nixosModules.nur
-
-            # Custom user modules.
-            (import ./modules/home)
-          ];
-        };
+        # Create users and home-manager profiles.
+        justagamer = import ./users/justagamer;
+        twogoodap = import ./users/twogoodap;
+        workerap = import ./users/workerap;
       in {
         nitro5 = lib.nixosSystem {
           inherit system;
@@ -104,10 +120,11 @@
             systemModules
             ++ [
               # system-specific configuraitons
-              (import ./machines/nitro5 {
-                hostName = "nitro5-nix";
-                inherit mkHomeSettings;
-              })
+              (import ./machines/nitro5 {hostName = "nitro5-nix";})
+
+              # user-specific configurations
+              twogoodap
+              workerap
             ];
         };
 
@@ -118,10 +135,12 @@
             systemModules
             ++ [
               # system-specific configuraitons
-              (import ./machines/workstation {
-                hostName = "workstation-nix";
-                inherit mkHomeSettings;
-              })
+              (import ./machines/workstation {hostName = "workstation-nix";})
+
+              # user-specific configurations
+              justagamer
+              twogoodap
+              workerap
             ];
         };
       };

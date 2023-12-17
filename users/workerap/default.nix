@@ -1,10 +1,27 @@
-{pkgs, ...}: {
-  imports = [../common];
+{
+  users.users.workerap = {
+    isNormalUser = true;
+    initialPassword = "NixOS-workerap.";
+    createHome = true;
+    extraGroups = [
+      "audio"
+      "cups"
+      "disk"
+      "docker"
+      "networkmanager"
+      "video"
+      "wheel"
+    ];
+  };
 
-  tgap.home.programs.jupyter.enable = true;
+  home-manager.users.workerap = {pkgs, ...}: {
+    imports = [../common];
 
-  home.packages = with pkgs; [
-    insomnia
-    openvpn
-  ];
+    tgap.home.programs.jupyter.enable = true;
+
+    home.packages = with pkgs; [
+      insomnia
+      openvpn
+    ];
+  };
 }

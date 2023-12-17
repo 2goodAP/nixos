@@ -35,9 +35,7 @@
             library = "~/.local/share/beets/beets-music-library.db";
 
             # Move the music files instead of copying to save space
-            import = {
-              move = "yes";
-            };
+            import.move = true;
 
             # Plugins
             plugins = "chroma edit fetchart fromfilename zero";
@@ -46,7 +44,7 @@
             zero = {
               fields = "comments images day month";
               # Regexp to identify comments
-              comments = "[EAC, LAME, from.+collection, 'ripped by']";
+              comments = ["EAC" "LAME" "from.+collection" "ripped by"];
               update_database = true;
             };
           };
