@@ -91,7 +91,7 @@
       {
         boot = {
           consoleLogLevel = 3;
-          plymouth.enable = true;
+          #plymouth.enable = true;
 
           initrd = mkMerge [
             {
