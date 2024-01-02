@@ -147,6 +147,12 @@ in
           "${mod}, mouse:273, resizewindow"
         ];
 
+        binds = {
+          allow_workspace_cycles = true;
+          pass_mouse_when_bound = true;
+          workspace_back_and_forth = true;
+        };
+
         decoration = {
           rounding = 10;
           dim_inactive = true;
