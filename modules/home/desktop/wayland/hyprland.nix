@@ -278,6 +278,7 @@ in
           "float, class:^(.*pavucontrol.*)$"
           "float, class:^(.*polkit-kde-authentication-agent.*)$"
           "float, class:^(.*soffice.*)$, title:^([Oo]pen.*)$"
+          "float, class:^(.*udiskie.*)$"
         ];
       };
     };
