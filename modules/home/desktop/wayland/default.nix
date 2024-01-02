@@ -8,7 +8,6 @@
     ./apps.nix
     ./display.nix
     ./hyprland.nix
-    ./overlays.nix
     ./sway.nix
     ./theme.nix
     ./widgets.nix
