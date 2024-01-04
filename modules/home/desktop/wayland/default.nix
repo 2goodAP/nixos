@@ -7,7 +7,6 @@
   imports = [
     ./apps.nix
     ./display.nix
-    ./hyprland.nix
     ./sway.nix
     ./theme.nix
     ./widgets.nix
@@ -17,8 +16,8 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     windowManager = mkOption {
-      type = types.enum ["hyprland" "sway"];
-      default = "hyprland";
+      type = types.enum ["sway"];
+      default = "sway";
       description = "The wayland window manager to use.";
     };
 

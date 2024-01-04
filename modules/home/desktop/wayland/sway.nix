@@ -70,8 +70,14 @@ in
         in
           mkOptionDefault (
             {
+              "${mod}+Return" = "exec ${getExe pkgs.kitty}";
+              "${mod}+x" = "exec ${getExe' pkgs.systemd "loginctl"} lock-session";
               "${mod}+d" = "exec '${getExe' pkgs.rofi-wayland "rofi"} -show combi -modes combi -combi-modes window,drun,run'";
-              "${mod}+x" = "exec ${getExe pkgs.swaylock} -efF";
+              "${mod}+c" =
+                "exec '${getExe pkgs.cliphist} list"
+                + " | ${getExe' pkgs.rofi-wayland "rofi"} -dmenu"
+                + " | ${getExe pkgs.cliphist} decode"
+                + " | ${getExe' pkgs.wl-clipboard "wl-copy"}'";
               "${mod}+Shift+a" = "focus child";
               "${mod}+Shift+e" = "exec ${getExe pkgs.wlogout}";
               "${mod}+Tab" = "workspace back_and_forth";
@@ -144,7 +150,10 @@ in
             }
             {
               command = "floating enable";
-              criteria = {app_id = ".*soffice.*"; title = "[Oo]pen.*";};
+              criteria = {
+                app_id = ".*soffice.*";
+                title = "[Oo]pen.*";
+              };
             }
             {
               command = "floating enable";
@@ -153,6 +162,14 @@ in
             {
               command = "floating enable";
               criteria = {app_id = ".*polkit-kde-authentication-agent.*";};
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = ".*blueman-manager.*";};
+            }
+            {
+              command = "floating enable";
+              criteria = {app_id = ".*udiskie.*";};
             }
           ];
         };
@@ -167,6 +184,7 @@ in
       extraSessionCommands = ''
         # wlroots
         export WLR_RENDERER=vulkan
+        export WLR_NO_HARDWARE_CURSORS=1
         # XDG
         export XDG_CURRENT_DESKTOP=sway
         export XDG_SESSION_DESKTOP=sway
@@ -177,7 +195,7 @@ in
         export __GL_GSYNC_ALLOWED=1
         export __GL_VRR_ALLOWED=1
         export __GLX_VENDOR_LIBRARY_NAME=nvidia
-        # Toolkit
+        # Toolkits
         export CLUTTER_BACKEND=wayland
         export GDK_BACKEND=wayland
         export QT_QPA_PLATFORM=wayland
@@ -191,6 +209,8 @@ in
         export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
         # Firefox
         export MOZ_ENABLE_WAYLAND=1
+        # Cursor
+        export XCURSOR_SIZE=${builtins.toString config.home.pointerCursor.size}
       '';
     };
   }

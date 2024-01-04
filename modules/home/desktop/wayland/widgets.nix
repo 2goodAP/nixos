@@ -7,7 +7,7 @@
 }: let
   cfg = config.tgap.home.desktop.wayland;
   osCfg = osConfig.tgap.system.desktop;
-  inherit (lib) getExe mkIf mkMerge;
+  inherit (lib) getExe mkIf mkMerge optionals;
 in
   mkIf (osCfg.enable && osCfg.manager == "wayland") (mkMerge [
     {
@@ -20,17 +20,12 @@ in
           main = {
             height = 30;
             layer = "top";
-            mode = "dock";
             position = "top";
             spacing = 4;
 
             modules-left =
               ["${cfg.windowManager}/workspaces"]
-              ++ (
-                if (cfg.windowManager == "hyprland")
-                then ["hyprland/submap"]
-                else ["sway/mode"]
-              );
+              ++ (optionals (cfg.windowManager == "sway") ["${cfg.windowManager}/mode"]);
             modules-center = ["${cfg.windowManager}/window"];
             modules-right = [
               "idle_inhibitor"
@@ -46,9 +41,6 @@ in
               "privacy"
               "tray"
             ];
-            "hyprland/submap" = {
-              format = "<span style=\"italic\">{}</span>";
-            };
             "sway/mode" = {
               format = "<span style=\"italic\">{}</span>";
             };
