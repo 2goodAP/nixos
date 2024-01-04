@@ -31,7 +31,7 @@
           then "userspace"
           else "schedutil"
         );
-        systemd.oomd.enableUserServices = true;
+        systemd.oomd.enableUserSlices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
         system.stateVersion = "23.11";
