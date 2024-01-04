@@ -13,7 +13,12 @@ in
     home.packages = [pkgs.keepassxc];
 
     xdg.configFile.keepassxc-settings = {
-      source = ./keepassxc.ini;
+      text = ''
+        [FdoSecrets]
+        Enabled=${if (osCfg.manager == "wayland") then "true" else "false"}
+
+        ${builtins.readFile ./keepassxc.ini}
+      '';
       target = "keepassxc/keepassxc.ini";
     };
   }

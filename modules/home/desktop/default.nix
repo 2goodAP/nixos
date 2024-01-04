@@ -30,13 +30,24 @@
     mkIf osCfg.enable (mkMerge [
       {
         fonts.fontconfig.enable = true;
-        home.packages = with pkgs; [
-          (nerdfonts.override {fonts = ["CascadiaCode" "FiraCode"];})
-          noto-fonts
-          noto-fonts-emoji-blob-bin
-          noto-fonts-color-emoji
-          noto-fonts-monochrome-emoji
-        ];
+
+        home = {
+          packages = with pkgs; [
+            bibata-cursors
+            (nerdfonts.override {fonts = ["CascadiaCode" "FiraCode"];})
+            noto-fonts
+            noto-fonts-emoji-blob-bin
+            noto-fonts-color-emoji
+            noto-fonts-monochrome-emoji
+          ];
+
+          pointerCursor = {
+            gtk.enable = true;
+            name = "Bibata-Modern-Ice";
+            package = pkgs.bibata-cursors;
+            size = 28;
+          };
+        };
       }
 
       (mkIf (cfg.terminal == "kitty") {

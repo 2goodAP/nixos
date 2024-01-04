@@ -49,8 +49,6 @@
           bluetooth.enable = true;
           xpadneo.enable = true;
         };
-
-        services.blueman.enable = true;
       })
 
       (mkIf cfg.network.enable {

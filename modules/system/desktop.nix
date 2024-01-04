@@ -48,7 +48,11 @@
 
       (mkIf (cfg.manager == "wayland") {
         security.pam.services.swaylock.text = "auth include login";
-        services.udisks2.enable = true;
+
+        services = {
+          blueman.enable = true;
+          udisks2.enable = true;
+        };
       })
 
       (mkIf (cfg.manager == "plasma") {

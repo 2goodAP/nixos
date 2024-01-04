@@ -6,7 +6,7 @@
     bluetooth.enable = true;
     desktop = {
       enable = true;
-      manager = "wayland";
+      manager = "plasma";
     };
 
     programs = {
