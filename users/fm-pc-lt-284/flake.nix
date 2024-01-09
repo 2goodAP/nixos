@@ -31,6 +31,9 @@
 
       modules = [
         {
+          # Let Home Manager install and manage itself.
+          programs.home-manager.enable = true;
+
           nixpkgs = {
             config.allowUnfree = true;
             overlays = [
@@ -44,24 +47,25 @@
             inherit username;
             homeDirectory = "/home/${username}";
           };
-
-          # Let Home Manager install and manage itself.
-          programs.home-manager.enable = true;
         }
 
         # Input modules.
         nur.nixosModules.nur
 
         # Custom modules.
-        ../../modules/user
+        ../../modules/home
         ./default.nix
       ];
 
       extraSpecialArgs.osConfig = {
         system.stateVersion = "23.11";
-        tgap.system.desktop = {
-          enable = true;
-          manager = "plasma";
+        tgap.system = {
+          laptop.enable = true;
+          desktop = {
+            enable = true;
+            gaming.enable = false;
+            manager = "plasma";
+          };
         };
       };
     };
