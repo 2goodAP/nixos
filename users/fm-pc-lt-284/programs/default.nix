@@ -188,7 +188,7 @@
   services.gpg-agent = {
     enable = true;
     pinentryFlavor =
-      if osConfig.services.xserver.desktopManager.plasma5.enable
+      if (osConfig.tgap.system.desktop.manager == "plasma")
       then "qt"
       else options.services.gpg-agent.pinentryFlavor.default;
   };

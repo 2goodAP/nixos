@@ -50,7 +50,7 @@ in {
       rdr2 = {
         categories = ["Game"];
         comment = "Red Dead Redemption 2";
-        exec = "env launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe";
+        exec = ''env WINEDLLOVERRIDES="dinput8,version=n,b" launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe'';
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/RDR2/RDR2_icon.png";
         name = "RDR2";

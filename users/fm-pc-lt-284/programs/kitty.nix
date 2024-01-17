@@ -18,7 +18,7 @@
       italic_font CaskaydiaCove NF SemiLight Italic
       bold_italic_font CaskaydiaCove NF SemiBold Italic
 
-      font_size 11.75
+      font_size 10.5
       disable_ligatures cursor
 
       # Cursor customization
