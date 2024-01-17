@@ -39,6 +39,7 @@
             noto-fonts-emoji-blob-bin
             noto-fonts-color-emoji
             noto-fonts-monochrome-emoji
+            papirus-icon-theme
           ];
 
           pointerCursor = {

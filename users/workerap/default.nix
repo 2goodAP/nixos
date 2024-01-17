@@ -1,7 +1,9 @@
-{
-  users.users.workerap = {
+let
+  uname = builtins.baseNameOf ./.;
+in {
+  users.users."${uname}" = {
     isNormalUser = true;
-    initialPassword = "NixOS-workerap.";
+    initialPassword = "NixOS-${uname}.";
     createHome = true;
     extraGroups = [
       "audio"
@@ -14,7 +16,7 @@
     ];
   };
 
-  home-manager.users.workerap = {pkgs, ...}: {
+  home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [../common];
 
     tgap.home.programs.jupyter.enable = true;

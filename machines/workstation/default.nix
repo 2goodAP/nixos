@@ -9,11 +9,6 @@
 
   time.timeZone = "Asia/Kathmandu";
 
-  environment.systemPackages = with pkgs; [
-    hpl
-    mprime
-  ];
-
   tgap.system = {
     boot = {
       secureBoot.enable = true;
@@ -28,6 +23,7 @@
 
     desktop.gaming = {
       enable = true;
+      steam.enable = true;
       vkDeviceID = "2782";
     };
 

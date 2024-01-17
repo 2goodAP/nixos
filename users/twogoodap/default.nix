@@ -1,7 +1,9 @@
-{
-  users.users.twogoodap = {
+let
+  uname = builtins.baseNameOf ./.;
+in {
+  users.users."${uname}" = {
     isNormalUser = true;
-    initialPassword = "NixOS-twogoodap.";
+    initialPassword = "NixOS-${uname}.";
     createHome = true;
     extraGroups = [
       "audio"
@@ -14,7 +16,7 @@
     ];
   };
 
-  home-manager.users.twogoodap = {
+  home-manager.users."${uname}" = {
     lib,
     osConfig,
     pkgs,

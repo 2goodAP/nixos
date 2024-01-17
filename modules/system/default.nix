@@ -76,6 +76,7 @@
                 ALLOW_GROUPS = ["wheel"];
                 SYNC_ACL = true;
                 NUMBER_CLEANUP = true;
+                NUMBER_LIMIT = 20;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
                 TIMELINE_LIMIT_HOURLY = "12";
@@ -89,6 +90,9 @@
                 SUBVOLUME = "/nix";
                 ALLOW_GROUPS = ["nixbld" "wheel"];
                 SYNC_ACL = true;
+                NUMBER_CLEANUP = true;
+                NUMBER_LIMIT = 5;
+                NUMBER_LIMIT_IMPORTANT = 5;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
                 TIMELINE_LIMIT_HOURLY = "12";
@@ -102,6 +106,9 @@
                 SUBVOLUME = "/home";
                 ALLOW_GROUPS = ["users" "wheel"];
                 SYNC_ACL = true;
+                NUMBER_CLEANUP = true;
+                NUMBER_LIMIT = 10;
+                NUMBER_LIMIT_IMPORTANT = 5;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
                 TIMELINE_LIMIT_HOURLY = "12";
