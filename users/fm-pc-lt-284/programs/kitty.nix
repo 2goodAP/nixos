@@ -13,7 +13,7 @@
       kitty_mod = "ctrl+shift";
     in ''
       # Fonts
-      font_family FiraCode Nerd Font
+      font_family FiraCodeNerdFont
       bold_font FiraCode Nerd Font SemBd
       italic_font CaskaydiaCove NF SemiLight Italic
       bold_italic_font CaskaydiaCove NF SemiBold Italic
