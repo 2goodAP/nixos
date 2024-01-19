@@ -1,7 +1,4 @@
 {hostName, ...}: {
-  pkgs,
-  ...
-}: {
   imports = [
     ./hardware.nix
     ../common.nix
@@ -23,7 +20,6 @@
 
     desktop.gaming = {
       enable = true;
-      steam.enable = true;
       vkDeviceID = "2782";
     };
 

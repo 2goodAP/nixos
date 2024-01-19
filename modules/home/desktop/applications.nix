@@ -9,6 +9,7 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
+    gaming.enable = mkEnableOption "Whether or not to install gaming related apps.";
 
     nixosApplications.enable = mkOption {
       type = types.bool;
@@ -38,6 +39,7 @@
 
           sioyek = {
             enable = true;
+
             bindings = {
               next_page = "J";
               previous_page = "K";
@@ -46,6 +48,7 @@
               "goto_top_of_page;goto_right" = "<C-u>";
               "goto_bottom_of_page;goto_left" = "<C-d>";
             };
+
             config = {
               #shared_database_path = "$HOME/Nextcloud/Utilities/Sioyek/shared.db";
               startup_commands = "fit_page_to_width;toggle_visual_scroll";
@@ -159,7 +162,7 @@
           );
       })
 
-      (mkIf osCfg.gaming.enable {
+      (mkIf (osCfg.gaming.enable && cfg.gaming.enable) {
         programs.mangohud = {
           enable = true;
 
@@ -208,8 +211,6 @@
         home.packages = with pkgs; [
           gamemode
           protonup
-          winetricks
-          wineWowPackages.stagingFull
         ];
       })
     ]);
