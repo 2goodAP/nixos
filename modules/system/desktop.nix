@@ -117,7 +117,6 @@
                 "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
                 "--hdr-enabled"
                 "--force-grab-cursor"
-                "--adaptive-sync"
               ];
 
               env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
@@ -158,6 +157,7 @@
                 -w, --width <width>                output-width passed to gamescope
                 -h, --height <height>              output-height passed to gamescope
                 -r, --refresh-rate <ref-rate>      nested-refresh-rate passed to gamescope
+                -f, --fullscreen                   make the gamescope window fullscreen
                 -F, --fps-limit <fps-limit>        framerate-limit passed to gamescope
                 -P, --proton-build <proton-build>  name of the proton build to use from
                                                    $STEAM_COMPAT_CLIENT_INSTALL_PATH
