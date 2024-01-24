@@ -291,7 +291,10 @@
                   "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" run \
                   "$GAME_DIR/$EXE_PATH" "$@"
               '';
-            in [launch-game];
+            in [
+              launch-game
+              steam.run
+            ];
           }
 
           (mkIf cfg.gaming.steam.enable {

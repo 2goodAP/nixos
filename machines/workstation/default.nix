@@ -20,6 +20,7 @@
 
     desktop.gaming = {
       enable = true;
+      steam.enable = true;
       vkDeviceID = "2782";
     };
 

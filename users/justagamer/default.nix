@@ -80,36 +80,6 @@ in {
         settings = {DBusActivatable = "false";};
         terminal = true;
       };
-
-      wolfensteinNewOrder = {
-        categories = ["Game"];
-        comment = "Wolfenstein - The New Order";
-        exec = (
-          ''env WINEDLLOVERRIDES="dinput8=n,b" launch-game -r 100 -F 100 -fm ''
-          + "/home/${uname}/Wine/Games/Wolfenstein_The_New_Order WolfNewOrder_x64.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Wolfenstein_New_Order/New_Order_Icon.png";
-        name = "The New Order";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-        terminal = true;
-      };
-
-      wolfensteinOldBlood = {
-        categories = ["Game"];
-        comment = "Wolfenstein - The Old Blood";
-        exec = (
-          ''env WINEDLLOVERRIDES="dinput8=n,b" launch-game -r 100 -F 100 -fm ''
-          + "/home/${uname}/Wine/Games/Wolfenstein_The_Old_Blood WolfOldBlood_x64.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Wolfenstein_Old_Blood/Old_Blood_Icon.png";
-        name = "The Old Blood";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-        terminal = true;
-      };
     };
   };
 }
