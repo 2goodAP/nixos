@@ -6,7 +6,7 @@
         "highlightTrailingWhitespace": true,
         "customStyles": {
             "fontFamily": "FiraCode Nerd Font",
-            "fontSize": 14,
+            "fontSize": 13.38,
             "lineHeight": 1.2
         }
     }

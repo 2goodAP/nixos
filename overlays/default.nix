@@ -19,7 +19,7 @@ in {
     ])
     ++ (optionals (cfg.desktop.enable && cfg.desktop.gaming.enable) [
       (final: prev: {
-        ryujinx = prev.ryujinx.overrideAttrs (oldAttrs: {
+        ryujinx = prev.ryujinx.overrideAttrs (olds: {
           preFixup = ''
             mkdir -p $out/share/{applications,icons/hicolor/scalable/apps,mime/packages}
             pushd $src/distribution/linux
