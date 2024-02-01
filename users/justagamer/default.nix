@@ -24,6 +24,21 @@ in {
     ];
 
     xdg.desktopEntries = {
+      dishonored2 = {
+        categories = ["Game"];
+        comment = "Dishonored 2";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Dishonored_2"
+          + " Dishonored2.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Dishonored_2/Dishonored2_Icon.png";
+        name = "Dishonored 2";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       dos2 = {
         categories = ["Game"];
         comment = "Divinity Original Sin 2 - Definitive Edition";
