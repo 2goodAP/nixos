@@ -211,6 +211,8 @@
         home.packages = with pkgs; [
           gamemode
           protonup
+          winetricks
+          wineWowPackages.stagingFull
         ];
       })
     ]);
