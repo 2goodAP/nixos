@@ -45,19 +45,19 @@
           fstrim.enable = true;
           printing.enable = true;
 
-          xserver =
+          xserver.xkb =
             (
               if cfg.laptop.enable
               then {
                 layout = "us,us,np";
-                xkbVariant = "altgr-intl,colemak_dh,";
+                variant = "altgr-intl,colemak_dh,";
               }
               else {
                 layout = "us,np";
-                xkbVariant = "altgr-intl,";
+                variant = "altgr-intl,";
               }
             )
-            // {xkbOptions = "grp:ctrls_toggle";};
+            // {options = "grp:ctrls_toggle";};
         };
       }
 
