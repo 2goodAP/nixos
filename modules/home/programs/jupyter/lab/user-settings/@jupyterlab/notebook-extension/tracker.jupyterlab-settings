@@ -1,12 +1,17 @@
 {
+    "enableKernelInitNotification": false,
+    "codeCellConfig": {},
     "defaultCell": "code",
     "autoStartDefaultKernel": false,
     "inputHistoryScope": "global",
     "kernelShutdown": false,
+    "markdownCellConfig": {},
+    "rawCellConfig": {},
     "scrollPastEnd": true,
     "recordTiming": true,
     "overscanCount": 1,
     "maxNumberOutputs": 50,
+    "scrollHeadingToTop": true,
     "showEditorForReadOnlyMarkdown": true,
     "kernelStatus": {
         "showOnStatusBar": false,
@@ -18,12 +23,6 @@
     "sideBySideLeftMarginOverride": "10px",
     "sideBySideRightMarginOverride": "10px",
     "sideBySideOutputRatio": 1,
-    "windowingMode": "full",
-    "codeCellConfig": {},
-    "markdownCellConfig": {
-        "lineNumbers": false
-    },
-    "rawCellConfig": {
-        "lineNumbers": false
-    }
+    "windowingMode": "defer",
+    "accessKernelHistory": false
 }
