@@ -40,15 +40,10 @@
     inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionalString;
   in
     mkIf cfg.enable (mkMerge [
-      {
-        programs = {
-          dconf.enable = true;
-          gnupg.agent.pinentryFlavor = "qt";
-          nm-applet.enable = true;
-        };
-      }
+      {programs.dconf.enable = true;}
 
       (mkIf (cfg.manager == "wayland") {
+        programs.nm-applet.enable = true;
         security.pam.services.swaylock.text = "auth include login";
 
         services = {
@@ -58,30 +53,25 @@
       })
 
       (mkIf (cfg.manager == "plasma") {
+        programs.gnupg.agent.settings = {no-allow-external-cache = "";};
+
         environment = {
           systemPackages = [pkgs.wl-clipboard];
 
-          plasma5.excludePackages = with pkgs.libsForQt5; [
+          plasma6.excludePackages = with pkgs.kdePackages; [
             ark
             elisa
+            kate
             khelpcenter
             konsole
             okular
-            oxygen
             plasma-browser-integration
-            print-manager
           ];
         };
 
         services = {
           power-profiles-daemon.enable = !config.services.tlp.enable;
-
-          xserver.desktopManager.plasma5 = {
-            enable = true;
-            phononBackend = "vlc";
-            runUsingSystemd = true;
-            useQtScaling = true;
-          };
+          xserver.desktopManager.plasma6.enable = true;
         };
       })
 
