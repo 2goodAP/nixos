@@ -187,6 +187,7 @@
 
   services.gpg-agent = {
     enable = true;
+    extraConfig = "no-allow-external-cache";
     pinentryFlavor =
       if (osConfig.tgap.system.desktop.manager == "plasma")
       then "qt"
