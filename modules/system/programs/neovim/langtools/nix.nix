@@ -8,7 +8,7 @@
   inherit (lib) mkIf mkMerge optionals optionalString;
 in
   mkIf (builtins.elem "nix" cfg.langtools.languages && cfg.langtools.lsp.enable) {
-    environment.systemPackages = [pkgs.rnix-lsp];
+    environment.systemPackages = [pkgs.nixd];
 
     tgap.system.programs.neovim.luaExtraConfig = ''
       -- Use standard Neovim lsp capabilities.
@@ -18,7 +18,7 @@ in
         capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
       ''}
 
-      require("lspconfig").rnix.setup({
+      require("lspconfig").nixd.setup({
         capabilities = capabilities,
         on_attach = function(client, bufnr)
           ${optionalString (!cfg.autocompletion.enable) ''

@@ -53,7 +53,7 @@
             ranger
             ripgrep
             toybox
-            unrar
+            unrar-free
             unzip
             wget
             zip
@@ -273,8 +273,12 @@
           };
 
           virtualbox = {
-            host.enable = true;
-            guest.enable = false;
+            guest.enable = true;
+
+            host = {
+              enable = true;
+              enableExtensionPack = true;
+            };
           };
         };
       })

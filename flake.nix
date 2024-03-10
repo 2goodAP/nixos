@@ -2,7 +2,7 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/master";
+    nixpkgs.url = "github:NixOS/nixpkgs/17c7eae0ef758bd00e736b0731e338fcf7b12cc5";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
@@ -40,8 +40,20 @@
 
         systemModules = [
           # nixos settings
-          {
-            nixpkgs.config.allowUnfree = true;
+          ({
+            config,
+            lib,
+            pkgs,
+            ...
+          }: {
+            nixpkgs = {
+              inherit (import ./overlays {inherit config inputs lib system;}) overlays;
+
+              config = {
+                allowUnfree = true;
+                permittedInsecurePackages = ["nix-2.16.2"];
+              };
+            };
 
             home-manager = {
               backupFileExtension = "hm.bak";
@@ -78,17 +90,6 @@
               createHome = true;
               isSystemUser = true;
               initialPassword = "NixOS-root.";
-            };
-          }
-
-          # overlays
-          ({
-            config,
-            lib,
-            ...
-          }: {
-            nixpkgs = {
-              inherit (import ./overlays {inherit config inputs lib system;}) overlays;
             };
           })
 
