@@ -14,7 +14,7 @@
       steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
 
       vkDeviceID = mkOption {
-        type = types.str;
+        type = types.nullOr types.str;
         default = null;
         description = "The vulkan deviceID of the preferred GPU to use with gamescope.";
       };
@@ -37,7 +37,7 @@
 
   config = let
     cfg = config.tgap.system.desktop;
-    inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionalString;
+    inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionals optionalString;
   in
     mkIf cfg.enable (mkMerge [
       {programs.dconf.enable = true;}
@@ -66,6 +66,7 @@
             konsole
             okular
             plasma-browser-integration
+            print-manager
           ];
         };
 
@@ -106,13 +107,16 @@
               enable = true;
               capSysNice = true;
 
-              args = [
-                "--expose-wayland"
-                "--rt"
-                "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
-                "--hdr-enabled"
-                "--force-grab-cursor"
-              ];
+              args =
+                [
+                  "--expose-wayland"
+                  "--rt"
+                  "--adaptive-sync"
+                  "--force-grab-cursor"
+                ]
+                ++ (optionals (cfg.gaming.vkDeviceID != null) [
+                  "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
+                ]);
 
               env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
                 __GLX_VENDOR_LIBRARY_NAME = "nvidia";

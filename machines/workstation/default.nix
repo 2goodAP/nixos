@@ -7,6 +7,8 @@
   time.timeZone = "Asia/Kathmandu";
 
   tgap.system = {
+    desktop.gaming.enable = true;
+
     boot = {
       secureBoot.enable = true;
       encrypted-btrfs = {
@@ -16,11 +18,6 @@
           extraPartlabels = ["LinuxSecDataPart"];
         };
       };
-    };
-
-    desktop.gaming = {
-      enable = true;
-      vkDeviceID = "2782";
     };
 
     network = {
