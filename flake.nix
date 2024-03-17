@@ -2,7 +2,7 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/17c7eae0ef758bd00e736b0731e338fcf7b12cc5";
+    nixpkgs.url = "github:NixOS/nixpkgs/488f2184075fb9ec3f7afafed648c7303ceee008";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
