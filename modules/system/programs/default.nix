@@ -12,9 +12,10 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to install common system-wide programs.";
-    androidTools.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
+    androidTools.enable = mkEnableOption "Whether or not enable Android helper packages.";
     cms.enable = mkEnableOption "Whether to enable color management systems.";
     glow.enable = mkEnableOption "Whether to enable glow, a CLI markdown renderer.";
+    iosTools.enable = mkEnableOption "Whether or not enable iOS helper packages.";
     qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
     virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
 
@@ -36,6 +37,7 @@
         environment.systemPackages =
           (with pkgs; [
             # Hardware
+            exfatprogs
             gptfdisk
             ntfs3g
             parted
@@ -43,33 +45,31 @@
             config.boot.kernelPackages.turbostat
 
             # Programs
-            busybox
             fd
+            file
             git-filter-repo
             htop
             jq
             lazygit
             p7zip
+            pciutils
+            pzip
             ranger
             ripgrep
-            toybox
             unrar-free
-            unzip
+            util-linux
             wget
-            zip
           ])
-          ++ (
-            optionals cfg.androidTools.enable (with pkgs; [
-              android-file-transfer
-              android-tools
-            ])
-          )
-          ++ (
-            optionals cfg.glow.enable [pkgs.glow]
-          )
-          ++ (
-            optionals cfg.qmk.enable [pkgs.qmk]
-          );
+          ++ (optionals cfg.androidTools.enable (with pkgs; [
+            android-file-transfer
+            android-tools
+          ]))
+          ++ (optionals cfg.glow.enable [pkgs.glow])
+          ++ (optionals cfg.iosTools.enable (with pkgs; [
+            ifuse
+            libimobiledevice
+          ]))
+          ++ (optionals cfg.qmk.enable [pkgs.qmk]);
 
         programs = {
           bash = {
@@ -260,6 +260,10 @@
       (mkIf cfg.cms.enable {
         environment.systemPackages = optionals nvidia [pkgs.argyllcms];
         services.colord.enable = !nvidia;
+      })
+
+      (mkIf cfg.iosTools.enable {
+        services.usbmuxd.enable = true;
       })
 
       (mkIf cfg.virtualisation.enable {

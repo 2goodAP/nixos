@@ -20,10 +20,10 @@
 
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.tgap.system.desktop;
+    osCfg = osConfig.tgap.system;
     inherit (lib) getExe getExe' mkIf mkMerge optionals optionalString;
   in
-    mkIf osCfg.enable (mkMerge [
+    mkIf osCfg.desktop.enable (mkMerge [
       (mkIf cfg.applications.enable {
         programs = {
           mpv = {
@@ -153,16 +153,15 @@
             tor-browser-bundle-bin
             wev
           ])
-          ++ (
-            optionals cfg.nixosApplications.enable (with pkgs; [
-              gparted
-              nextcloud-client
-              zoom-us
-            ])
-          );
+          ++ (optionals cfg.nixosApplications.enable (with pkgs; [
+            gparted
+            nextcloud-client
+            zoom-us
+          ]))
+          ++ (optionals osCfg.programs.iosTools.enable [pkgs.localsend]);
       })
 
-      (mkIf (osCfg.gaming.enable && cfg.gaming.enable) {
+      (mkIf (osCfg.desktop.gaming.enable && cfg.gaming.enable) {
         programs.mangohud = {
           enable = true;
 

@@ -18,7 +18,7 @@
 
       hostName = mkOption {
         type = types.str;
-        description = "The hostname of the laptop.";
+        description = "The hostname of the device.";
       };
 
       nameservers = mkOption {
@@ -41,7 +41,7 @@
 
   config = let
     cfg = config.tgap.system;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) mkIf mkMerge optionalAttrs;
   in
     mkMerge [
       (mkIf cfg.bluetooth.enable {
@@ -54,6 +54,7 @@
       (mkIf cfg.network.enable {
         networking = {
           inherit (cfg.network) hostName nameservers;
+          nftables.enable = true;
 
           networkmanager = {
             enable = true;
@@ -63,10 +64,15 @@
           };
 
           # Configure the firewall.
-          firewall = {
-            enable = true;
-            package = pkgs.iptables-nftables-compat;
-          };
+          firewall =
+            {enable = true;}
+            // (let
+              localsendPort = 53317;
+            in
+              optionalAttrs cfg.programs.iosTools.enable {
+                allowedTCPPorts = [localsendPort];
+                allowedUDPPorts = [localsendPort];
+              });
         };
 
         # Enable NTP.
