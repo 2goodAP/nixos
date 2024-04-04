@@ -71,8 +71,8 @@
         };
 
         services = {
+          desktopManager.plasma6.enable = true;
           power-profiles-daemon.enable = !config.services.tlp.enable;
-          xserver.desktopManager.plasma6.enable = true;
         };
       })
 
@@ -84,45 +84,44 @@
             else pkgs.steamPackages.steam-fhsenv-without-steam
           )
           .override {
-            extraLibraries = pkgs:
-              with pkgs; [
+            extraEnv = {};
+            extraLibraries = ps:
+              with ps; [
                 gamemode
                 keyutils
                 libkrb5
-                libpng
                 libpulseaudio
-                libvorbis
                 mangohud
                 stdenv.cc.cc.lib
-                xorg.libXcursor
-                xorg.libXi
-                xorg.libXinerama
-                xorg.libXScrnSaver
               ];
           };
       in
         mkIf cfg.gaming.enable (mkMerge [
           {
-            programs.gamescope = {
-              enable = true;
-              capSysNice = true;
+            programs = {
+              gamemode.enable = true;
 
-              args =
-                [
-                  "--expose-wayland"
-                  "--rt"
-                  "--adaptive-sync"
-                  "--force-grab-cursor"
-                ]
-                ++ (optionals (cfg.gaming.vkDeviceID != null) [
-                  "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
-                ]);
+              gamescope = {
+                enable = true;
+                capSysNice = true;
 
-              env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
-                __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-                __NV_PRIME_RENDER_OFFLOAD = "1";
-                __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-                __VK_LAYER_NV_optimus = "NVIDIA_only";
+                args =
+                  [
+                    "--expose-wayland"
+                    "--rt"
+                    "--adaptive-sync"
+                    "--force-grab-cursor"
+                  ]
+                  ++ (optionals (cfg.gaming.vkDeviceID != null) [
+                    "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
+                  ]);
+
+                env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
+                  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+                  __NV_PRIME_RENDER_OFFLOAD = "1";
+                  __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
+                  __VK_LAYER_NV_optimus = "NVIDIA_only";
+                };
               };
             };
 
@@ -247,11 +246,8 @@
 
                 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/compatibilitytools.d"
                 if [[ -z "$PROTON_BUILD" ]]; then
-                  PROTON_BUILD="$( \
-                    ${getExe' pkgs.coreutils "ls"} "$STEAM_COMPAT_CLIENT_INSTALL_PATH" \
-                    | ${getExe' pkgs.coreutils "sort"} -rVt "-" \
-                    | ${getExe' pkgs.coreutils "head"} -n 1 \
-                  )"
+                  PROTON_BUILD="$(basename $(${getExe' pkgs.coreutils "ls"} -drv \
+                    "$STEAM_COMPAT_CLIENT_INSTALL_PATH"/GE-Proton*))"
                 elif [[ ! -d "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD" ]]; then
                     export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/steamapps/common"
                 fi

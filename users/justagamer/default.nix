@@ -18,10 +18,7 @@ in {
     imports = [../common];
     tgap.home.desktop.gaming.enable = true;
 
-    home.packages = with pkgs; [
-      rpcs3
-      ryujinx
-    ];
+    home.packages = [pkgs.ryujinx];
 
     xdg.desktopEntries = {
       dishonored2 = {

@@ -53,6 +53,7 @@
             lazygit
             p7zip
             pciutils
+            psmisc
             pzip
             ranger
             ripgrep
@@ -72,7 +73,15 @@
           ++ (optionals cfg.qmk.enable [pkgs.qmk]);
 
         programs = {
+          gnupg.agent.enable = true;
+
           bash = {
+            interactiveShellInit = ''
+              export PATH=$PATH:"$HOME/.local/bin"
+              set -o vi
+              bind '"\C-l": clear-screen'
+            '';
+
             promptInit = ''
               # Display the current git branch
               parse_git_branch() {
@@ -112,14 +121,6 @@
               # Using neovim as the default shell editor
               export VISUAL='nvim'
             '';
-
-            interactiveShellInit = ''
-              # Enable vi mode
-              set -o vi
-
-              # Clear screen on Ctrl-l
-              bind '"\C-l": clear-screen'
-            '';
           };
 
           git = {
@@ -131,8 +132,6 @@
               push.autoSetupRemote = true;
             };
           };
-
-          gnupg.agent.enable = true;
 
           tmux = {
             enable = true;
@@ -191,7 +190,11 @@
 
         programs.fish = {
           enable = true;
-          interactiveShellInit = "fish_vi_key_bindings";
+
+          interactiveShellInit = ''
+            fish_add_path -aP "$HOME/.local/bin"
+            fish_vi_key_bindings
+          '';
 
           shellInit = ''
             # TokyoNight Day Theme
@@ -241,6 +244,7 @@
             set -g tide_vi_mode_icon_visual 'V'
           '';
         };
+
         environment.systemPackages =
           [pkgs.fzf pkgs.grc]
           ++ (with pkgs.fishPlugins; [
