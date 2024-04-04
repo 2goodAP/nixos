@@ -31,14 +31,14 @@
       nvidiaPersistenced = true;
 
       package = let
-        version = "550.40.55";
+        version = "550.40.59";
+        sha256_64bit = "sha256-hVwYC454vkxcK8I9bj1kp6iFS667em0c+Ral243C0J8=";
         inherit (lib) concatStrings splitVersion;
       in
         config.boot.kernelPackages.nvidiaPackages.mkDriver {
-          inherit version;
+          inherit version sha256_64bit;
           persistencedVersion = "550.54.14";
           settingsVersion = "550.54.14";
-          sha256_64bit = "sha256-i9FYgSZW0vLMEORg16+LxFBOacXXrAfWKbtCFuD8+IQ=";
           openSha256 = "sha256-slb058rNKk/TEltGkdw6Shn/3SF3kjgsXQc8IyFMUB8=";
           settingsSha256 = "sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
           persistencedSha256 = "sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
