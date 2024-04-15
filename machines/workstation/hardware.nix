@@ -31,15 +31,14 @@
       nvidiaPersistenced = true;
 
       package = let
-        version = "550.40.59";
-        sha256_64bit = "sha256-hVwYC454vkxcK8I9bj1kp6iFS667em0c+Ral243C0J8=";
         inherit (lib) concatStrings splitVersion;
       in
-        config.boot.kernelPackages.nvidiaPackages.mkDriver {
-          inherit version sha256_64bit;
+        config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
+          version = "550.40.59";
           persistencedVersion = "550.54.14";
           settingsVersion = "550.54.14";
-          openSha256 = "sha256-slb058rNKk/TEltGkdw6Shn/3SF3kjgsXQc8IyFMUB8=";
+          sha256_64bit = "sha256-hVwYC454vkxcK8I9bj1kp6iFS667em0c+Ral243C0J8=";
+          openSha256 = "sha256-/v1iVcmHhdvib54LDktNBHkcmgFxZVwQxwPdWSi0l/U=";
           settingsSha256 = "sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
           persistencedSha256 = "sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
           url = "https://developer.nvidia.com/downloads/vulkan-beta-${concatStrings (splitVersion version)}-linux";

@@ -9,20 +9,19 @@
 in
   mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
-      environment.systemPackages = [
-        (
-          pkgs.python3.withPackages (
-            ps:
-              (with ps; [
-                bandit
-                pyls-isort
-                pylsp-mypy
-                python-lsp-black
-                python-lsp-server
-              ])
-              ++ (optionals cfg.langtools.dap.enable [ps.debugpy])
-          )
-        )
+      environment.systemPackages = with pkgs; [
+        (python3.withPackages (
+          ps:
+            (with ps; [
+              bandit
+              pylsp-mypy
+              python-lsp-ruff
+              python-lsp-server
+              rope
+            ])
+            ++ (optionals cfg.langtools.dap.enable [ps.debugpy])
+        ))
+        ruff
       ];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
@@ -41,25 +40,31 @@ in
                 autopep8 = {
                   enabled = false,
                 },
-                black = {
-                  enabled = true,
-                },
                 flake8 = {
-                  ignore = {"E203", "E501"},
-                  maxLineLength = 88, -- To be complient with Black.
-                  select = {"B950"},
+                  enabled = false,
+                },
+                mccabe = {
+                  enabled = false,
+                },
+                pycodestyle = {
+                  enabled = false,
+                },
+                pyflakes = {
+                  enabled = false,
                 },
                 pylint = {
-                  enabled = true,
-                },
-                pyls_isort = {
-                  enabled = true,
+                  enabled = false,
                 },
                 pylsp_mypy = {
                   enabled = true,
                   dmypy = true,
+                  live_mode = false,
+                  strict = false,
                 },
                 rope_completion = {
+                  enabled = true,
+                },
+                ruff = {
                   enabled = true,
                 },
                 yapf = {
