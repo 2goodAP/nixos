@@ -188,16 +188,18 @@
   services.gpg-agent = {
     enable = true;
     extraConfig = "no-allow-external-cache";
-    pinentryFlavor =
+    pinentryPackage =
       if (osConfig.tgap.system.desktop.manager == "plasma")
-      then "qt"
-      else options.services.gpg-agent.pinentryFlavor.default;
+      then pkgs.pinentry-qt
+      else pkgs.pinentry-gtk2;
   };
 
   home.packages = with pkgs; [
     # Hardware
     cryptsetup
     gptfdisk
+    nixgl.nixGLIntel
+    nixgl.nixVulkanIntel
     ntfs3g
 
     # Programs

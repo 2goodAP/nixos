@@ -122,7 +122,7 @@ in
 
             // User Overrides
 
-            // DNS over HTTPS
+            // Set DNS over HTTPS.
             // Quad 9: https://dns.quad9.net/dns-query
             user_pref("network.trr.uri", "https://dns.quad9.net/dns-query");
             user_pref("network.trr.custom_uri", "https://dns.quad9.net/dns-query");
@@ -143,6 +143,10 @@ in
             // Enable playing DRM content.
             user_pref("media.gmp-widevinecdm.enabled", true);
             user_pref("media.eme.enabled", true);
+
+            // Disable fingerprinting resist to fix timezones.
+            user_pref("privacy.resistFingerprinting", false);
+            user_pref("privacy.resistFingerprinting.pbmode", false);
 
             // Autoplaying settings
             // 0=Allow all, 1=Block non-muted media (default), 5=Block all
