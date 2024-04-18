@@ -2,11 +2,15 @@
   description = "Home Manager configuration of fm-pc-lt-284";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
       url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixgl = {
+      url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nbfc-linux = {
@@ -17,6 +21,7 @@
 
   outputs = {
     nixpkgs,
+    nixgl,
     nur,
     home-manager,
     nbfc-linux,
@@ -37,6 +42,7 @@
           nixpkgs = {
             config.allowUnfree = true;
             overlays = [
+              nixgl.overlay
               (final: prev: {
                 nbfc-linux = nbfc-linux.defaultPackages.${system};
               })
@@ -59,8 +65,11 @@
 
       extraSpecialArgs.osConfig = {
         system.stateVersion = "23.11";
+
         tgap.system = {
           laptop.enable = true;
+          programs.iosTools.enable = true;
+
           desktop = {
             enable = true;
             gaming.enable = false;
