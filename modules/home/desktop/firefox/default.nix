@@ -146,7 +146,7 @@ in
 
             // Disable fingerprinting resist to fix timezones.
             user_pref("privacy.resistFingerprinting", false);
-            user_pref("privacy.resistFingerprinting.pbmode", true);
+            user_pref("privacy.resistFingerprinting.pbmode", false);
 
             // Autoplaying settings
             // 0=Allow all, 1=Block non-muted media (default), 5=Block all
