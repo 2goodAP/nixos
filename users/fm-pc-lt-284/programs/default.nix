@@ -196,8 +196,8 @@
 
   home.packages = let
     nixgl = pkgs.nixgl.override {
-      nvidiaVersion = "550.67";
-      nvidiaHash = "99201a09c71cff0fd0261eb0f0cbdad282eba81f9c3923b560ccf549eff7dae2";
+      nvidiaVersion = "550.78";
+      nvidiaHash = "34070434527ec9d575483e7f11ca078e467e73f6defc54366ecfbdcfe4a3bf73";
     };
   in
     [
