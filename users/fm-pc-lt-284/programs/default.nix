@@ -194,41 +194,48 @@
       else pkgs.pinentry-gtk2;
   };
 
-  home.packages = with pkgs; [
-    # Hardware
-    cryptsetup
-    gptfdisk
-    nixgl.nixGLIntel
-    nixgl.nixVulkanIntel
-    ntfs3g
+  home.packages = let
+    nixgl = pkgs.nixgl.override {
+      nvidiaVersion = "550.67";
+      nvidiaHash = "99201a09c71cff0fd0261eb0f0cbdad282eba81f9c3923b560ccf549eff7dae2";
+    };
+  in
+    [
+      nixgl.auto.nixGLDefault
+      nixgl.auto.nixVulkanNvidia
+      nixgl.nixGLIntel
+      nixgl.nixGLNvidia
+      nixgl.nixVulkanIntel
+    ]
+    ++ (with pkgs; [
+      # Programs
+      htop
+      fd
+      file
+      fzf
+      glow
+      grc
+      jq
+      lazygit
+      p7zip
+      psutils
+      pzip
+      ranger
+      ripgrep
+      unrar-free
+      util-linux
+      wget
 
-    # Programs
-    busybox
-    htop
-    fd
-    fzf
-    glow
-    grc
-    jq
-    lazygit
-    p7zip
-    ranger
-    ripgrep
-    unrar
-    unzip
-    wget
-    zip
-
-    # Fish Plugins
-    fishPlugins.autopair
-    fishPlugins.bass
-    fishPlugins.colored-man-pages
-    fishPlugins.done
-    fishPlugins.fishtape_3
-    fishPlugins.puffer
-    fishPlugins.sponge
-    fishPlugins.tide
-    fishPlugins.fzf-fish
-    fishPlugins.grc
-  ];
+      # Fish Plugins
+      fishPlugins.autopair
+      fishPlugins.bass
+      fishPlugins.colored-man-pages
+      fishPlugins.done
+      fishPlugins.fishtape_3
+      fishPlugins.puffer
+      fishPlugins.sponge
+      fishPlugins.tide
+      fishPlugins.fzf-fish
+      fishPlugins.grc
+    ]);
 }
