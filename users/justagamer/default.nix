@@ -93,6 +93,21 @@ in {
         terminal = true;
       };
 
+      manifoldGarden = {
+        categories = ["Game"];
+        comment = "Willian Chyr: Manifold Garden";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Manifold_Garden"
+          + " ManifoldGarden.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/Manifold_Garden_Icon.png";
+        name = "Manifold Garden";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       maxPayne = {
         categories = ["Game"];
         comment = "Rockstar: Max Payne 3";
