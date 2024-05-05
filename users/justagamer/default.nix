@@ -21,9 +21,24 @@ in {
     home.packages = [pkgs.ryujinx];
 
     xdg.desktopEntries = {
+      dmc5 = {
+        categories = ["Game"];
+        comment = "CAPCOM: Devil May Cry 5";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Devil_May_Cry_5"
+          + " DevilMayCry5.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/DMC5/DMC5_Icon.png";
+        name = "DMC5";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       dishonored2 = {
         categories = ["Game"];
-        comment = "Dishonored 2";
+        comment = "Arcane: Dishonored 2";
         exec = (
           "env launch-game -fm /home/${uname}/Wine/Games/Dishonored_2"
           + " Dishonored2.exe"
@@ -38,7 +53,7 @@ in {
 
       dos2 = {
         categories = ["Game"];
-        comment = "Divinity Original Sin 2 - Definitive Edition";
+        comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
         exec = (
           "env launch-game -fm /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
           + " DefEd/bin/EoCApp.exe"
@@ -51,9 +66,24 @@ in {
         terminal = true;
       };
 
+      ghostTrick = {
+        categories = ["Game"];
+        comment = "CAPCOM: Ghost Trick - Phantom Detective";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Ghost_Trick_Phantom_Detective"
+          + " Ghost_Trick.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Ghost_Trick/Ghost_Trick_Icon.png";
+        name = "Ghost Trick";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       hades = {
         categories = ["Game"];
-        comment = "Hades - The Godlike Roguelike";
+        comment = "Supergiant: Hades - The Godlike Roguelike";
         exec = "env launch-game -fm /home/${uname}/Wine/Games/Hades x64/Hades.exe";
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Hades/Hades_Icon.png";
@@ -63,9 +93,24 @@ in {
         terminal = true;
       };
 
+      maxPayne = {
+        categories = ["Game"];
+        comment = "Rockstar: Max Payne 3";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Max_Payne_3"
+          + " MaxPayne3.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/MP3/MP3_Icon.png";
+        name = "MP3";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       rdr2 = {
         categories = ["Game"];
-        comment = "Red Dead Redemption 2";
+        comment = "Rockstar: Red Dead Redemption 2";
         exec = (
           ''env PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b" ''
           + "launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe"
@@ -80,7 +125,7 @@ in {
 
       shadowGambit = {
         categories = ["Game"];
-        comment = "Shadow Gambit - The Cursed Crew";
+        comment = "Mimimi: Shadow Gambit - The Cursed Crew";
         exec = (
           "env launch-game -fm /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
           + " ShadowGambit_TCC.exe"
@@ -88,6 +133,36 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
         name = "Shadow Gambit";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
+      talos = {
+        categories = ["Game"];
+        comment = "Croteam: The Talos Principle";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/The_Talos_Principle"
+          + " Bin/x64/Talos.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Talos/Talos_Icon.png";
+        name = "Talos";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
+      transistor = {
+        categories = ["Game"];
+        comment = "Supergiant: Transistor";
+        exec = (
+          "env launch-game -w 1920 -h 1080 -fm /home/${uname}/Wine/Games/Transistor"
+          + " Transistor.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Transistor/Transistor_Icon.png";
+        name = "Transistor";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
         terminal = true;
