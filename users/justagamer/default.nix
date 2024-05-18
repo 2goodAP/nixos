@@ -18,7 +18,10 @@ in {
     imports = [../common];
     tgap.home.desktop.gaming.enable = true;
 
-    home.packages = [pkgs.ryujinx];
+    home.packages = with pkgs; [
+      rpcs3
+      ryujinx
+    ];
 
     xdg.desktopEntries = {
       dmc5 = {
