@@ -17,11 +17,7 @@ in {
   home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [../common];
     tgap.home.desktop.gaming.enable = true;
-
-    home.packages = with pkgs; [
-      rpcs3
-      ryujinx
-    ];
+    home.packages = [pkgs.ryujinx];
 
     xdg.desktopEntries = {
       dmc5 = {
@@ -106,21 +102,6 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Manifold_Garden/Manifold_Garden_Icon.png";
         name = "Manifold Garden";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-        terminal = true;
-      };
-
-      maxPayne = {
-        categories = ["Game"];
-        comment = "Rockstar: Max Payne 3";
-        exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Max_Payne_3"
-          + " MaxPayne3.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/MP3/MP3_Icon.png";
-        name = "MP3";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
         terminal = true;
