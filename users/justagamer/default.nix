@@ -17,7 +17,11 @@ in {
   home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [../common];
     tgap.home.desktop.gaming.enable = true;
-    home.packages = [pkgs.ryujinx];
+
+    home.packages = with pkgs; [
+      lutris-free
+      ryujinx
+    ];
 
     xdg.desktopEntries = {
       dmc5 = {
@@ -92,6 +96,21 @@ in {
         terminal = true;
       };
 
+      hollowKnight = {
+        categories = ["Game"];
+        comment = "Team Cherry: Hollow Knight";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Hollow_Knight"
+          + " HollowKnight.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Hollow_Knight/HK_Icon.png";
+        name = "Hollow Knight";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+        terminal = true;
+      };
+
       manifoldGarden = {
         categories = ["Game"];
         comment = "Willian Chyr: Manifold Garden";
@@ -100,7 +119,7 @@ in {
           + " ManifoldGarden.exe"
         );
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/Manifold_Garden_Icon.png";
+        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/MG_Icon.png";
         name = "Manifold Garden";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
