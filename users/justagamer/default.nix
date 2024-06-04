@@ -17,7 +17,11 @@ in {
   home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [../common];
     tgap.home.desktop.gaming.enable = true;
-    home.packages = [pkgs.ryujinx];
+
+    home.packages = with pkgs; [
+      lutris-free
+      ryujinx
+    ];
 
     xdg.desktopEntries = {
       dmc5 = {
@@ -32,7 +36,6 @@ in {
         name = "DMC5";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       dishonored2 = {
@@ -47,7 +50,6 @@ in {
         name = "Dishonored 2";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       dos2 = {
@@ -62,7 +64,6 @@ in {
         name = "Divinity Original Sin 2";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       ghostTrick = {
@@ -77,7 +78,6 @@ in {
         name = "Ghost Trick";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       hades = {
@@ -89,7 +89,20 @@ in {
         name = "Hades";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
+      };
+
+      hollowKnight = {
+        categories = ["Game"];
+        comment = "Team Cherry: Hollow Knight";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Hollow_Knight"
+          + " HollowKnight.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Hollow_Knight/HK_Icon.png";
+        name = "Hollow Knight";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
       };
 
       manifoldGarden = {
@@ -100,11 +113,10 @@ in {
           + " ManifoldGarden.exe"
         );
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/Manifold_Garden_Icon.png";
+        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/MG_Icon.png";
         name = "Manifold Garden";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       rdr2 = {
@@ -119,7 +131,6 @@ in {
         name = "RDR2";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       shadowGambit = {
@@ -134,7 +145,6 @@ in {
         name = "Shadow Gambit";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       talos = {
@@ -149,7 +159,6 @@ in {
         name = "Talos";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
 
       transistor = {
@@ -164,7 +173,6 @@ in {
         name = "Transistor";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
-        terminal = true;
       };
     };
   };

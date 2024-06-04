@@ -281,7 +281,8 @@
                   ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice -- \
                   $MANGOHUD ${getExe steam.run} \
                   "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" run \
-                  "$GAME_DIR/$EXE_PATH" "$@"
+                  "$GAME_DIR/$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
+                disown $!
               '';
             in [
               launch-game
