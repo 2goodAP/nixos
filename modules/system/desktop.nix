@@ -37,7 +37,7 @@
 
   config = let
     cfg = config.tgap.system.desktop;
-    inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionals optionalString;
+    inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionals;
   in
     mkIf cfg.enable (mkMerge [
       {programs.dconf.enable = true;}

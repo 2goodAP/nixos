@@ -12,6 +12,7 @@
     programs = {
       enable = true;
       androidTools.enable = true;
+      defaultShell = "nu";
       glow.enable = true;
       iosTools.enable = true;
       qmk.enable = true;

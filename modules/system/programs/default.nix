@@ -20,7 +20,7 @@
     virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
 
     defaultShell = mkOption {
-      type = types.enum ["bash" "fish"];
+      type = types.enum ["bash" "fish" "nu"];
       default = "fish";
       description = "The default shell assigned to user accounts.";
     };
@@ -29,33 +29,33 @@
   config = let
     cfg = config.tgap.system.programs;
     nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
-    inherit (lib) mkIf mkMerge optionals;
+    inherit (lib) getExe getExe' mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
       {
         # List packages installed in system profile.
         environment.systemPackages =
-          (with pkgs; [
+          [config.boot.kernelPackages.turbostat]
+          ++ (with pkgs; [
             # Hardware
             exfatprogs
             gptfdisk
             ntfs3g
             parted
             s-tui
-            config.boot.kernelPackages.turbostat
 
             # Programs
+            broot
+            btop
             fd
             file
             git-filter-repo
-            htop
             jq
             lazygit
             p7zip
             pciutils
             psmisc
             pzip
-            ranger
             ripgrep
             unrar-free
             util-linux
@@ -76,18 +76,17 @@
           gnupg.agent.enable = true;
 
           bash = {
+            blesh.enable = true;
+
             interactiveShellInit = ''
               export PATH=$PATH:"$HOME/.local/bin"
               set -o vi
               bind '"\C-l": clear-screen'
-            '';
 
-            promptInit = ''
-              # Display the current git branch
-              parse_git_branch() {
-                   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-              }
-              export PS1="\u@\h \w \$(parse_git_branch)\n\$ "
+              # Initialize Atuin.
+              eval "$(${getExe pkgs.atuin} init bash | ${getExe pkgs.gnused} -Ee \
+                's:(\$?\()(atuin|(.*\s+)atuin)(\s+.*\)):\1\3${getExe pkgs.atuin}\4:g')"
+              eval "$(${getExe pkgs.atuin} gen-completions --shell bash)"
             '';
 
             shellAliases = {
@@ -109,10 +108,10 @@
               export HISTSIZE=1000
 
               # Set the XDG_CONFIG_HOME
-              export XDG_CONFIG_HOME=$HOME/.config
+              export XDG_CONFIG_HOME="$HOME/.config"
 
               # Preferred editor for local and remote sessions
-              if [[ -n $SSH_CONNECTION ]]; then
+              if [[ -n "$SSH_CONNECTION" ]]; then
                 export EDITOR='vim'
               else
                 export EDITOR='nvim'
@@ -131,6 +130,15 @@
               pull.rebase = false;
               push.autoSetupRemote = true;
             };
+          };
+
+          starship = {
+            enable = true;
+            settings.add_newline = false;
+            presets = [
+              "plain-text-symbols"
+              "no-empty-icons"
+            ];
           };
 
           tmux = {
@@ -180,6 +188,7 @@
         };
 
         services = {
+          atuin.enable = true;
           openssh.enable = true;
           udev.packages = optionals cfg.qmk.enable [pkgs.qmk-udev-rules];
         };
@@ -194,6 +203,17 @@
           interactiveShellInit = ''
             fish_add_path -aP "$HOME/.local/bin"
             fish_vi_key_bindings
+
+            # Initialize Atuin.
+            ${getExe pkgs.atuin} init fish | ${getExe pkgs.gnused} -Ee \
+              's:([=\(])(atuin|(.*\s+)atuin)(\s+.*\)?):\1\3${getExe pkgs.atuin}\4:g' \
+              | source
+            ${getExe pkgs.atuin} gen-completions --shell fish | source
+
+            # Initialize nix-your-shell.
+            ${getExe pkgs.nix-your-shell} fish | ${getExe pkgs.gnused} -Ee \
+              's:(\s+)nix-your-shell(\s+):\1${getExe pkgs.nix-your-shell}\2:g' \
+              | source
           '';
 
           shellInit = ''
@@ -259,6 +279,28 @@
             fzf-fish
             grc
           ]);
+      })
+
+      (mkIf (cfg.defaultShell == "nu") {
+        users.defaultUserShell = pkgs.bashInteractive;
+
+        environment.systemPackages =
+          (with pkgs; [
+            nufmt
+            nushellFull
+            nu_scripts
+          ])
+          ++ (with pkgs.nushellPlugins; [
+            formats
+            gstat
+            net
+            query
+          ]);
+
+          programs.bash.interactiveShellInit = ''
+            # Start nushell by default from bashInteractive.
+            exec ${getExe' pkgs.nushellFull "nu"}
+          '';
       })
 
       (mkIf cfg.cms.enable {
