@@ -15,7 +15,7 @@
   ];
 
   options.tgap.system.programs.neovim.langtools = let
-    inherit (lib) mkIf mkEnableOption mkOption optionals types;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     dap.enable = mkEnableOption "Whether or not to enable dap-related plugins.";
 
@@ -47,7 +47,11 @@
 
       (mkIf cfg.langtools.lsp.enable {
         tgap.system.programs.neovim.startPackages =
-          [pkgs.vimPlugins.nvim-lspconfig pkgs.vimPlugins.null-ls-nvim]
+          (with pkgs.vimPlugins; [
+            conform-nvim
+            nvim-lspconfig
+            nvim-lint
+          ])
           ++ (
             optionals cfg.langtools.lsp.lspsaga.enable [pkgs.vimPlugins.lspsaga-nvim]
           )
@@ -67,6 +71,20 @@
           vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
           vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
           vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+
+          -- conform + nvim-lint
+          require("conform").setup({
+            formatters_by_ft = {
+              lua = { "stylua" },
+              python = { "isort", "black" },
+              javascript = { { "prettierd", "prettier" } },
+            },
+            format_on_save = {
+              -- These options will be passed to conform.format()
+              timeout_ms = 500,
+              lsp_fallback = true,
+            },
+          })
 
           ${optionalString cfg.langtools.lsp.lspsaga.enable ''
             require("lspsaga").setup({})

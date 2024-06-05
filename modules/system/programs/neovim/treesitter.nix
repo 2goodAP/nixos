@@ -13,7 +13,7 @@
 
   config = let
     cfg = config.tgap.system.programs.neovim;
-    inherit (lib) mkIf mkMerge optionals;
+    inherit (lib) mkIf optionals;
     inherit (lib.strings) optionalString;
   in
     mkIf cfg.treesitter.enable {
@@ -53,6 +53,7 @@
                 markdown-inline
                 nix
                 norg
+                nu
                 perl
                 python
                 query

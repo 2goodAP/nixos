@@ -23,6 +23,12 @@
     enable = mkEnableOption "Whether or not to install neovim.";
     alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
 
+    luaExtraConfigEarly = mkOption {
+      type = types.lines;
+      default = "";
+      description = "The lua configuration to source into neovim before all other configuration.";
+    };
+
     luaExtraConfig = mkOption {
       type = types.lines;
       default = "";
@@ -61,6 +67,10 @@
 
             " Add plugin specific extra lua configuration.
             lua << EOF
+              -- Early Configuration
+              ${cfg.luaExtraConfigEarly}
+
+              -- Main Configuration
               ${cfg.luaExtraConfig}
             EOF
           '';

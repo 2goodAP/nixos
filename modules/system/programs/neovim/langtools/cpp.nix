@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf mkMerge optionalString;
 in
   mkIf (builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {

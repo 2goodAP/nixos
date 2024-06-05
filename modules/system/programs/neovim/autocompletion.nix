@@ -17,7 +17,7 @@
     inherit (lib) mkIf optionals optionalString;
   in
     mkIf cfg.autocompletion.enable {
-      tgap.system.programs.neovim.startPackages = with pkgs.vimPlugins;
+      tgap.system.programs.neovim.startPackages = (with pkgs.vimPlugins;
         [
           cmp-buffer
           cmp-cmdline
@@ -25,14 +25,15 @@
           cmp-path
           cmp-under-comparator
           nvim-cmp
-        ]
+        ])
         ++ (
           optionals cfg.autocompletion.dictionary.enable [pkgs.vimPlugins.cmp-dictionary]
         )
         ++ (
-          optionals cfg.autocompletion.snippets.enable (with pkgs.vimPlugins; [
-            luasnip
-            cmp_luasnip
+          optionals cfg.autocompletion.snippets.enable (with pkgs; [
+            luajitPackages.jsregexp
+            vimPlugins.cmp_luasnip
+            vimPlugins.luasnip
           ])
         )
         ++ (
