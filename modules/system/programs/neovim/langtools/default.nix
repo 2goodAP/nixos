@@ -11,6 +11,7 @@
     ./nix.nix
     ./python.nix
     ./rust.nix
+    ./sql.nix
     ./typescript.nix
   ];
 
@@ -62,6 +63,56 @@
             optionals cfg.langtools.lsp.ufo.enable [pkgs.vimPlugins.nvim-ufo]
           );
 
+        tgap.system.programs.neovim.luaExtraConfigEarly = ''
+          -- Use standard Neovim lsp capabilities.
+          local capabilities = vim.lsp.protocol.make_client_capabilities()
+          ${optionalString cfg.autocompletion.enable ''
+            -- Add additional capabilities supported by nvim-cmp.
+            capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+          ''}
+
+          local on_attach = function(client, bufnr)
+            ${optionalString (!cfg.autocompletion.enable) ''
+              -- Enable completion triggered by <c-x><c-o>
+              vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+            ''}
+
+            -- Mappings.
+            -- See `:help vim.lsp.*` for documentation on
+            -- any of the below functions.
+            local bufopts = {noremap=true, silent=true, buffer=bufnr}
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+            vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+            vim.keymap.set(
+              "n",
+              "<space>wa",
+              vim.lsp.buf.add_workspace_folder, bufopts
+            )
+            vim.keymap.set(
+              "n",
+              "<space>wr",
+              vim.lsp.buf.remove_workspace_folder,
+              bufopts
+            )
+            vim.keymap.set(
+              "n",
+              "<space>wl",
+              function()
+                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+              end,
+              bufopts
+            )
+            vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
+            vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
+            vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
+            vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+            vim.keymap.set("n", "<space>f", vim.lsp.buf.format, bufopts)
+          end
+        '';
+
         tgap.system.programs.neovim.luaExtraConfig = ''
           -- Mappings.
           -- See `:help vim.diagnostic.*` for documentation on
@@ -74,11 +125,6 @@
 
           -- conform + nvim-lint
           require("conform").setup({
-            formatters_by_ft = {
-              lua = { "stylua" },
-              python = { "isort", "black" },
-              javascript = { { "prettierd", "prettier" } },
-            },
             format_on_save = {
               -- These options will be passed to conform.format()
               timeout_ms = 500,

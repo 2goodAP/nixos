@@ -7,17 +7,18 @@
   cfg = config.tgap.system.programs.neovim;
   inherit (lib) mkIf mkMerge optionals optionalString;
 in
-  mkIf (builtins.elem "nix" cfg.langtools.languages && cfg.langtools.lsp.enable) {
-    environment.systemPackages = [pkgs.nixd pkgs.alejandra];
+  mkIf (builtins.elem "sql" cfg.langtools.languages && cfg.langtools.lsp.enable) {
+    environment.systemPackages = [pkgs.sqls pkgs.sqlfluff];
 
     tgap.system.programs.neovim.luaExtraConfig = ''
-      require("lspconfig").nixd.setup({
+      require("lspconfig").sqls.setup({
         capabilities = capabilities,
         on_attach = on_attach,
       })
 
       require("conform").setup({
-        formatters_by_ft.nix = {"alejandra"},
+        formatters_by_ft.sql = {"sqlfluff"},
       })
     '';
   }
+
