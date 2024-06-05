@@ -43,7 +43,6 @@
           ({
             config,
             lib,
-            pkgs,
             ...
           }: {
             nixpkgs = {

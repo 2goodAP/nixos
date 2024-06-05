@@ -13,15 +13,13 @@
 
   config = let
     cfg = config.tgap.system.programs.neovim;
-    inherit (lib) mkIf optionals;
-    inherit (lib.strings) optionalString;
+    inherit (lib) mkIf optionals optionalString;
   in
     mkIf cfg.treesitter.enable {
       environment.systemPackages = [pkgs.tree-sitter];
 
-      tgap.system.programs.neovim.startPackages =
-        (with pkgs.vimPlugins; [
-          (nvim-treesitter.withPlugins (
+      tgap.system.programs.neovim.startPackages = [
+          (pkgs.vimPlugins.nvim-treesitter.withPlugins (
             pgs:
               with pgs; [
                 bash
@@ -53,7 +51,6 @@
                 markdown-inline
                 nix
                 norg
-                nu
                 perl
                 python
                 query
@@ -74,7 +71,7 @@
                 yuck
               ]
           ))
-        ])
+        ]
         ++ (optionals cfg.treesitter.extraPlugins.enable (with pkgs.vimPlugins; [
           nvim-autopairs
           nvim-treesitter-context

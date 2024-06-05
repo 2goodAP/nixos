@@ -8,9 +8,11 @@
     ./cpp.nix
     ./haskell.nix
     ./lua.nix
+    ./markdown.nix
     ./nix.nix
     ./python.nix
     ./rust.nix
+    ./shell.nix
     ./sql.nix
     ./typescript.nix
   ];
@@ -25,7 +27,8 @@
       default = [];
       description = ''
         The extra language servers to be installed. Supported languages are
-        "cpp", "haskell", "lua", "nix", "python", "rust", "typescript".
+        "cpp", "haskell", "lua", "markdown", "nix", "python",
+        "rust", "shell, "sql", "typescript".
       '';
     };
 
@@ -47,6 +50,22 @@
       })
 
       (mkIf cfg.langtools.lsp.enable {
+        environment.systemPackages = with pkgs; [
+          bibtex-tidy
+          buf
+          checkmake
+          gawk
+          gitlint
+          hadolint
+          rstcheck
+          taplo
+          texlivePackages.chktex
+          typos
+          vale
+          yamllint
+          yq-go
+        ];
+
         tgap.system.programs.neovim.startPackages =
           (with pkgs.vimPlugins; [
             conform-nvim
@@ -71,45 +90,75 @@
             capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
           ''}
 
-          local on_attach = function(client, bufnr)
-            ${optionalString (!cfg.autocompletion.enable) ''
-              -- Enable completion triggered by <c-x><c-o>
-              vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-            ''}
+          local function on_attach(client, bufnr)
+          ${optionalString (!cfg.autocompletion.enable) ''
+            -- Enable completion triggered by <c-x><c-o>
+            vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+          ''}
 
             -- Mappings.
             -- See `:help vim.lsp.*` for documentation on
             -- any of the below functions.
+            local function _tab_set_key(tab, key, val)
+              tab[key] = val
+              return tab
+            end
             local bufopts = {noremap=true, silent=true, buffer=bufnr}
-            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-            vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-            vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-            vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+
             vim.keymap.set(
-              "n",
-              "<space>wa",
-              vim.lsp.buf.add_workspace_folder, bufopts
+              "n", "gD", vim.lsp.buf.declaration,
+              _tab_set_key(bufopts, "desc", "LSP: Declaration")
             )
             vim.keymap.set(
-              "n",
-              "<space>wr",
-              vim.lsp.buf.remove_workspace_folder,
-              bufopts
+              "n", "gd", vim.lsp.buf.definition,
+              _tab_set_key(bufopts, "desc", "LSP: Definition")
             )
             vim.keymap.set(
-              "n",
-              "<space>wl",
-              function()
+              "n", "K", vim.lsp.buf.hover,
+              _tab_set_key(bufopts, "desc", "LSP: Hover")
+            )
+            vim.keymap.set(
+              "n", "gI", vim.lsp.buf.implementation,
+              _tab_set_key(bufopts, "desc", "LSP: Implementation")
+            )
+            vim.keymap.set(
+              "n", "<C-k>", vim.lsp.buf.signature_help,
+              _tab_set_key(bufopts, "desc", "LSP: Signature help")
+            )
+            vim.keymap.set(
+              "n", "<leader>wa", vim.lsp.buf.add_workspace_folder,
+              _tab_set_key(bufopts, "desc", "LSP: Add workspace folder")
+            )
+            vim.keymap.set(
+              "n", "<leader>wr", vim.lsp.buf.remove_workspace_folder,
+              _tab_set_key(bufopts, "desc", "LSP: Remove workspace folder")
+            )
+            vim.keymap.set(
+              "n", "<leader>wl", function()
                 print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
               end,
-              bufopts
+              _tab_set_key(bufopts, "desc", "LSP: List workspace folders")
             )
-            vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-            vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-            vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
-            vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-            vim.keymap.set("n", "<space>f", vim.lsp.buf.format, bufopts)
+            vim.keymap.set(
+              "n", "<leader>D", vim.lsp.buf.type_definition,
+              _tab_set_key(bufopts, "desc", "LSP: Type definition")
+            )
+            vim.keymap.set(
+              "n", "<leader>rn", vim.lsp.buf.rename,
+              _tab_set_key(bufopts, "desc", "LSP: Rename")
+            )
+            vim.keymap.set(
+              "n", "<leader>ca", vim.lsp.buf.code_action,
+              _tab_set_key(bufopts, "desc", "LSP: Code action")
+            )
+            vim.keymap.set(
+              "n", "gr", vim.lsp.buf.references,
+              _tab_set_key(bufopts, "desc", "LSP: References")
+            )
+            vim.keymap.set(
+              "n", "<leader>F", vim.lsp.buf.format,
+              _tab_set_key(bufopts, "desc", "LSP: Format")
+            )
           end
         '';
 
@@ -125,6 +174,13 @@
 
           -- conform + nvim-lint
           require("conform").setup({
+            formatters_by_ft = {
+              ["*"] = {{"typos", "trim_newlines", "trim_whitespace"}},
+              bibtex = {"bibtex-tidy"},
+              proto = {"buf"},
+              toml = {"taplo"},
+              yaml = {"yq"},
+            },
             format_on_save = {
               -- These options will be passed to conform.format()
               timeout_ms = 500,
@@ -132,6 +188,30 @@
             },
           })
 
+          require('lint').linters_by_ft = {
+            asciidoc = {"vale"},
+            Dockerfile = {"hadolint"},
+            gitcommit = {"gitlint"},
+            html = {"vale"},
+            make = {"checkmake"},
+            org = {"vale"},
+            proto = {"buf_lint"},
+            plaintex = {"chktex"},
+            rst = {{"rstcheck", "vale"}},
+            tex = {"chktex"},
+            xml = {"vale"},
+            yaml = {"yamllint"},
+          }
+
+          vim.api.nvim_create_autocmd({"BufWritePost"}, {
+            callback = function()
+              -- try_lint without arguments runs the linters defined in
+              -- `linters_by_ft` for the current filetype
+              require("lint").try_lint()
+            end,
+          })
+
+          -- Other lsp tools
           ${optionalString cfg.langtools.lsp.lspsaga.enable ''
             require("lspsaga").setup({})
           ''}

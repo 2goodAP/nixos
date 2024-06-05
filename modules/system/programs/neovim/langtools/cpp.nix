@@ -5,11 +5,11 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionalString;
+  inherit (lib) mkIf mkMerge;
 in
   mkIf (builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
-      environment.systemPackages = [pkgs.clang];
+      environment.systemPackages = [pkgs.clang pkgs.flawfinder];
       tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.clangd_extensions-nvim];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
@@ -19,8 +19,16 @@ in
         })
 
         require("conform").setup({
-          formatters_by_ft.cpp = {"clang-format"},
+          formatters_by_ft = {
+            c = {"clang-format"},
+            cpp = {"clang-format"},
+          },
         })
+
+        require("lint").linter_by_ft = {
+          c = {"clangtidy"},
+          cpp = {"clangtidy", "flawfinder"},
+        }
       '';
     })
 

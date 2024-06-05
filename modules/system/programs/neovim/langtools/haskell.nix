@@ -5,14 +5,16 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim.langtools;
-  inherit (lib) mkIf mkMerge optionals;
+  inherit (lib) mkIf optionals;
 in
   mkIf (builtins.elem "haskell" cfg.languages && cfg.lsp.enable) {
     environment.systemPackages =
-      (with pkgs; [
-        haskellPackages.haskell-language-server
-        haskellPackages.hoogle
-        vimPlugins.haskell-tools-nvim
+      [pkgs.vimPlugins.haskell-tools-nvim]
+      ++ (with pkgs.haskellPackages; [
+        cabal-fmt
+        haskell-language-server
+        hlint
+        hoogle
       ])
       ++ (
         optionals cfg.dap.enable (with pkgs; [
@@ -20,6 +22,16 @@ in
           haskellPackages.haskell-debug-adapter
         ])
       );
+
+    tgap.system.programs.neovim.luaExtraConfig = ''
+      require("conform").setup({
+        formatters_by_ft = {
+          cabal = {"cabal-fmt"},
+        },
+      })
+
+      require("lint").linters_by_ft.haskell = {"hlint"}
+    '';
 
     programs.neovim.runtime."ftplugin/haskell.lua".text = ''
       local ht = require("haskell-tools")

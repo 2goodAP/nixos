@@ -5,10 +5,14 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf;
 in
   mkIf (builtins.elem "lua" cfg.langtools.languages && cfg.langtools.lsp.enable) {
-    environment.systemPackages = [pkgs.lua-language-server pkgs.stylua];
+    environment.systemPackages = with pkgs; [
+      lua-language-server
+      selene
+      stylua
+    ];
 
     tgap.system.programs.neovim.luaExtraConfig = ''
       require("lspconfig").lua_ls.setup({
@@ -40,7 +44,11 @@ in
       })
 
       require("conform").setup({
-        formatters_by_ft.lua = {"stylua"},
+        formatters_by_ft = {
+          lua = {"stylua"},
+        },
       })
+
+      require('lint').linters_by_ft.lua = {"selene"}
     '';
   }

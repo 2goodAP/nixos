@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf;
 in
   mkIf (builtins.elem "nix" cfg.langtools.languages && cfg.langtools.lsp.enable) {
     environment.systemPackages = [pkgs.nixd pkgs.alejandra];
@@ -17,7 +17,11 @@ in
       })
 
       require("conform").setup({
-        formatters_by_ft.nix = {"alejandra"},
+        formatters_by_ft = {
+          nix = {"alejandra"},
+        },
       })
+
+      require("lint").linters_by_ft.nix = {"nix"}
     '';
   }

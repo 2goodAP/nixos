@@ -105,21 +105,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      hollowKnight = {
-        categories = ["Game"];
-        comment = "Team Cherry: Hollow Knight";
-        exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Hollow_Knight"
-          + " HollowKnight.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Hollow_Knight/HK_Icon.png";
-        name = "Hollow Knight";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-        terminal = true;
-      };
-
       manifoldGarden = {
         categories = ["Game"];
         comment = "Willian Chyr: Manifold Garden";

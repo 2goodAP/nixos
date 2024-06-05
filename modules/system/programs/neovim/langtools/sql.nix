@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf;
 in
   mkIf (builtins.elem "sql" cfg.langtools.languages && cfg.langtools.lsp.enable) {
     environment.systemPackages = [pkgs.sqls pkgs.sqlfluff];
@@ -17,8 +17,11 @@ in
       })
 
       require("conform").setup({
-        formatters_by_ft.sql = {"sqlfluff"},
+        formatters_by_ft = {
+          sql = {"sqlfluff"},
+        },
       })
+
+      require("lint").linters_by_ft.sql = {"sqlfluff"}
     '';
   }
-

@@ -5,13 +5,13 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf;
 in
   mkIf (builtins.elem "typescript" cfg.langtools.languages && cfg.langtools.lsp.enable) {
-    environment.systemPackages =  with pkgs; [
+    environment.systemPackages = with pkgs; [
+      biome
       nodejs
       nodePackages.typescript-language-server
-      prettierd
     ];
 
     tgap.system.programs.neovim.luaExtraConfig = ''
@@ -22,9 +22,22 @@ in
 
       require("conform").setup({
         formatters_by_ft = {
-          javascript = {{"prettierd", "prettier"}},
-          typescript = {{"prettierd", "prettier"}},
+          javascript = {{"biome-check", "biome"}},
+          javascriptreact = {{"biome-check", "biome"}},
+          json = {"biome", "jq"},
+          jsonc = {"biome", "jq"},
+          typescript = {{"biome-check", "biome"}},
+          typescriptreact = {{"biome-check", "biome"}},
         },
       })
+
+      require("lint").linters_by_ft = {
+        javascript = {"biome"},
+        javascriptreact = {"biome"},
+        json = {"biome"},
+        jsonc = {"biome"},
+        typescript = {"biome"},
+        typescriptreact = {"biome"},
+      }
     '';
   }

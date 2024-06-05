@@ -5,13 +5,13 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf mkMerge optionals;
 in
   mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
-      environment.systemPackages = with pkgs; [
-        ruff
-        (python3.withPackages (
+      environment.systemPackages = [
+        pkgs.ruff
+        (pkgs.python3.withPackages (
           ps:
             (with ps; [
               bandit
@@ -19,6 +19,7 @@ in
               python-lsp-ruff
               python-lsp-server
               rope
+              vulture
             ])
             ++ (optionals cfg.langtools.dap.enable [ps.debugpy])
         ))
@@ -69,15 +70,19 @@ in
 
           capabilities = capabilities,
           on_attach = on_attach,
+        })
 
-          require("conform").setup({
-            formatters_by_ft.python = {
+        require("conform").setup({
+          formatters_by_ft = {
+            python = {
               "ruff_organize_imports",
               "ruff_fix",
               "ruff_format",
             },
-          })
+          },
         })
+
+        require('lint').linters_by_ft.python = {"bandit", "ruff", "vulture"}
       '';
     })
 

@@ -60,6 +60,7 @@
             unrar-free
             util-linux
             wget
+            yq-go
           ])
           ++ (optionals cfg.androidTools.enable (with pkgs; [
             android-file-transfer

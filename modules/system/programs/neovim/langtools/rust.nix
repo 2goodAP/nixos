@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals optionalString;
+  inherit (lib) mkIf mkMerge;
 in
   mkIf (builtins.elem "rust" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
@@ -27,7 +27,7 @@ in
               )
               -- Code action groups
               vim.keymap.set("n",
-                "<Leader>a",
+                "<leader>a",
                 rt.code_action_group.code_action_group,
                 {buffer = bufnr}
               )
@@ -39,7 +39,9 @@ in
         })
 
         require("conform").setup({
-          formatters_by_ft.rust = {"rustfmt"},
+          formatters_by_ft = {
+            rust = {"rustfmt"},
+          },
         })
       '';
     })
