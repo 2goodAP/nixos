@@ -20,8 +20,8 @@
     virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
 
     defaultShell = mkOption {
-      type = types.enum ["bash" "fish" "nu"];
-      default = "fish";
+      type = types.enum ["bash" "nu"];
+      default = "nu";
       description = "The default shell assigned to user accounts.";
     };
   };
@@ -199,93 +199,6 @@
           udev.packages = optionals cfg.qmk.enable [pkgs.qmk-udev-rules];
         };
       }
-
-      (mkIf (cfg.defaultShell == "fish") {
-        users.defaultUserShell = pkgs.fish;
-
-        programs.fish = {
-          enable = true;
-
-          interactiveShellInit = ''
-            fish_add_path -aP "$HOME/.local/bin"
-            fish_vi_key_bindings
-
-            # Initialize Atuin.
-            ${getExe pkgs.atuin} init fish | ${getExe pkgs.gnused} -Ee \
-              's:([=\(])(atuin|(.*\s+)atuin)(\s+.*\)?):\1\3${getExe pkgs.atuin}\4:g' \
-              | source
-            ${getExe pkgs.atuin} gen-completions --shell fish | source
-
-            # Initialize nix-your-shell.
-            ${getExe pkgs.nix-your-shell} fish | ${getExe pkgs.gnused} -Ee \
-              's:(\s+)nix-your-shell(\s+):\1${getExe pkgs.nix-your-shell}\2:g' \
-              | source
-          '';
-
-          shellInit = ''
-            # TokyoNight Day Theme
-            ## Color Palette
-            set -l foreground 3760bf
-            set -l selection b6bfe2
-            set -l comment 848cb5
-            set -l red f52a65
-            set -l orange b15c00
-            set -l yellow 8c6c3e
-            set -l green 587539
-            set -l purple 7847bd
-            set -l cyan 007197
-            set -l pink 9854f1
-
-            ## Syntax Highlighting Colors
-            set -g fish_color_normal $foreground
-            set -g fish_color_command $cyan
-            set -g fish_color_keyword $pink
-            set -g fish_color_quote $yellow
-            set -g fish_color_redirection $foreground
-            set -g fish_color_end $orange
-            set -g fish_color_error $red
-            set -g fish_color_param $purple
-            set -g fish_color_comment $comment
-            set -g fish_color_selection --background=$selection
-            set -g fish_color_search_match --background=$selection
-            set -g fish_color_operator $green
-            set -g fish_color_escape $pink
-            set -g fish_color_autosuggestion $comment
-
-            ## Completion Pager Colors
-            set -g fish_pager_color_progress $comment
-            set -g fish_pager_color_prefix $cyan
-            set -g fish_pager_color_completion $foreground
-            set -g fish_pager_color_description $comment
-            set -g fish_pager_color_selected_background --background=$selection
-
-            # Tide vi-mode Prompt Icon
-            set -g tide_character_icon '>'
-            set -g tide_vi_mode_icon_insert '>'
-            set -g tide_character_vi_icon_default '<'
-            set -g tide_vi_mode_icon_default '<'
-            set -g tide_character_vi_icon_replace 'R'
-            set -g tide_vi_mode_icon_replace 'R'
-            set -g tide_character_vi_icon_visual 'V'
-            set -g tide_vi_mode_icon_visual 'V'
-          '';
-        };
-
-        environment.systemPackages =
-          [pkgs.fzf pkgs.grc]
-          ++ (with pkgs.fishPlugins; [
-            autopair
-            bass
-            colored-man-pages
-            done
-            fishtape_3
-            puffer
-            sponge
-            tide
-            fzf-fish
-            grc
-          ]);
-      })
 
       (mkIf (cfg.defaultShell == "nu") {
         environment.systemPackages = with pkgs; [nushellFull];
