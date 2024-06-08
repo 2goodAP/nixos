@@ -29,7 +29,7 @@
   config = let
     cfg = config.tgap.system.programs;
     nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
-    inherit (lib) getExe mkIf mkMerge optionals;
+    inherit (lib) getExe mkIf mkMerge optionals optionalString;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -51,6 +51,7 @@
             btop
             fd
             file
+            fzf
             git-filter-repo
             jq
             lazygit
@@ -63,6 +64,7 @@
             util-linux
             wget
             yq-go
+            zoxide
           ])
           ++ (optionals cfg.androidTools.enable (with pkgs; [
             android-file-transfer
@@ -89,10 +91,20 @@
               # yq completions
               source <(${getExe pkgs.yq-go} shell-completion bash)
 
-              # Initialize Atuin.
-              eval "$(${getExe pkgs.atuin} init bash | ${getExe pkgs.gnused} -Ee \
-                's:(\$?\()(atuin|(.*\s+)atuin)(\s+.*\)):\1\3${getExe pkgs.atuin}\4:g')"
-              eval "$(${getExe pkgs.atuin} gen-completions --shell bash)"
+              # Initialize zoxide
+              eval "$(${getExe pkgs.zoxide} init bash)"
+
+              ${optionalString config.programs.starship.enable ''
+                # Starship completions
+                eval "$(${getExe config.programs.starship.package} completions bash)"
+              ''}
+
+              ${optionalString config.services.atuin.enable ''
+                # Initialize Atuin
+                eval "$(${getExe pkgs.atuin} init bash | ${getExe pkgs.gnused} -Ee \
+                  's:(\$?\()(atuin|(.*\s+)atuin)(\s+.*\)):\1\3${getExe pkgs.atuin}\4:g')"
+                eval "$(${getExe pkgs.atuin} gen-completions --shell bash)"
+              ''}
             '';
 
             shellAliases = {
@@ -204,17 +216,49 @@
         environment.systemPackages = with pkgs; [nushellFull];
 
         programs.bash.interactiveShellInit = let
-          atuinInit =
-            pkgs.runCommand "atuin-init" {
-              buildInputs = with pkgs; [atuin coreutils gnused];
+          nushellInit = let
+            starCfg = config.programs.starship;
+            starshipTOML =
+              (pkgs.formats.toml {}).generate "starship.toml" starCfg.settings;
+            presetFiles = lib.concatStringsSep " " (
+              map (f: "${starCfg.package}/share/starship/presets/${f}.toml")
+              starCfg.presets
+            );
+          in
+            pkgs.runCommand "nushell-init" {
+              nativeBuildInputs = with pkgs; [
+                atuin
+                coreutils
+                gnused
+                yq
+                zoxide
+              ];
             } ''
               export HOME="$PWD/home"
               mkdir -p $out $HOME
 
+              # Starship
+              mkdir $out/starship
+              ${
+                if starCfg.presets == []
+                then "cat ${starshipTOML} > $out/starship/starship.toml"
+                else ''
+                  ${getExe starCfg.package} init nu > $out/starship/init.nu
+                  tomlq -s -t 'reduce .[] as $item ({}; . * $item)' ${presetFiles} \
+                    ${starshipTOML} > $out/starship/starship.toml
+                ''
+              }
+
+              # Atuin
+              mkdir $out/atuin
               atuin init nu | sed -Ee \
                 's|([^:][{([:space:]])atuin(\s)|\1${getExe pkgs.atuin}\2|g' \
-                > $out/init.nu
-              atuin gen-completions --shell nushell --out-dir $out
+                > $out/atuin/init.nu
+              atuin gen-completions --shell nushell --out-dir $out/atuin
+
+              # Zoxide
+              mkdir $out/zoxide
+              zoxide init nushell > $out/zoxide/init.nu
             '';
 
           envNu = pkgs.writeText "env.nu" ''
@@ -222,6 +266,31 @@
 
             # Directories to search for scripts when calling source or use
             $env.NU_LIB_DIRS = [`${pkgs.nu_scripts}/share/nu_scripts`]
+
+            ${
+              if config.programs.starship.enable
+              then ''
+                # The prompt indicators are environmental variables that represent
+                # the state of the prompt
+                $env.PROMPT_INDICATOR = {|| "" }
+                $env.PROMPT_INDICATOR_VI_INSERT = {|| "I " }
+                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "N " }
+                $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
+              ''
+              else ''
+                # Use nushell functions to define your right and left prompt
+                $env.PROMPT_COMMAND = {|| create_left_prompt }
+                # FIXME: This default is not implemented in rust code as of 2023-09-08.
+                $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+
+                # The prompt indicators are environmental variables that represent
+                # the state of the prompt
+                $env.PROMPT_INDICATOR = {|| "> " }
+                $env.PROMPT_INDICATOR_VI_INSERT = {|| ": " }
+                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "> " }
+                $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
+              ''
+            }
           '';
 
           configNu = pkgs.writeText "config.nu" ''
@@ -238,9 +307,22 @@
               | ['source `custom-completions', $'($in)', $'($in).nu`']
               | path join} | to text)
 
-            # Initialize Atuin
-            source `${atuinInit}/init.nu`
-            source `${atuinInit}/atuin.nu`
+            # Initialize Zoxide
+            source `${nushellInit}/zoxide/init.nu`
+
+            ${optionalString config.programs.starship.enable ''
+              # Initialize Starship
+              if ($'($env.HOME)/.config/starship.toml' | path exists | not $in) {
+                $env.STARSHIP_CONFIG = `${nushellInit}/starship/starship.toml`
+              }
+              use `${nushellInit}/starship/init.nu`
+            ''}
+
+            ${optionalString config.services.atuin.enable ''
+              # Initialize Atuin
+              source `${nushellInit}/atuin/init.nu`
+              source `${nushellInit}/atuin/atuin.nu`
+            ''}
           '';
         in ''
           # Start nushell by default from bashInteractive

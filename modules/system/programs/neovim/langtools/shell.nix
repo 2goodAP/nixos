@@ -19,7 +19,6 @@ in
           shfmt
           vale
         ]))
-        ++ (optionals (cfg.defaultShell == "nu") [pkgs.nufmt])
         ++ (optionals cfg.neovim.langtools.dap.enable [pkgs.bashdb pkgs.nodejs]);
     }
 
@@ -54,19 +53,8 @@ in
 
         require("conform").setup({
           formatters_by_ft = {
-            ${optionalString (cfg.defaultShell == "nu") ''nu = {"nufmt"},''}
             sh = {"shellharden", "shfmt"},
           },
-
-        ${optionalString (cfg.defaultShell == "nu") ''
-          formatters.nufmt = function(bufnr)
-            return  {
-              command = require("conform.util").find_executable({
-                "${getExe pkgs.nufmt},
-              }, "nufmt")
-            },
-          end,
-        ''}
         })
 
         require("lint").linters_by_ft = {
