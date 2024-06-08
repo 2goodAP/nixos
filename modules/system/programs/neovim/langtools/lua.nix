@@ -40,7 +40,9 @@ in
         },
 
         capabilities = capabilities,
-        on_attach = on_attach,
+        on_attach = function(client, bufnr)
+          _set_lsp_keymaps(bufnr)
+        end,
       })
 
       require("conform").setup({

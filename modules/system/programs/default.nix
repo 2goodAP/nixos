@@ -29,10 +29,12 @@
   config = let
     cfg = config.tgap.system.programs;
     nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
-    inherit (lib) getExe getExe' mkIf mkMerge optionals;
+    inherit (lib) getExe mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
       {
+        users.defaultUserShell = pkgs.bashInteractive;
+
         # List packages installed in system profile.
         environment.systemPackages =
           [config.boot.kernelPackages.turbostat]
@@ -83,6 +85,9 @@
               export PATH=$PATH:"$HOME/.local/bin"
               set -o vi
               bind '"\C-l": clear-screen'
+
+              # yq completions
+              source <(${getExe pkgs.yq-go} shell-completion bash)
 
               # Initialize Atuin.
               eval "$(${getExe pkgs.atuin} init bash | ${getExe pkgs.gnused} -Ee \
@@ -283,25 +288,58 @@
       })
 
       (mkIf (cfg.defaultShell == "nu") {
-        users.defaultUserShell = pkgs.bashInteractive;
+        environment.systemPackages = with pkgs; [nushellFull];
 
-        environment.systemPackages =
-          (with pkgs; [
-            nufmt
-            nushellFull
-            nu_scripts
-          ])
-          ++ (with pkgs.nushellPlugins; [
-            formats
-            gstat
-            net
-            query
-          ]);
+        programs.bash.interactiveShellInit = let
+          atuinInit =
+            pkgs.runCommand "atuin-init" {
+              buildInputs = with pkgs; [atuin coreutils gnused];
+            } ''
+              export HOME="$PWD/home"
+              mkdir -p $out $HOME
 
-          programs.bash.interactiveShellInit = ''
-            # Start nushell by default from bashInteractive.
-            exec ${getExe' pkgs.nushellFull "nu"}
+              atuin init nu | sed -Ee \
+                's|([^:][{([:space:]])atuin(\s)|\1${getExe pkgs.atuin}\2|g' \
+                > $out/init.nu
+              atuin gen-completions --shell nushell --out-dir $out
+            '';
+
+          envNu = pkgs.writeText "env.nu" ''
+            ${builtins.readFile ./nushell/env.nu}
+
+            # Directories to search for scripts when calling source or use
+            $env.NU_LIB_DIRS = [`${pkgs.nu_scripts}/share/nu_scripts`]
           '';
+
+          configNu = pkgs.writeText "config.nu" ''
+            ${builtins.readFile ./nushell/config.nu}
+
+            # Theme
+            use `themes/nu-themes/tokyo-day.nu`
+            $env.config.color_config = (tokyo-day)
+
+            # Custom completions
+            (ls `${pkgs.nu_scripts}/share/nu_scripts/custom-completions`
+              | where ($'($it.name)' | path type) == "dir"
+              | each {|d| $'($d.name)' | path basename
+              | ['source `custom-completions', $'($in)', $'($in).nu`']
+              | path join} | to text)
+
+            # Initialize Atuin
+            source `${atuinInit}/init.nu`
+            source `${atuinInit}/atuin.nu`
+          '';
+        in ''
+          # Start nushell by default from bashInteractive
+          exec ${getExe pkgs.nushellFull} -i \
+            --env-config '${envNu}' \
+            --config '${configNu}' \
+            --plugins "[ \
+              '${getExe pkgs.nushellPlugins.formats}', \
+              '${getExe pkgs.nushellPlugins.gstat}', \
+              '${getExe pkgs.nushellPlugins.query}', \
+            ]"
+        '';
       })
 
       (mkIf cfg.cms.enable {

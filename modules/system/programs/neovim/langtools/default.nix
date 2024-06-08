@@ -6,11 +6,13 @@
 }: {
   imports = [
     ./cpp.nix
+    ./go.nix
     ./haskell.nix
     ./lua.nix
     ./markdown.nix
     ./nix.nix
     ./python.nix
+    ./r.nix
     ./rust.nix
     ./shell.nix
     ./sql.nix
@@ -27,8 +29,8 @@
       default = [];
       description = ''
         The extra language servers to be installed. Supported languages are
-        "cpp", "haskell", "lua", "markdown", "nix", "python",
-        "rust", "shell, "sql", "typescript".
+        "cpp", "go", "haskell", "lua", "markdown", "nix",
+        "python", "r", "rust", "shell, "sql", "typescript".
       '';
     };
 
@@ -90,7 +92,7 @@
             capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
           ''}
 
-          local function on_attach(client, bufnr)
+          local function _set_lsp_keymaps(bufnr)
           ${optionalString (!cfg.autocompletion.enable) ''
             -- Enable completion triggered by <c-x><c-o>
             vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -239,13 +241,13 @@
             -- Tell the server the capability of foldingRange,
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities.textDocument.foldingRange = {
-                dynamicRegistration = false,
-                lineFoldingOnly = true
+              dynamicRegistration = false,
+              lineFoldingOnly = true
             }
             local servers = require("lspconfig").util.available_servers()
             for _, ls in ipairs(servers) do
                 require("lspconfig")[ls].setup({
-                    capabilities = capabilities
+                  capabilities = capabilities
                 })
             end
             require("ufo").setup()

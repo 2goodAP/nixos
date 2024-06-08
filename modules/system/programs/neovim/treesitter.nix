@@ -18,10 +18,11 @@
     mkIf cfg.treesitter.enable {
       environment.systemPackages = [pkgs.tree-sitter];
 
-      tgap.system.programs.neovim.startPackages = [
+      tgap.system.programs.neovim.startPackages =
+        [
           (pkgs.vimPlugins.nvim-treesitter.withPlugins (
-            pgs:
-              with pgs; [
+            plugs:
+              with plugs; [
                 bash
                 c
                 cmake
@@ -51,6 +52,7 @@
                 markdown-inline
                 nix
                 norg
+                tree-sitter-nu
                 perl
                 python
                 query
@@ -220,7 +222,7 @@
                   ["]]"] = { query = "@class.outer", desc = "Next class start" },
                   --
                   -- You can use regex matching (i.e. lua pattern) and/or pass
-                  -- a list in a "query" key to group multiple queires.
+                  -- a list in a "query" key to group multiple queries.
                   ["]o"] = "@loop.*",
                   -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
                   --

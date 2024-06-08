@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge;
+  inherit (lib) getExe' mkIf mkMerge;
 in
   mkIf (builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
@@ -15,7 +15,9 @@ in
       tgap.system.programs.neovim.luaExtraConfig = ''
         require("lspconfig").clangd.setup({
           capabilities = capabilities,
-          on_attach = on_attach,
+          on_attach = function(client, bufnr)
+            _set_lsp_keymaps(bufnr)
+          end,
         })
 
         require("conform").setup({
@@ -36,15 +38,13 @@ in
       environment.systemPackages = [pkgs.lldb];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
-        local dap = require("dap")
-
-        dap.adapters.lldb = {
+        require("dap").adapters.lldb = {
           type = "executable",
-          command = "${pkgs.lldb}/bin/lldb-vscode", -- Must be absolute path
+          command = "${getExe' pkgs.lldb "lldb-vscode"}", -- Must be absolute path
           name = "lldb",
         }
 
-        dap.configurations.cpp = {
+        require("dap").configurations.cpp = {
           {
             name = "Launch",
             type = "lldb",
@@ -52,13 +52,13 @@ in
             program = function()
               return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
             end,
-            cwd = "$workspaceFolder",
+            cwd = "''${workspaceFolder}",
             stopOnEntry = false,
             args = {},
           },
         }
 
-        dap.configurations.c = dap.configurations.cpp
+        require("dap").configurations.c = require("dap").configurations.cpp
       '';
     })
   ])

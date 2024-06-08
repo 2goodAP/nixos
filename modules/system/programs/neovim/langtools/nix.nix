@@ -4,16 +4,18 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim;
+  cfg = config.tgap.system.programs.neovim.langtools;
   inherit (lib) mkIf;
 in
-  mkIf (builtins.elem "nix" cfg.langtools.languages && cfg.langtools.lsp.enable) {
-    environment.systemPackages = [pkgs.nixd pkgs.alejandra];
+  mkIf (builtins.elem "nix" cfg.languages && cfg.lsp.enable) {
+    environment.systemPackages = [pkgs.alejandra pkgs.deadnix pkgs.nixd];
 
     tgap.system.programs.neovim.luaExtraConfig = ''
       require("lspconfig").nixd.setup({
         capabilities = capabilities,
-        on_attach = on_attach,
+        on_attach = function(client, bufnr)
+          _set_lsp_keymaps(bufnr)
+        end,
       })
 
       require("conform").setup({
@@ -22,6 +24,6 @@ in
         },
       })
 
-      require("lint").linters_by_ft.nix = {"nix"}
+      require("lint").linters_by_ft.nix = {"nix", "deadnix"}
     '';
   }

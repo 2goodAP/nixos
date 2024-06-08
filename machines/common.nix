@@ -40,11 +40,16 @@
 
           languages = [
             "cpp"
+            "go"
             "haskell"
             "lua"
+            "markdown"
             "nix"
             "python"
+            "r"
             "rust"
+            "shell"
+            "sql"
             "typescript"
           ];
 

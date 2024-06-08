@@ -4,27 +4,29 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim;
-  inherit (lib) mkIf mkMerge optionals;
+  cfg = config.tgap.system.programs.neovim.langtools;
+  inherit (lib) getExe mkIf mkMerge optionals;
+  python = pkgs.python3.withPackages (
+    ps:
+      (optionals cfg.lsp.enable (with ps; [
+        bandit
+        pylsp-mypy
+        python-lsp-ruff
+        python-lsp-server
+        rope
+        vulture
+      ]))
+      ++ (optionals cfg.dap.enable [ps.debugpy])
+  );
 in
-  mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
-    (mkIf cfg.langtools.lsp.enable {
-      environment.systemPackages = [
-        pkgs.ruff
-        (pkgs.python3.withPackages (
-          ps:
-            (with ps; [
-              bandit
-              pylsp-mypy
-              python-lsp-ruff
-              python-lsp-server
-              rope
-              vulture
-            ])
-            ++ (optionals cfg.langtools.dap.enable [ps.debugpy])
-        ))
-      ];
+  mkIf (builtins.elem "python" cfg.languages) (mkMerge [
+    {
+      environment.systemPackages =
+        [python]
+        ++ (optionals cfg.lsp.enable [pkgs.mypy pkgs.ruff]);
+    }
 
+    (mkIf cfg.lsp.enable {
       tgap.system.programs.neovim.luaExtraConfig = ''
         -- Pylsp configuration
         require("lspconfig").pylsp.setup({
@@ -69,7 +71,9 @@ in
           },
 
           capabilities = capabilities,
-          on_attach = on_attach,
+          on_attach = function(client, bufnr)
+            _set_lsp_keymaps(bufnr)
+          end,
         })
 
         require("conform").setup({
@@ -82,15 +86,15 @@ in
           },
         })
 
-        require('lint').linters_by_ft.python = {"bandit", "ruff", "vulture"}
+        require('lint').linters_by_ft.python = {"ruff", "mypy", "vulture", "bandit"}
       '';
     })
 
-    (mkIf cfg.langtools.dap.enable {
+    (mkIf cfg.dap.enable {
       tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.nvim-dap-python];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
-        require("dap-python").setup("${pkgs.python3Packages.debugpy}/bin/python")
+        require("dap-python").setup("${getExe python}")
       '';
     })
   ])
