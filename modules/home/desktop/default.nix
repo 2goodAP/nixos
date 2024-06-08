@@ -60,6 +60,10 @@
 
             font_features CaskaydiaCoveNF-SemiLightItalic +calt +ss01
             font_features CaskaydiaCoveNF-SemiBoldItalic +calt +ss01
+
+            ${builtins.replaceStrings
+              ["^cursor.+$"] [""]
+              (builtins.readFile ./kitty/tokyonight_day.conf)}
           '';
           settings = {
             # Fonts
@@ -75,9 +79,6 @@
             cursor = "none";
             cursor_text_color = "background";
 
-            # Mouse
-            url_color = "#387068";
-
             # Performance tuning
             input_delay = 1;
             repaint_delay = 7;
@@ -89,48 +90,6 @@
             # Window layout
             enabled_layouts = "splits, grid, stack";
             window_padding_width = "0 2";
-            active_border_color = "#2e7de9";
-            inactive_border_color = "#c4c8da";
-
-            # Tab bar
-            active_tab_foreground = "#e9e9ec";
-            active_tab_background = "#2e7de9";
-            inactive_tab_background = "#c4c8da";
-            inactive_tab_foreground = "#8990b3";
-            tab_bar_background = "#e9e9ed";
-
-            # Color scheme (Tokyo Night Day)
-            foreground = "#3760bf";
-            background = "#e1e2e7";
-            selection_foreground = "#3760bf";
-            selection_background = "#99a7df";
-            # black
-            color0 = "#e9e9ed";
-            color8 = "#a1a6c5";
-            # red
-            color1 = "#f52a65";
-            color9 = "#f52a65";
-            # green
-            color2 = "#587539";
-            color10 = "#587539";
-            # yellow
-            color3 = "#8c6c3e";
-            color11 = "#8c6c3e";
-            # blue
-            color4 = "#2e7de9";
-            color12 = "#2e7de9";
-            # magenta
-            color5 = "#9854f1";
-            color13 = "#9854f1";
-            # cyan
-            color6 = "#007197";
-            color14 = "#007197";
-            # white
-            color7 = "#6172b0";
-            color15 = "#3760bf";
-            # extended
-            color16 = "#b15c00";
-            color17 = "#c64343";
           };
 
           keybindings = let

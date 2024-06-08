@@ -21,7 +21,7 @@
   config = let
     cfg = config.tgap.home.desktop;
     osCfg = osConfig.tgap.system;
-    inherit (lib) getExe getExe' mkIf mkMerge optionals optionalString;
+    inherit (lib) mkIf mkMerge optionals;
   in
     mkIf osCfg.desktop.enable (mkMerge [
       (mkIf cfg.applications.enable {

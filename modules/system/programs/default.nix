@@ -29,7 +29,7 @@
   config = let
     cfg = config.tgap.system.programs;
     nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
-    inherit (lib) getExe mkIf mkMerge optionals optionalString;
+    inherit (lib) getExe importTOML mkIf mkMerge optionals optionalString recursiveUpdate;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -37,7 +37,14 @@
 
         # List packages installed in system profile.
         environment.systemPackages =
-          [config.boot.kernelPackages.turbostat]
+          [
+            config.boot.kernelPackages.turbostat
+            (pkgs.yazi.override {
+              settings = recursiveUpdate (importTOML ./yazi/tokyonight_day.toml) {
+                manager.highlight = ./yazi/tokyonight_day.tmTheme;
+              };
+            })
+          ]
           ++ (with pkgs; [
             # Hardware
             exfatprogs
@@ -51,8 +58,8 @@
             btop
             fd
             file
-            fzf
             git-filter-repo
+            git-subrepo
             jq
             lazygit
             p7zip
