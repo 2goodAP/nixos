@@ -61,9 +61,7 @@
             font_features CaskaydiaCoveNF-SemiLightItalic +calt +ss01
             font_features CaskaydiaCoveNF-SemiBoldItalic +calt +ss01
 
-            ${builtins.replaceStrings
-              ["^cursor.+$"] [""]
-              (builtins.readFile ./kitty/tokyonight_day.conf)}
+            ${builtins.readFile ./kitty/tokyonight_day.conf}
           '';
           settings = {
             # Fonts
