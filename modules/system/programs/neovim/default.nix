@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  options,
   pkgs,
   ...
 }: {
@@ -46,13 +47,33 @@
       default = [];
       description = "The packages to load optionally into neovim.";
     };
+
+    python = {
+      package = mkOption {
+        type = types.nullOr types.package;
+        default = null;
+        description = "The python package to use to install into the environment";
+      };
+
+      extraPackageNames = mkOption {
+        type = types.listOf types.str;
+        default = ["pynvim"];
+        description = "The packages to install alongside python.";
+      };
+    };
   };
 
   config = let
     cfg = config.tgap.system.programs.neovim;
+    opts = options.tgap.system.programs.neovim;
+    python = pkgs.python311.withPackages (
+      ps: lib.forEach cfg.python.extraPackageNames (name: ps."${name}")
+    );
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
+      environment.systemPackages = [python];
+
       programs.neovim = {
         enable = true;
         defaultEditor = true;
@@ -89,8 +110,9 @@
         };
       };
 
-      environment.systemPackages = [
-        (pkgs.python310.withPackages (ps: [ps.pynvim]))
-      ];
+      tgap.system.programs.neovim.python = {
+        package = python;
+        extraPackageNames = opts.python.extraPackageNames.default;
+      };
     };
 }

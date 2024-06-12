@@ -11,7 +11,7 @@
 
   config = let
     cfg = config.tgap.system.programs.neovim.git;
-    inherit (lib) mkIf optionals;
+    inherit (lib) mkIf;
   in
     mkIf cfg.enable {
       tgap.system.programs.neovim.startPackages = with pkgs.vimPlugins; [

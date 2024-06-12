@@ -34,7 +34,12 @@
         home = {
           packages = with pkgs; [
             bibata-cursors
-            (nerdfonts.override {fonts = ["CascadiaCode" "FiraCode"];})
+            (nerdfonts.override {
+              fonts = [
+                "CascadiaCode"
+                "JetBrainsMono"
+              ];
+            })
             noto-fonts
             noto-fonts-emoji-blob-bin
             noto-fonts-color-emoji
@@ -55,22 +60,31 @@
           enable = true;
 
           extraConfig = ''
-            font_features FiraCodeNF-Reg +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
-            font_features FiraCodeNF-SemBd +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
+            # Opentype font features
+            font_features CaskaydiaCoveNFM-Italic +calt +ss01
+            font_features CaskaydiaCoveNFM-SemiBoldItalic +calt +ss01
 
-            font_features CaskaydiaCoveNF-SemiLightItalic +calt +ss01
-            font_features CaskaydiaCoveNF-SemiBoldItalic +calt +ss01
+            font_features FiraCodeNFM-Med +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
+            font_features FiraCodeNFM-Bold +cv16 +cv18 +cv25 +cv26 +cv28 +cv29 +cv30 +cv31 +cv32 +onum +ss02 +ss03 +ss05 +ss06 +ss07 +ss08 +ss09 +zero
+
+            font_features JetBrainsMonoNFM-Medium +calt +cv04 +cv16 +ss02 +ss19
+            font_features JetBrainsMonoNFM-Bold +calt +cv04 +cv16 +ss02 +ss19
+
+            font_features MonaspiceArNFM-Medium +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
+            font_features MonaspiceArNFM-Bold +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
+            font_features MonaspiceRnNFM-MediumItalic +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
+            font_features MonaspiceRnNFM-BoldItalic +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
 
             ${builtins.readFile ./kitty/tokyonight_day.conf}
           '';
           settings = {
             # Fonts
-            font_family = "FiraCode Nerd Font";
-            bold_font = "FiraCode Nerd Font SemBd";
-            italic_font = "CaskaydiaCove NF SemiLight Italic";
-            bold_italic_font = "CaskaydiaCove NF SemiBold Italic";
+            font_family = "JetBrainsMono NFM Medium";
+            bold_font = "JetBrainsMono NFM Bold";
+            italic_font = "CaskaydiaCove NFM Italic";
+            bold_italic_font = "CaskaydiaCove NFM SemiBold Italic";
 
-            font_size = "10.5";
+            font_size = "11.5";
             disable_ligatures = "cursor";
 
             # Cursor customization

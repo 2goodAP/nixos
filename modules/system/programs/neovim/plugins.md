@@ -16,6 +16,11 @@
 - [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim)
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) (TODO: Customization)
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim#usage) (TODO: Customization and Keymaps)
+- [tabby.nvim](https://github.com/nanozuki/tabby.nvim#setup) (TODO: Customization and Keymaps)
+
+## Colorscheme
+
+- [rose-pine](https://github.com/rose-pine/neovim)
 
 ## Terminal
 

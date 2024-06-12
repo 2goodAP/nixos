@@ -29,6 +29,13 @@
   config = let
     cfg = config.tgap.system.programs;
     nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
+    yazi = pkgs.yazi.override {
+      settings.theme =
+        recursiveUpdate
+        (lib.importTOML ./yazi/tokyonight_day.toml) {
+          manager.highlight = ./yazi/tokyonight_day.tmTheme;
+        };
+    };
     inherit (lib) getExe mkIf mkMerge optionals optionalString recursiveUpdate;
   in
     mkIf cfg.enable (mkMerge [
@@ -37,16 +44,7 @@
 
         # List packages installed in system profile.
         environment.systemPackages =
-          [
-            config.boot.kernelPackages.turbostat
-            (pkgs.yazi.override {
-              settings.theme =
-                recursiveUpdate
-                (lib.importTOML ./yazi/tokyonight_day.toml) {
-                  manager.highlight = ./yazi/tokyonight_day.tmTheme;
-                };
-            })
-          ]
+          [config.boot.kernelPackages.turbostat yazi]
           ++ (with pkgs; [
             # Hardware
             exfatprogs
@@ -56,12 +54,15 @@
             s-tui
 
             # Programs
+            bat
             broot
             btop
+            delta
             fd
             file
             git-filter-repo
             git-subrepo
+            jc
             jq
             p7zip
             pciutils
@@ -113,28 +114,41 @@
                   's:(\$?\()(atuin|(.*\s+)atuin)(\s+.*\)):\1\3${getExe pkgs.atuin}\4:g')"
                 eval "$(${getExe pkgs.atuin} gen-completions --shell bash)"
               ''}
+
+              # Change cwd when exiting yazi
+              function ya() {
+                local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+                ${getExe yazi} "$@" --cwd-file="$tmp"
+                if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+                  cd -- "$cwd"
+                fi
+                rm -f -- "$tmp"
+              }
             '';
 
             shellAliases = {
-              # Meta aliases
-              "dotfiles" = "git --git-dir=$HOME/.dotfiles --work-tree=$HOME";
-
-              # Program aliases
-              "ll" = "ls -lFh";
-              "la" = "ls -laFh";
-              "diff" = "diff --color";
-              "less" = "less -i";
-              "grep" = "grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
-              "egrep" = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
-              "sed" = "sed -E";
+              br = "broot";
+              brs = "broot -s";
+              brl = "broot -dsp";
+              diff = "diff --color";
+              egrep = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+              grep = "grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+              less = "less -FRi";
+              la = "ls -a";
+              ll = "ls -lFh";
+              lla = "ls -laFh";
+              sed = "sed -E";
             };
 
             shellInit = ''
               # Increasing history size
-              export HISTSIZE=1000
+              export HISTSIZE=10000
 
               # Set the XDG_CONFIG_HOME
               export XDG_CONFIG_HOME="$HOME/.config"
+
+              # Set default pager to work with rust programs
+              export PAGER='${config.programs.bash.shellAliases.less}'
 
               # Preferred editor for local and remote sessions
               if [[ -n "$SSH_CONNECTION" ]]; then
@@ -152,7 +166,12 @@
             enable = true;
             lfs.enable = true;
             config = {
+              core.pager = "${getExe pkgs.delta}";
+              delta.navigate = true;
+              diff.colorMoved = "default";
               init.defaultBranch = "main";
+              interactive.diffFilter = "${getExe pkgs.delta} --color-only";
+              merge.conflictstyle = "diff3";
               pull.rebase = false;
               push.autoSetupRemote = true;
             };
@@ -272,8 +291,8 @@
                 # The prompt indicators are environmental variables that represent
                 # the state of the prompt
                 $env.PROMPT_INDICATOR = {|| "> " }
-                $env.PROMPT_INDICATOR_VI_INSERT = {|| ": " }
-                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "> " }
+                $env.PROMPT_INDICATOR_VI_INSERT = {|| "> " }
+                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "< " }
                 $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
               ''
             }
@@ -281,6 +300,17 @@
 
           configNu = pkgs.writeText "config.nu" ''
             ${builtins.readFile ./nushell/config.nu}
+
+            # Aliases
+            export alias br = broot
+            export alias brs = broot -s
+            export alias brl = broot -dsp
+            export alias diff = diff --color
+            export alias less = less -i
+            export alias la = ls -a
+            export alias ll = ls -l
+            export alias lla = ls -adl
+            export alias sed = sed -E
 
             # Theme
             use `themes/nu-themes/tokyo-day.nu`
@@ -309,6 +339,17 @@
               source `${nushellInit}/atuin/init.nu`
               source `${nushellInit}/atuin/atuin.nu`
             ''}
+
+            # Change cwd when exiting yazi
+            def --env ya [...args] {
+              let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+              ${getExe yazi} ...$args --cwd-file $tmp
+              let cwd = (open $tmp)
+              if $cwd != "" and $cwd != $env.PWD {
+                cd $cwd
+              }
+              rm -fp $tmp
+            }
           '';
         in ''
           # Start nushell by default from bashInteractive

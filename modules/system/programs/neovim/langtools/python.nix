@@ -4,29 +4,29 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim.langtools;
+  cfg = config.tgap.system.programs.neovim;
   inherit (lib) getExe mkIf mkMerge optionals;
-  python = pkgs.python3.withPackages (
-    ps:
-      (optionals cfg.lsp.enable (with ps; [
-        bandit
-        pylsp-mypy
-        python-lsp-ruff
-        python-lsp-server
-        rope
-        vulture
-      ]))
-      ++ (optionals cfg.dap.enable [ps.debugpy])
-  );
 in
-  mkIf (builtins.elem "python" cfg.languages) (mkMerge [
+  mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
     {
-      environment.systemPackages =
-        [python]
-        ++ (optionals cfg.lsp.enable [pkgs.mypy pkgs.ruff]);
+      environment.systemPackages = optionals cfg.langtools.lsp.enable (with pkgs; [
+        mypy
+        ruff
+      ]);
+
+      tgap.system.programs.neovim.python.extraPackageNames =
+        [
+          "bandit"
+          "pylsp-mypy"
+          "python-lsp-ruff"
+          "python-lsp-server"
+          "rope"
+          "vulture"
+        ]
+        ++ (optionals cfg.langtools.dap.enable ["debugpy"]);
     }
 
-    (mkIf cfg.lsp.enable {
+    (mkIf cfg.langtools.lsp.enable {
       tgap.system.programs.neovim.luaExtraConfig = ''
         -- Pylsp configuration
         require("lspconfig").pylsp.setup({
@@ -90,11 +90,11 @@ in
       '';
     })
 
-    (mkIf cfg.dap.enable {
+    (mkIf cfg.langtools.dap.enable {
       tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.nvim-dap-python];
 
       tgap.system.programs.neovim.luaExtraConfig = ''
-        require("dap-python").setup("${getExe python}")
+        require("dap-python").setup("${getExe cfg.python.package}")
       '';
     })
   ])
