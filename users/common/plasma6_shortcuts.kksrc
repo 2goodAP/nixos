@@ -10,16 +10,16 @@ Switch to Next Keyboard Layout=Meta+Shift+N
 [StandardShortcuts]
 AboutApp=
 AboutKDE=
-Activate Next Tab=Ctrl+]; Ctrl+PgDown
+Activate Next Tab=Ctrl+PgDown; Ctrl+]
 Activate Previous Tab=Ctrl+PgUp; Ctrl+[
 ActualSize=Ctrl+0
 AddBookmark=Ctrl+B
-Back=Back; Alt+Left
+Back=Alt+Left; Back
 BackwardWord=Ctrl+Left
 Begin=Ctrl+Home
 BeginningOfLine=Home
 Clear=
-Close=Ctrl+Esc; Ctrl+W
+Close=Ctrl+W; Ctrl+Esc
 ConfigureNotifications=
 ConfigureToolbars=
 Copy=Ctrl+C; Ctrl+Ins
@@ -48,7 +48,7 @@ Goto=
 GotoLine=Ctrl+G
 GotoPage=
 Help=F1
-Home=Home Page; Alt+Home
+Home=Alt+Home; Home Page
 KeyBindings=Ctrl+Alt+,
 Mail=
 MoveToTrash=Del
@@ -59,7 +59,7 @@ Open=Ctrl+O
 OpenContextMenu=Menu; Shift+F10
 OpenMainMenu=F10
 OpenRecent=
-Paste=Shift+Ins; Ctrl+V
+Paste=Ctrl+V; Shift+Ins
 Paste Selection=Ctrl+Shift+Ins
 Preferences=Ctrl+Shift+,
 PrevCompletion=Ctrl+Up
@@ -68,7 +68,7 @@ PrintPreview=
 Prior=PgUp
 Quit=Ctrl+Q
 Redo=Ctrl+Shift+Z
-Reload=Refresh; F5
+Reload=F5; Refresh
 RenameFile=F2
 Replace=Ctrl+R
 ReportBug=
@@ -99,7 +99,7 @@ Toggle Screen Reader On and Off=Meta+Alt+S
 [kcm_touchpad][Global Shortcuts]
 Disable Touchpad=Touchpad Off
 Enable Touchpad=Touchpad On
-Toggle Touchpad=Meta+Ctrl+Zenkaku Hankaku; Touchpad Toggle
+Toggle Touchpad=Touchpad Toggle; Meta+Ctrl+Zenkaku Hankaku
 
 [khotkeys][Global Shortcuts]
 {d03619b6-9b3c-48cc-9d9c-a2aadb485550}=
@@ -133,7 +133,7 @@ Cycle Overview Opposite=
 Decrease Opacity=
 Edit Tiles=Meta+T
 Expose=Ctrl+F9
-ExposeAll=Ctrl+F10; Launch (C)
+ExposeAll=Launch (C); Ctrl+F10
 ExposeClass=Ctrl+F7
 ExposeClassCurrentDesktop=
 Grid View=Meta+G
@@ -301,28 +301,31 @@ _launch=Meta+E
 
 [org.kde.krunner.desktop][Global Shortcuts]
 RunClipboard=Alt+Shift+F2
-_launch=Search; Alt+F2; Alt+Space
+_launch=Alt+F2; Alt+Space; Search
 
 [org.kde.kscreen.desktop][Global Shortcuts]
-ShowOSD=Meta+P; Display
+ShowOSD=Display; Meta+P
 
 [org.kde.plasma-systemmonitor.desktop][Global Shortcuts]
 _launch=Meta+Esc
 
 [org.kde.plasma.emojier.desktop][Global Shortcuts]
-_launch=Meta+Ctrl+Alt+Shift+Space; Meta+.
+_launch=
 
 [org.kde.spectacle.desktop][Global Shortcuts]
 ActiveWindowScreenShot=Meta+Print
 CurrentMonitorScreenShot=
 FullScreenScreenShot=Shift+Print
 OpenWithoutScreenshot=
-RecordRegion=Meta+R; Meta+Shift+R
+RecordRegion=Meta+Shift+R; Meta+R
 RecordScreen=Meta+Alt+R
 RecordWindow=
 RectangularRegionScreenShot=Meta+Shift+Print
 WindowUnderCursorScreenShot=Meta+Ctrl+Print
-_launch=Meta+Shift+S; Print
+_launch=Print; Meta+Shift+S
+
+[org.wezfurlong.wezterm.desktop][Global Shortcuts]
+_launch=Meta+Return
 
 [org_kde_powerdevil][Global Shortcuts]
 Decrease Keyboard Brightness=Keyboard Brightness Down

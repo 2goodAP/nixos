@@ -21,6 +21,10 @@
       url = "github:nbfc-linux/nbfc-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    rio = {
+      url = "github:raphamorim/rio";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -56,7 +60,7 @@
 
             home-manager = {
               backupFileExtension = "hm.bak";
-              extraSpecialArgs = {inherit inputs;};
+              extraSpecialArgs = {inherit inputs system;};
               useGlobalPkgs = true;
               useUserPackages = true;
 

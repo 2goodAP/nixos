@@ -313,8 +313,8 @@
             export alias sed = sed -E
 
             # Theme
-            use `themes/nu-themes/tokyo-day.nu`
-            $env.config.color_config = (tokyo-day)
+            use `themes/nu-themes/rose-pine-dawn.nu`
+            $env.config.color_config = (rose-pine-dawn)
 
             # Custom completions
             (ls `${pkgs.nu_scripts}/share/nu_scripts/custom-completions`

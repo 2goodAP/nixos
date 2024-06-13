@@ -17,8 +17,8 @@
     inherit (lib) mkOption types;
   in
     mkOption {
-      type = types.nullOr (types.enum ["kitty"]);
-      default = "kitty";
+      type = types.nullOr (types.enum ["kitty" "wezterm"]);
+      default = "wezterm";
       description = "The terminal emulator program to install.";
     };
 
@@ -38,6 +38,7 @@
               fonts = [
                 "CascadiaCode"
                 "JetBrainsMono"
+                "Monaspace"
               ];
             })
             noto-fonts
@@ -79,9 +80,9 @@
           '';
           settings = {
             # Fonts
-            font_family = "JetBrainsMono NFM Medium";
+            font_family = "JetBrainsMono NFM";
             bold_font = "JetBrainsMono NFM Bold";
-            italic_font = "CaskaydiaCove NFM Italic";
+            italic_font = "CaskaydiaCove NFM SemiLight Italic";
             bold_italic_font = "CaskaydiaCove NFM SemiBold Italic";
 
             font_size = "11.5";
@@ -156,6 +157,168 @@
             # Ask which tab/OS window to move a kitty window into.
             "${kitty_mod}+m" = "detach_tab ask";
           };
+        };
+      })
+
+      (mkIf (cfg.terminal == "wezterm") {
+        programs.wezterm = {
+          enable = true;
+
+          extraConfig = ''
+            local wezterm = require("wezterm")
+            local config = wezterm.config_builder()
+
+            -- Start font_rules configuration
+            local font_rules = {}
+
+            for _, intensity in ipairs({ "Bold", "Half", "Normal" }) do
+              table.insert(font_rules, {
+                intensity = intensity,
+                italic = false,
+
+                font = wezterm.font_with_fallback({
+                  {
+                    family = "MonaspiceAr NF",
+                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+
+                    harfbuzz_features = {
+                      "calt=1",
+                      "liga=1",
+                      "ss01=1",
+                      "ss02=1",
+                      "ss03=1",
+                      "ss04=1",
+                      "ss05=1",
+                      "ss06=1",
+                      "ss07=1",
+                      "ss08=1",
+                      "ss09=1",
+                    },
+                  },
+                  {
+                    family = "JetBrainsMono NF",
+                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+
+                    harfbuzz_features = {
+                      "calt=1",
+                      "cv04=1",
+                      "cv16=1",
+                      "ss02=1",
+                      "ss19=1",
+                    },
+                  },
+                }),
+              })
+            end
+
+            for _, intensity in ipairs({ "Bold", "Half", "Normal" }) do
+              table.insert(font_rules, {
+                intensity = intensity,
+                italic = true,
+
+                font = wezterm.font_with_fallback({
+                  {
+                    family = "MonaspiceRn NF",
+                    italic = true,
+                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+
+                    harfbuzz_features = {
+                      "calt=1",
+                      "liga=1",
+                      "ss01=1",
+                      "ss02=1",
+                      "ss03=1",
+                      "ss04=1",
+                      "ss05=1",
+                      "ss06=1",
+                      "ss07=1",
+                      "ss08=1",
+                      "ss09=1",
+                    },
+                  },
+                  {
+                    family = "CaskaydiaCove NF",
+                    italic = true,
+                    weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "Light" or "DemiLight"),
+
+                    harfbuzz_features = {
+                      "calt=1",
+                      "ss01=1",
+                    },
+                  },
+                }),
+              })
+            end
+            -- End font_rules configuration
+
+            local colors = {
+              tab = {
+                active = {
+                  bg = "#f9f3ec",
+                  fg = "#565178",
+                },
+                inactive = {
+                  fg = "#797492",
+                  hover = "#f1e8e0",
+                },
+              },
+              title = {
+                active = "#c7c2bd",
+                inactive = "#dbd5cf",
+              },
+            }
+
+            config = {
+              font_rules = font_rules,
+              color_scheme = "Rosé Pine Dawn (Gogh)",
+              default_gui_startup_args = { "connect", "unix" },
+              max_fps = 120,
+
+              colors = {
+                tab_bar = {
+                  active_tab = {
+                    bg_color = colors.tab.active.bg,
+                    fg_color = colors.tab.active.fg,
+                  },
+                  inactive_tab = {
+                    bg_color = colors.title.inactive,
+                    fg_color = colors.tab.inactive.fg,
+                  },
+                  inactive_tab_hover = {
+                    bg_color = colors.tab.inactive.hover,
+                    fg_color = colors.tab.inactive.fg,
+                  },
+                  new_tab = {
+                    bg_color = colors.title.active,
+                    fg_color = colors.tab.inactive.fg,
+                  },
+                  new_tab_hover = {
+                    bg_color = colors.title.active,
+                    fg_color = colors.tab.active.fg,
+                  },
+                },
+              },
+
+              unix_domains = {
+                { name = "unix" },
+              },
+
+              window_frame = {
+                active_titlebar_bg = colors.title.active,
+                font_size = 11.0,
+                inactive_titlebar_bg = colors.title.inactive,
+              },
+
+              window_padding = {
+                bottom = 0,
+                left = 5,
+                right = 1,
+                top = 4,
+              },
+            }
+
+            return config
+          '';
         };
       })
     ]);

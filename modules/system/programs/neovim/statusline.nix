@@ -23,7 +23,8 @@
         tgap.system.programs.neovim.luaExtraConfig = ''
           require("lualine").setup({
             options = {
-              ${optionalString (hasInfix "tokyonight" cfg.colorscheme) "theme = tokyonight,"}
+              ${optionalString (hasInfix "tokyonight" cfg.colorscheme) "theme = 'tokyonight',"}
+              ${optionalString (hasInfix "rose-pine" cfg.colorscheme) "theme = 'rose-pine',"}
               icons_enabled = false,
               component_separators = "|",
               section_separators = "",
@@ -33,7 +34,10 @@
       })
 
       (mkIf cfg.tabline.enable {
-        tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.bufferline-nvim];
+        tgap.system.programs.neovim.startPackages = with pkgs.vimPlugins; [
+          bufferline-nvim
+          tabby-nvim
+        ];
 
         tgap.system.programs.neovim.luaExtraConfig = ''
           require("bufferline").setup({
