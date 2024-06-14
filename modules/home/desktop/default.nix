@@ -299,6 +299,11 @@
                 },
               },
 
+              inactive_pane_hsb = {
+                saturation = 0.9,
+                brightness = 0.9,
+              },
+
               unix_domains = {
                 { name = "unix" },
               },

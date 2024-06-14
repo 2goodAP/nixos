@@ -111,6 +111,8 @@ in
             "browser.urlbar.suggest.history" = false;
             "browser.urlbar.suggest.topsites" = false;
 
+            "font.name.monospace.x-western" = "MonaspiceAr Nerd Font";
+
             "places.history.enabled" = false;
 
             "privacy.donottrackheader.enabled" = true;
