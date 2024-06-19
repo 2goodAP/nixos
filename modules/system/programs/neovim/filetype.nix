@@ -44,11 +44,20 @@
       })
 
       (mkIf cfg.filetype.neorg.enable {
+        tgap.system.programs.neovim.startPackages =
+          (with pkgs.luajitPackages; [
+            lua-utils-nvim
+            pathlib-nvim
+            rocks-nvim
+          ])
+          ++ (with pkgs.vimPlugins; [
+            nui-nvim
+            nvim-nio
+            plenary-nvim
+          ]);
+
         tgap.system.programs.neovim.optPackages =
-          [
-            pkgs.vimPlugins.plenary-nvim
-            pkgs.vimPlugins.neorg
-          ]
+          [pkgs.vimPlugins.neorg]
           ++ (
             optionals cfg.telescope.enable [pkgs.vimPlugins.neorg-telescope]
           );

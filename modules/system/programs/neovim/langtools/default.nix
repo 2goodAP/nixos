@@ -177,9 +177,15 @@
           -- conform + nvim-lint
           require("conform").setup({
             formatters_by_ft = {
-              ["*"] = {{"typos", "trim_newlines", "trim_whitespace"}},
+              ["*"] = {{"trim_newlines", "trim_whitespace"}},
+              asciidoc = {"typos"},
               bibtex = {"bibtex-tidy"},
+              html = {"typos"},
+              norg = {"typos"},
+              org = {"typos"},
               proto = {"buf"},
+              rst = {"typos"},
+              text = {"typos"},
               toml = {"taplo"},
               yaml = {"yq"},
             },

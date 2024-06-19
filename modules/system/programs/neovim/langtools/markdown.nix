@@ -21,6 +21,12 @@ in
         end,
       })
 
+      require("conform").setup({
+        formatters_by_ft = {
+          markdown = {"typos"},
+        },
+      })
+
       require('lint').linters_by_ft.markdown = {"markdownlint-cli2", "vale"}
     '';
   }

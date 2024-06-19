@@ -5,6 +5,7 @@
   ...
 }: {
   imports = [
+    ./fonts
     ./programs
     ./boot.nix
     ./desktop.nix

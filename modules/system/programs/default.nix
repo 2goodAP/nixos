@@ -4,9 +4,7 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./neovim
-  ];
+  imports = [./neovim];
 
   options.tgap.system.programs = let
     inherit (lib) mkEnableOption mkOption types;

@@ -18,10 +18,6 @@
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim#usage) (TODO: Customization and Keymaps)
 - [tabby.nvim](https://github.com/nanozuki/tabby.nvim#setup) (TODO: Customization and Keymaps)
 
-## Colorscheme
-
-- [rose-pine](https://github.com/rose-pine/neovim)
-
 ## Terminal
 
 - [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)
@@ -29,19 +25,13 @@
 
 ## Neorg
 
-- [neorg](https://github.com/nvim-neorg/neorg)
+- [neorg](https://github.com/nvim-neorg/neorg) (TODO: Fix dependencies)
 - [neorg-telescope](https://github.com/nvim-neorg/neorg-telescope)
 
 ## LSP
 
-- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) (TODO: luaConfig, luaConfigBefore & luaConfigAfter)
-- [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim)
 - [lsp_signature.nvim](https://github.com/ray-x/lsp_signature.nvim)
 - [lspsaga.nvim](https://github.com/nvimdev/lspsaga.nvim)
-
-## DAP 
-
-- [nvim-dap](https://github.com/mfussenegger/nvim-dap) (TODO: Test out debuggers)
 
 ## Project
 

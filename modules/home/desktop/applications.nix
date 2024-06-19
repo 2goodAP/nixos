@@ -26,6 +26,14 @@
     mkIf osCfg.desktop.enable (mkMerge [
       (mkIf cfg.applications.enable {
         programs = {
+          joplin-desktop = {
+            enable = true;
+            sync = {
+              interval = "5m";
+              target = "nextcloud";
+            };
+          };
+
           mpv = {
             enable = true;
             scripts = [pkgs.mpvScripts.mpris];
@@ -39,7 +47,6 @@
 
           sioyek = {
             enable = true;
-
             bindings = {
               next_page = "J";
               previous_page = "K";
@@ -48,7 +55,6 @@
               "goto_top_of_page;goto_right" = "<C-u>";
               "goto_bottom_of_page;goto_left" = "<C-d>";
             };
-
             config = {
               #shared_database_path = "$HOME/Nextcloud/Utilities/Sioyek/shared.db";
               startup_commands = "fit_page_to_width;toggle_visual_scroll";

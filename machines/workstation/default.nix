@@ -4,6 +4,7 @@
     ../common.nix
   ];
 
+  fonts.fontconfig.subpixel.rgba = "rgb";
   time.timeZone = "Asia/Kathmandu";
 
   tgap.system = {

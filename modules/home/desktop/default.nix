@@ -29,23 +29,8 @@
   in
     mkIf osCfg.enable (mkMerge [
       {
-        fonts.fontconfig.enable = true;
-
         home = {
-          packages = with pkgs; [
-            bibata-cursors
-            (nerdfonts.override {
-              fonts = [
-                "CascadiaCode"
-                "JetBrainsMono"
-                "Monaspace"
-              ];
-            })
-            noto-fonts
-            noto-fonts-emoji-blob-bin
-            noto-fonts-color-emoji
-            noto-fonts-monochrome-emoji
-          ];
+          packages = [pkgs.bibata-cursors];
 
           pointerCursor = {
             gtk.enable = true;
@@ -71,18 +56,13 @@
             font_features JetBrainsMonoNFM-Medium +calt +cv04 +cv16 +ss02 +ss19
             font_features JetBrainsMonoNFM-Bold +calt +cv04 +cv16 +ss02 +ss19
 
-            font_features MonaspiceArNFM-Medium +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
-            font_features MonaspiceArNFM-Bold +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
-            font_features MonaspiceRnNFM-MediumItalic +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
-            font_features MonaspiceRnNFM-BoldItalic +liga +ss01 +ss02 +ss03 +ss04 +ss05 +ss06 +ss07 +ss08 +ss09
-
             ${builtins.readFile ./kitty/tokyonight_day.conf}
           '';
           settings = {
             # Fonts
-            font_family = "JetBrainsMono NFM";
+            font_family = "JetBrainsMono NFM Medium";
             bold_font = "JetBrainsMono NFM Bold";
-            italic_font = "CaskaydiaCove NFM SemiLight Italic";
+            italic_font = "CaskaydiaCove NFM Italic";
             bold_italic_font = "CaskaydiaCove NFM SemiBold Italic";
 
             font_size = "11.5";
@@ -165,7 +145,6 @@
           enable = true;
 
           extraConfig = ''
-            local wezterm = require("wezterm")
             local config = wezterm.config_builder()
 
             -- Start font_rules configuration
@@ -178,8 +157,8 @@
 
                 font = wezterm.font_with_fallback({
                   {
-                    family = "MonaspiceAr NF",
-                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+                    family = "MonaspiceAr Nerd Font",
+                    weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "DemiLight" or "Regular"),
 
                     harfbuzz_features = {
                       "calt=1",
@@ -196,8 +175,8 @@
                     },
                   },
                   {
-                    family = "JetBrainsMono NF",
-                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+                    family = "JetBrainsMono Nerd Font",
+                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Medium"),
 
                     harfbuzz_features = {
                       "calt=1",
@@ -218,9 +197,9 @@
 
                 font = wezterm.font_with_fallback({
                   {
-                    family = "MonaspiceRn NF",
+                    family = "MonaspiceRn Nerd Font",
                     italic = true,
-                    weight = intensity == "Bold" and "Bold" or (intensity == "Half" and "DemiLight" or "Regular"),
+                    weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "DemiLight" or "Regular"),
 
                     harfbuzz_features = {
                       "calt=1",
@@ -237,9 +216,9 @@
                     },
                   },
                   {
-                    family = "CaskaydiaCove NF",
+                    family = "CaskaydiaCove Nerd Font",
                     italic = true,
-                    weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "Light" or "DemiLight"),
+                    weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "DemiLight" or "Regular"),
 
                     harfbuzz_features = {
                       "calt=1",
@@ -254,8 +233,8 @@
             local colors = {
               tab = {
                 active = {
-                  bg = "#f9f3ec",
                   fg = "#565178",
+                  bg = "#f9f3ec",
                 },
                 inactive = {
                   fg = "#797492",
@@ -269,9 +248,11 @@
             }
 
             config = {
-              font_rules = font_rules,
               color_scheme = "Rosé Pine Dawn (Gogh)",
+              command_palette_fg_color = colors.tab.inactive.fg,
+              command_palette_bg_color = colors.title.inactive,
               default_gui_startup_args = { "connect", "unix" },
+              font_rules = font_rules,
               max_fps = 120,
 
               colors = {
