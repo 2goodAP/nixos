@@ -5,10 +5,10 @@
   ...
 }: {
   imports = [
-    ./fonts
     ./programs
     ./boot.nix
     ./desktop.nix
+    ./fonts.nix
     ./laptop.nix
     ./network.nix
   ];
@@ -35,7 +35,7 @@
         systemd.oomd.enableUserSlices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
-        system.stateVersion = "23.11";
+        system.stateVersion = "24.05";
 
         console = {
           font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";

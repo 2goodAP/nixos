@@ -21,10 +21,6 @@
       url = "github:nbfc-linux/nbfc-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    rio = {
-      url = "github:raphamorim/rio";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {

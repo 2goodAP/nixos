@@ -34,16 +34,16 @@ in {
       <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
       <fontconfig>
         <!-- 30-cjk-aliases.conf -->
-        ${builtins.readFile ./30-cjk-aliases.conf}
+        ${builtins.readFile ./fontconfig/30-cjk-aliases.conf}
 
         <!-- 56-language-selector-prefer.conf -->
-        ${builtins.readFile ./56-language-selector-prefer.conf}
+        ${builtins.readFile ./fontconfig/56-language-selector-prefer.conf}
 
         <!-- 64-language-selector-cjk-prefer.conf -->
-        ${builtins.readFile ./64-language-selector-cjk-prefer.conf}
+        ${builtins.readFile ./fontconfig/64-language-selector-cjk-prefer.conf}
 
         <!-- 70-fongs-noto-cjk-prefer.conf -->
-        ${builtins.readFile ./70-fonts-noto-cjk.conf}
+        ${builtins.readFile ./fontconfig/70-fonts-noto-cjk.conf}
       </fontconfig>
     '';
   };

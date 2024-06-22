@@ -215,152 +215,155 @@
         };
       }
 
-      (mkIf (cfg.defaultShell == "nu") {
-        environment.systemPackages = with pkgs; [nushellFull];
+      (let
+        nuPkg = pkgs.nushell;
+      in
+        mkIf (cfg.defaultShell == "nu") {
+          environment.systemPackages = [nuPkg];
 
-        programs.bash.interactiveShellInit = let
-          nushellInit = let
-            starCfg = config.programs.starship;
-            starshipTOML =
-              (pkgs.formats.toml {}).generate "starship.toml" starCfg.settings;
-            presetFiles = lib.concatStringsSep " " (
-              map (f: "${starCfg.package}/share/starship/presets/${f}.toml")
-              starCfg.presets
-            );
-          in
-            pkgs.runCommand "nushell-init" {
-              nativeBuildInputs = with pkgs; [
-                atuin
-                coreutils
-                gnused
-                yq
-                zoxide
-              ];
-            } ''
-              export HOME="$PWD/home"
-              mkdir -p $out $HOME
+          programs.bash.interactiveShellInit = let
+            nushellInit = let
+              starCfg = config.programs.starship;
+              starshipTOML =
+                (pkgs.formats.toml {}).generate "starship.toml" starCfg.settings;
+              presetFiles = lib.concatStringsSep " " (
+                map (f: "${starCfg.package}/share/starship/presets/${f}.toml")
+                starCfg.presets
+              );
+            in
+              pkgs.runCommand "nushell-init" {
+                nativeBuildInputs = with pkgs; [
+                  atuin
+                  coreutils
+                  gnused
+                  yq
+                  zoxide
+                ];
+              } ''
+                export HOME="$PWD/home"
+                mkdir -p $out $HOME
 
-              # Starship
-              mkdir $out/starship
+                # Starship
+                mkdir $out/starship
+                ${
+                  if starCfg.presets == []
+                  then "cat ${starshipTOML} > $out/starship/starship.toml"
+                  else ''
+                    ${getExe starCfg.package} init nu > $out/starship/init.nu
+                    tomlq -s -t 'reduce .[] as $item ({}; . * $item)' ${presetFiles} \
+                      ${starshipTOML} > $out/starship/starship.toml
+                  ''
+                }
+
+                # Atuin
+                mkdir $out/atuin
+                atuin init nu | sed -Ee \
+                  's|([^:][{([:space:]])atuin(\s)|\1${getExe pkgs.atuin}\2|g' \
+                  > $out/atuin/init.nu
+                atuin gen-completions --shell nushell --out-dir $out/atuin
+
+                # Zoxide
+                mkdir $out/zoxide
+                zoxide init nushell > $out/zoxide/init.nu
+              '';
+
+            envNu = pkgs.writeText "env.nu" ''
+              ${builtins.readFile ./nushell/env.nu}
+
+              # Directories to search for scripts when calling source or use
+              $env.NU_LIB_DIRS = [`${pkgs.nu_scripts}/share/nu_scripts`]
+
               ${
-                if starCfg.presets == []
-                then "cat ${starshipTOML} > $out/starship/starship.toml"
+                if config.programs.starship.enable
+                then ''
+                  # The prompt indicators are environmental variables that represent
+                  # the state of the prompt
+                  $env.PROMPT_INDICATOR = {|| "" }
+                  $env.PROMPT_INDICATOR_VI_INSERT = {|| "I " }
+                  $env.PROMPT_INDICATOR_VI_NORMAL = {|| "N " }
+                  $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
+                ''
                 else ''
-                  ${getExe starCfg.package} init nu > $out/starship/init.nu
-                  tomlq -s -t 'reduce .[] as $item ({}; . * $item)' ${presetFiles} \
-                    ${starshipTOML} > $out/starship/starship.toml
+                  # Use nushell functions to define your right and left prompt
+                  $env.PROMPT_COMMAND = {|| create_left_prompt }
+                  # FIXME: This default is not implemented in rust code as of 2023-09-08.
+                  $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+
+                  # The prompt indicators are environmental variables that represent
+                  # the state of the prompt
+                  $env.PROMPT_INDICATOR = {|| "> " }
+                  $env.PROMPT_INDICATOR_VI_INSERT = {|| "> " }
+                  $env.PROMPT_INDICATOR_VI_NORMAL = {|| "< " }
+                  $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
                 ''
               }
-
-              # Atuin
-              mkdir $out/atuin
-              atuin init nu | sed -Ee \
-                's|([^:][{([:space:]])atuin(\s)|\1${getExe pkgs.atuin}\2|g' \
-                > $out/atuin/init.nu
-              atuin gen-completions --shell nushell --out-dir $out/atuin
-
-              # Zoxide
-              mkdir $out/zoxide
-              zoxide init nushell > $out/zoxide/init.nu
             '';
 
-          envNu = pkgs.writeText "env.nu" ''
-            ${builtins.readFile ./nushell/env.nu}
+            configNu = pkgs.writeText "config.nu" ''
+              ${builtins.readFile ./nushell/config.nu}
 
-            # Directories to search for scripts when calling source or use
-            $env.NU_LIB_DIRS = [`${pkgs.nu_scripts}/share/nu_scripts`]
+              # Aliases
+              export alias br = broot
+              export alias brs = broot -s
+              export alias brl = broot -dsp
+              export alias diff = diff --color
+              export alias less = less -i
+              export alias la = ls -a
+              export alias ll = ls -l
+              export alias lla = ls -adl
+              export alias sed = sed -E
 
-            ${
-              if config.programs.starship.enable
-              then ''
-                # The prompt indicators are environmental variables that represent
-                # the state of the prompt
-                $env.PROMPT_INDICATOR = {|| "" }
-                $env.PROMPT_INDICATOR_VI_INSERT = {|| "I " }
-                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "N " }
-                $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
-              ''
-              else ''
-                # Use nushell functions to define your right and left prompt
-                $env.PROMPT_COMMAND = {|| create_left_prompt }
-                # FIXME: This default is not implemented in rust code as of 2023-09-08.
-                $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+              # Theme
+              use `themes/nu-themes/rose-pine-dawn.nu`
+              $env.config.color_config = (rose-pine-dawn)
 
-                # The prompt indicators are environmental variables that represent
-                # the state of the prompt
-                $env.PROMPT_INDICATOR = {|| "> " }
-                $env.PROMPT_INDICATOR_VI_INSERT = {|| "> " }
-                $env.PROMPT_INDICATOR_VI_NORMAL = {|| "< " }
-                $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
-              ''
-            }
-          '';
+              # Custom completions
+              (ls `${pkgs.nu_scripts}/share/nu_scripts/custom-completions`
+                | where ($'($it.name)' | path type) == "dir"
+                | each {|d| $'($d.name)' | path basename
+                | ['source `custom-completions', $'($in)', $'($in).nu`']
+                | path join} | to text)
 
-          configNu = pkgs.writeText "config.nu" ''
-            ${builtins.readFile ./nushell/config.nu}
+              # Initialize Zoxide
+              source `${nushellInit}/zoxide/init.nu`
 
-            # Aliases
-            export alias br = broot
-            export alias brs = broot -s
-            export alias brl = broot -dsp
-            export alias diff = diff --color
-            export alias less = less -i
-            export alias la = ls -a
-            export alias ll = ls -l
-            export alias lla = ls -adl
-            export alias sed = sed -E
+              ${optionalString config.programs.starship.enable ''
+                # Initialize Starship
+                if ($'($env.HOME)/.config/starship.toml' | path exists | not $in) {
+                  $env.STARSHIP_CONFIG = `${nushellInit}/starship/starship.toml`
+                }
+                use `${nushellInit}/starship/init.nu`
+              ''}
 
-            # Theme
-            use `themes/nu-themes/rose-pine-dawn.nu`
-            $env.config.color_config = (rose-pine-dawn)
+              ${optionalString config.services.atuin.enable ''
+                # Initialize Atuin
+                source `${nushellInit}/atuin/init.nu`
+                source `${nushellInit}/atuin/atuin.nu`
+              ''}
 
-            # Custom completions
-            (ls `${pkgs.nu_scripts}/share/nu_scripts/custom-completions`
-              | where ($'($it.name)' | path type) == "dir"
-              | each {|d| $'($d.name)' | path basename
-              | ['source `custom-completions', $'($in)', $'($in).nu`']
-              | path join} | to text)
-
-            # Initialize Zoxide
-            source `${nushellInit}/zoxide/init.nu`
-
-            ${optionalString config.programs.starship.enable ''
-              # Initialize Starship
-              if ($'($env.HOME)/.config/starship.toml' | path exists | not $in) {
-                $env.STARSHIP_CONFIG = `${nushellInit}/starship/starship.toml`
+              # Change cwd when exiting yazi
+              def --env ya [...args] {
+                let tmp = (mktemp -t "yazi-cwd.XXXXXX")
+                ${getExe yazi} ...$args --cwd-file $tmp
+                let cwd = (open $tmp)
+                if $cwd != "" and $cwd != $env.PWD {
+                  cd $cwd
+                }
+                rm -fp $tmp
               }
-              use `${nushellInit}/starship/init.nu`
-            ''}
-
-            ${optionalString config.services.atuin.enable ''
-              # Initialize Atuin
-              source `${nushellInit}/atuin/init.nu`
-              source `${nushellInit}/atuin/atuin.nu`
-            ''}
-
-            # Change cwd when exiting yazi
-            def --env ya [...args] {
-              let tmp = (mktemp -t "yazi-cwd.XXXXXX")
-              ${getExe yazi} ...$args --cwd-file $tmp
-              let cwd = (open $tmp)
-              if $cwd != "" and $cwd != $env.PWD {
-                cd $cwd
-              }
-              rm -fp $tmp
-            }
+            '';
+          in ''
+            # Start nushell by default from bashInteractive
+            exec ${getExe nuPkg} -i \
+              --env-config '${envNu}' \
+              --config '${configNu}' \
+              --plugins "[ \
+                '${getExe pkgs.nushellPlugins.formats}', \
+                '${getExe pkgs.nushellPlugins.gstat}', \
+                '${getExe pkgs.nushellPlugins.query}', \
+              ]"
           '';
-        in ''
-          # Start nushell by default from bashInteractive
-          exec ${getExe pkgs.nushellFull} -i \
-            --env-config '${envNu}' \
-            --config '${configNu}' \
-            --plugins "[ \
-              '${getExe pkgs.nushellPlugins.formats}', \
-              '${getExe pkgs.nushellPlugins.gstat}', \
-              '${getExe pkgs.nushellPlugins.query}', \
-            ]"
-        '';
-      })
+        })
 
       (mkIf cfg.cms.enable {
         environment.systemPackages = optionals nvidia [pkgs.argyllcms];

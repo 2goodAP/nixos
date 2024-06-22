@@ -13,7 +13,22 @@ in {
       (final: prev: {
         noto-fonts = prev.noto-fonts.overrideAttrs (olds: {
           installPhase =
-            builtins.replaceStrings ["unhinted"] ["hinted"] olds.installPhase;
+            ''
+              local out_font=$out/share/fonts/noto
+            ''
+            + (
+              if olds._variants == []
+              then ''
+                for folder in $(ls -d fonts/*/); do
+                  install -m444 -Dt $out_font "$folder"hinted/ttf/*.ttf
+                done
+              ''
+              else ''
+                for variant in $_variants; do
+                  install -m444 -Dt $out_font fonts/"$variant"/hinted/ttf/*.ttf
+                done
+              ''
+            );
         });
       })
     ]

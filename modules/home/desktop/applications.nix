@@ -154,8 +154,10 @@
 
         home.packages =
           (with pkgs; [
-            gimp
-            libreoffice-qt
+            (gimp-with-plugins.override {
+              plugins = with gimpPlugins; [bimp gap gmic];
+            })
+            libreoffice-fresh
             tor-browser-bundle-bin
             wev
           ])
