@@ -278,7 +278,7 @@
                   -W $(("$WIDTH")) -H $(("$HEIGHT")) -r $(("$REF_RATE")) \
                   --framerate-limit $(("$FPS_LIMIT")) -o 60 $FULLSCREEN -- \
                   ${getExe' pkgs.gamemode "gamemoderun"} \
-                  ${getExe' pkgs.util-linux "setpriv"} --in-caps -sys_nice -- \
+                  ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice -- \
                   $MANGOHUD ${getExe steam.run} \
                   "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" run \
                   "$GAME_DIR/$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
