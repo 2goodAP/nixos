@@ -16,12 +16,9 @@ in {
 
   home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [../common];
-    tgap.home.desktop.gaming.enable = true;
 
-    home.packages = with pkgs; [
-      lutris-free
-      ryujinx
-    ];
+    home.packages = [pkgs.ryujinx];
+    tgap.home.desktop.gaming.enable = true;
 
     xdg.desktopEntries = {
       dmc5 = {
@@ -115,6 +112,48 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Manifold_Garden/MG_Icon.png";
         name = "Manifold Garden";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      portal2 = {
+        categories = ["Game"];
+        comment = "Valve: Portal 2";
+        exec = (
+          "env launch-game -fmp Portal_2"
+          + " /home/${uname}/Wine/Games/Portal/Portal_2 portal2.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Portal_2/Portal2_Icon.png";
+        name = "Portal 2";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      portalReloaded = {
+        categories = ["Game"];
+        comment = "Mod: Portal Reloaded";
+        exec = (
+          "env launch-game -fmp Portal_2"
+          + " \"/home/${uname}/Wine/Games/Portal/Portal Reloaded\" portal2.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Portal_2/Portal_Reloaded_Icon.png";
+        name = "Portal Reloaded";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      prey = {
+        categories = ["Game"];
+        comment = "Arcane: Prey";
+        exec = (
+          "env launch-game -fm /home/${uname}/Wine/Games/Prey"
+          + " Binaries/Danielle/x64-GOG/Release/Prey.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Prey/Prey_Icon.png";
+        name = "Prey";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
