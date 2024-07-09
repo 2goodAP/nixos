@@ -64,6 +64,9 @@
       interactiveShellInit = ''
         fish_vi_key_bindings
 
+        # Zoxide shell init
+        zoxide init fish | source
+
         # >>> mamba initialize >>>
         # !! Contents within this block are managed by 'mamba init' !!
         set -gx MAMBA_EXE "$HOME/.local/bin/micromamba"
@@ -225,6 +228,7 @@
       unrar-free
       util-linux
       wget
+      zoxide
 
       # Fish Plugins
       fishPlugins.autopair

@@ -44,7 +44,7 @@
 
         home.packages = with pkgs; [
           musikcube
-          transmission
+          transmission_4
         ];
 
         xdg.configFile.musikcube-settings = {
