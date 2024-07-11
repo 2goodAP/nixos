@@ -34,7 +34,7 @@
 
           pointerCursor = {
             gtk.enable = true;
-            name = "Bibata-Modern-Ice";
+            name = "Bibata-Modern-Classic";
             package = pkgs.bibata-cursors;
             size = 28;
           };
