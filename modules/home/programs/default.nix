@@ -13,7 +13,7 @@
 
   config = let
     cfg = config.tgap.home.programs;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) mkIf mkMerge replaceStrings;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -44,7 +44,18 @@
 
         home.packages = with pkgs; [
           musikcube
-          transmission_4
+          (transmission_4.override {
+            miniupnpc = miniupnpc.overrideAttrs (_: finalAttrs: {
+              version = "2.2.7";
+
+              src = fetchFromGitHub {
+                owner = "miniupnp";
+                repo = "miniupnp";
+                rev = "miniupnpc_${replaceStrings ["."] ["_"] finalAttrs.version}";
+                hash = "sha256-cIijY1NcdF169tibfB13845UT9ZoJ/CZ+XLES9ctWTY=";
+              };
+            });
+          })
         ];
 
         xdg.configFile.musikcube-settings = {

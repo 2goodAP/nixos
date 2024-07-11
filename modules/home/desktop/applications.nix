@@ -163,7 +163,14 @@
           ])
           ++ (optionals cfg.nixosApplications.enable (with pkgs; [
             gparted
-            nextcloud-client
+            (nextcloud-client.overrideAttrs (oldAttrs: {
+              src = fetchFromGitHub {
+                owner = "nextcloud";
+                repo = "desktop";
+                rev = "v${oldAttrs.version}";
+                hash = "sha256-hZjmAdh9QQ2bAIYL3K7scl59kz9Wxnv9f6rKMeuKb7U=";
+              };
+            }))
             zoom-us
           ]))
           ++ (optionals osCfg.programs.iosTools.enable [pkgs.localsend]);

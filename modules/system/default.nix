@@ -80,11 +80,11 @@
                 NUMBER_LIMIT = 20;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
-                TIMELINE_LIMIT_HOURLY = "12";
-                TIMELINE_LIMIT_DAILY = "7";
-                TIMELINE_LIMIT_WEEKLY = "2";
-                TIMELINE_LIMIT_MONTHLY = "1";
-                TIMELINE_LIMIT_YEARLY = "0";
+                TIMELINE_LIMIT_HOURLY = 12;
+                TIMELINE_LIMIT_DAILY = 7;
+                TIMELINE_LIMIT_WEEKLY = 2;
+                TIMELINE_LIMIT_MONTHLY = 1;
+                TIMELINE_LIMIT_YEARLY = 0;
                 EMPTY_PRE_POST_CLEANUP = true;
               };
               nix = {
@@ -96,11 +96,11 @@
                 NUMBER_LIMIT_IMPORTANT = 2;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
-                TIMELINE_LIMIT_HOURLY = "6";
-                TIMELINE_LIMIT_DAILY = "4";
-                TIMELINE_LIMIT_WEEKLY = "1";
-                TIMELINE_LIMIT_MONTHLY = "1";
-                TIMELINE_LIMIT_YEARLY = "0";
+                TIMELINE_LIMIT_HOURLY = 6;
+                TIMELINE_LIMIT_DAILY = 4;
+                TIMELINE_LIMIT_WEEKLY = 1;
+                TIMELINE_LIMIT_MONTHLY = 1;
+                TIMELINE_LIMIT_YEARLY = 0;
                 EMPTY_PRE_POST_CLEANUP = true;
               };
               home = {
@@ -112,11 +112,11 @@
                 NUMBER_LIMIT_IMPORTANT = 5;
                 TIMELINE_CREATE = true;
                 TIMELINE_CLEANUP = true;
-                TIMELINE_LIMIT_HOURLY = "12";
-                TIMELINE_LIMIT_DAILY = "7";
-                TIMELINE_LIMIT_WEEKLY = "2";
-                TIMELINE_LIMIT_MONTHLY = "0";
-                TIMELINE_LIMIT_YEARLY = "0";
+                TIMELINE_LIMIT_HOURLY = 12;
+                TIMELINE_LIMIT_DAILY = 7;
+                TIMELINE_LIMIT_WEEKLY = 2;
+                TIMELINE_LIMIT_MONTHLY = 0;
+                TIMELINE_LIMIT_YEARLY = 0;
                 EMPTY_PRE_POST_CLEANUP = true;
               };
             };
@@ -149,9 +149,9 @@
           builtins.elem "nvidia" config.services.xserver.videoDrivers
           || cfg.programs.virtualization.enable
         ) {
-          hardware.opengl = {
+          hardware.graphics = {
             enable = true;
-            driSupport32Bit = true;
+            enable32Bit = true;
           };
         })
     ];
