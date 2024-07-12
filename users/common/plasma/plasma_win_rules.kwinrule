@@ -1,5 +1,5 @@
-[KeePassXC Auto-Launch to Specific VD]
-Description=KeePassXC Auto-Launch to Specific VD
+[Launch_KeePassXC_to_Specific_VD]
+Description=Launch KeePassXC to Specific VD
 activity=d20e7927-009b-4b30-b5cd-efb5522b7e99
 activityrule=2
 desktops=ebe0ff7e-bcb7-4993-a85a-4e8cf469b2a5

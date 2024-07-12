@@ -51,14 +51,14 @@
               if cfg.laptop.enable
               then {
                 layout = "us,us,np";
-                variant = "altgr-intl,colemak_dh,";
+                variant = "altgr-intl,colemak_dh_wide,";
               }
               else {
                 layout = "us,np";
                 variant = "altgr-intl,";
               }
             )
-            // {options = "grp:ctrls_toggle";};
+            // {options = "grp:menu_toggle,lv3:ralt_switch,grp_led:scroll";};
         };
       }
 
