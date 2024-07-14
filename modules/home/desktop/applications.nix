@@ -222,11 +222,13 @@
           };
         };
 
-        home.packages = with pkgs; [
-          protonup
-          winetricks
-          wineWowPackages.stagingFull
-        ];
+        home.packages =
+          [osConfig.programs.gamescope.package]
+          ++ (with pkgs; [
+            protonup
+            winetricks
+            wineWowPackages.stagingFull
+          ]);
       })
     ]);
 }
