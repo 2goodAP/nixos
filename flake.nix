@@ -46,12 +46,8 @@
             ...
           }: {
             nixpkgs = {
+              config.allowUnfree = true;
               inherit (import ./overlays {inherit config inputs lib system;}) overlays;
-
-              config = {
-                allowUnfree = true;
-                permittedInsecurePackages = ["nix-2.16.2"];
-              };
             };
 
             home-manager = {
@@ -59,6 +55,7 @@
               extraSpecialArgs = {inherit inputs system;};
               useGlobalPkgs = true;
               useUserPackages = true;
+              users.root = import ./users/common/common.nix;
 
               sharedModules = [
                 # nur modules for `config.nur` options

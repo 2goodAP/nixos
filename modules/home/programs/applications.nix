@@ -1,0 +1,78 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  options.tgap.home.programs = let
+    inherit (lib) mkEnableOption;
+  in {
+    applications = {
+      enable = mkEnableOption "Whether or not to install extra CLI applications.";
+      jupyter.enable = mkEnableOption "Whether or not to enable jupyter user-settings.";
+    };
+  };
+
+  config = let
+    cfg = config.tgap.home.programs.applications;
+    inherit (lib) mkIf mkMerge replaceStrings;
+  in
+    mkIf cfg.enable (mkMerge [
+      {
+        programs.beets = {
+          enable = true;
+          package = pkgs.beets-unstable;
+
+          settings = {
+            # Path to the music directory and the music library
+            directory = "~/Music";
+            library = "~/.local/share/beets/beets-music-library.db";
+
+            # Move the music files instead of copying to save space
+            import.move = true;
+
+            # Plugins
+            plugins = "chroma edit fetchart fromfilename zero";
+
+            # Settings for the 'zero' plugin
+            zero = {
+              fields = "comments images day month";
+              # Regexp to identify comments
+              comments = ["EAC" "LAME" "from.+collection" "ripped by"];
+              update_database = true;
+            };
+          };
+        };
+
+        home.packages = with pkgs; [
+          musikcube
+          (transmission_4.override {
+            miniupnpc = miniupnpc.overrideAttrs (_: finalAttrs: {
+              version = "2.2.7";
+
+              src = fetchFromGitHub {
+                owner = "miniupnp";
+                repo = "miniupnp";
+                rev = "miniupnpc_${replaceStrings ["."] ["_"] finalAttrs.version}";
+                hash = "sha256-cIijY1NcdF169tibfB13845UT9ZoJ/CZ+XLES9ctWTY=";
+              };
+            });
+          })
+        ];
+
+        xdg.configFile.musikcube-settings = {
+          source = ./musikcube;
+          target = "musikcube";
+          recursive = true;
+        };
+      }
+
+      (mkIf cfg.jupyter.enable {
+        home.file.jupyter-settings = {
+          source = ./jupyter;
+          target = ".jupyter";
+          recursive = true;
+        };
+      })
+    ]);
+}

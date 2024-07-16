@@ -17,9 +17,12 @@ in {
   };
 
   home-manager.users."${uname}" = {pkgs, ...}: {
-    imports = [../common];
+    imports = [
+      ../common/common.nix
+      ../common/applications.nix
+    ];
 
-    tgap.home.programs.jupyter.enable = true;
+    tgap.home.programs.applications.jupyter.enable = true;
 
     home.packages = with pkgs; [
       insomnia

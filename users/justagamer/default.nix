@@ -15,7 +15,10 @@ in {
   };
 
   home-manager.users."${uname}" = {pkgs, ...}: {
-    imports = [../common];
+    imports = [
+      ../common/common.nix
+      ../common/applications.nix
+    ];
 
     home.packages = [pkgs.ryujinx];
     tgap.home.desktop.gaming.enable = true;

@@ -4,39 +4,30 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 in
-  mkIf (builtins.elem "haskell" cfg.languages) (mkMerge [
+  mkIf (builtins.elem "haskell" cfg.langtools.languages) (mkMerge [
     {
-      environment.systemPackages =
-        (optionals cfg.lsp.enable (with pkgs.haskellPackages; [
-          cabal-fmt
-          haskell-language-server
-          hlint
-          hoogle
-        ]))
-        ++ (optionals cfg.dap.enable (with pkgs; [
-          haskellPackages.haskell-debug-adapter
-        ]));
+      programs.neovim = {
+        plugins =
+          optionals cfg.langtools.lsp.enable [pkgs.vimPlugins.haskell-tools-nvim];
 
-      tgap.system.programs.neovim.startPackages = optionals cfg.lsp.enable [
-        pkgs.vimPlugins.haskell-tools-nvim
-      ];
+        extraPackages =
+          (optionals cfg.langtools.lsp.enable (with pkgs.haskellPackages; [
+            cabal-fmt
+            haskell-language-server
+            hlint
+            hoogle
+          ]))
+          ++ (optionals cfg.langtools.dap.enable (with pkgs; [
+            haskellPackages.haskell-debug-adapter
+          ]));
+      };
     }
 
-    (mkIf cfg.lsp.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
-        require("conform").setup({
-          formatters_by_ft = {
-            cabal = {"cabal-fmt"},
-          },
-        })
-
-        require("lint").linters_by_ft.haskell = {"hlint"}
-      '';
-
-      programs.neovim.runtime."ftplugin/haskell.lua".text = ''
+    (mkIf cfg.langtools.lsp.enable {
+      home.file."${cfg.runtimepath}/ftplugin/haskell.lua".text = ''
         local ht = require("haskell-tools")
         local bufnr = vim.api.nvim_get_current_buf()
         local ht_opts = {noremap = true, silent = true, buffer = bufnr}
@@ -61,7 +52,17 @@ in
         vim.keymap.set("n", "<leader>rq", ht.repl.quit, ht_opts)
 
         -- Default keymaps
-        _set_lsp_keymaps(bufnr)
+        require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
+      '';
+
+      programs.neovim.extraLuaConfig = ''
+        require("conform").setup({
+          formatters_by_ft = {
+            cabal = {"cabal-fmt"},
+          },
+        })
+
+        require("lint").linters_by_ft.haskell = {"hlint"}
       '';
     })
   ])

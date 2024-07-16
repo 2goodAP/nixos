@@ -5,12 +5,12 @@
   ...
 }: {
   imports = [
-    ./programs
     ./boot.nix
     ./desktop.nix
     ./fonts.nix
     ./laptop.nix
     ./network.nix
+    ./programs.nix
   ];
 
   options.tgap.system = let
@@ -32,7 +32,6 @@
           then "userspace"
           else "schedutil"
         );
-        systemd.oomd.enableUserSlices = true;
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
         system.stateVersion = "24.05";
@@ -59,6 +58,11 @@
               }
             )
             // {options = "grp:menu_toggle,lv3:ralt_switch,grp_led:scroll";};
+        };
+
+        systemd = {
+          oomd.enableUserSlices = true;
+          sleep.extraConfig = "HibernateDelaySec=6h";
         };
       }
 

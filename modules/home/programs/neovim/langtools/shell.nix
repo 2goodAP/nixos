@@ -1,15 +1,17 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs;
+  cfg = config.tgap.home.programs;
+  osCfg = osConfig.tgap.system.programs;
   inherit (lib) getExe getExe' mkIf mkMerge optionals optionalString;
 in
   mkIf (builtins.elem "shell" cfg.neovim.langtools.languages) (mkMerge [
     {
-      environment.systemPackages =
+      programs.neovim.extraPackages =
         (optionals cfg.neovim.langtools.lsp.enable (with pkgs; [
           dotenv-linter
           nodejs
@@ -19,11 +21,11 @@ in
           shfmt
           vale
         ]))
-        ++ (optionals cfg.neovim.langtools.dap.enable [pkgs.bashdb pkgs.nodejs]);
+        ++ (optionals cfg.neovim.langtools.dap.enable (with pkgs; [bashdb nodejs]));
     }
 
     (mkIf cfg.neovim.langtools.lsp.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
+      programs.neovim.extraLuaConfig = ''
         vim.filetype.add({
           -- Detect and apply filetypes based on the entire filename
           filename = {
@@ -38,16 +40,18 @@ in
         })
 
         require("lspconfig").bashls.setup({
-          capabilities = capabilities,
+          capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
-            _set_lsp_keymaps(bufnr)
+            require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
           end,
         })
 
-        ${optionalString (cfg.defaultShell == "nu") ''
+        ${optionalString (osCfg.defaultShell == "nu") ''
           require("lspconfig").nushell.setup({
-            capabilities = capabilities,
-            on_attach = on_attach,
+            capabilities = require("tgap.lsp-utils").capabilities,
+            on_attach = function(client, bufnr)
+              require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
+            end,
           })
         ''}
 
@@ -65,7 +69,7 @@ in
     })
 
     (mkIf cfg.neovim.langtools.dap.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
+      programs.neovim.extraLuaConfig = ''
         require("dap").adapters.bashdb = {
           type = "executable",
           command = "${getExe pkgs.bashdb}",

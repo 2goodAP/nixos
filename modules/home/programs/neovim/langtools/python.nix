@@ -4,30 +4,32 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim;
-  inherit (lib) getExe mkIf mkMerge optionals;
+  cfg = config.tgap.home.programs.neovim;
+  inherit (lib) mkIf mkMerge optionals;
 in
   mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
     {
-      environment.systemPackages = optionals cfg.langtools.lsp.enable (with pkgs; [
-        mypy
-        ruff
-      ]);
+      programs.neovim = {
+        extraPackages = optionals cfg.langtools.lsp.enable (with pkgs; [
+          mypy
+          ruff
+        ]);
 
-      tgap.system.programs.neovim.python.extraPackageNames =
-        [
-          "bandit"
-          "pylsp-mypy"
-          "python-lsp-ruff"
-          "python-lsp-server"
-          "rope"
-          "vulture"
-        ]
-        ++ (optionals cfg.langtools.dap.enable ["debugpy"]);
+        extraPython3Packages = pyPkgs:
+          (with pyPkgs; [
+            bandit
+            pylsp-mypy
+            python-lsp-ruff
+            python-lsp-server
+            rope
+            vulture
+          ])
+          ++ (optionals cfg.langtools.dap.enable [pyPkgs.debugpy]);
+      };
     }
 
     (mkIf cfg.langtools.lsp.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
+      programs.neovim.extraLuaConfig = ''
         -- Pylsp configuration
         require("lspconfig").pylsp.setup({
           settings = {
@@ -70,9 +72,9 @@ in
             }
           },
 
-          capabilities = capabilities,
+          capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
-            _set_lsp_keymaps(bufnr)
+            require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
           end,
         })
 
@@ -91,10 +93,12 @@ in
     })
 
     (mkIf cfg.langtools.dap.enable {
-      tgap.system.programs.neovim.startPackages = [pkgs.vimPlugins.nvim-dap-python];
-
-      tgap.system.programs.neovim.luaExtraConfig = ''
-        require("dap-python").setup("${getExe cfg.python.package}")
-      '';
+      programs.neovim.plugins = with pkgs.vimPlugins; [
+        {
+          plugin = nvim-dap-python;
+          type = "lua";
+          config = "require('dap-python').setup('python')";
+        }
+      ];
     })
   ])

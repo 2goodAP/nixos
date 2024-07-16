@@ -24,6 +24,10 @@
     inherit (lib) mkIf mkMerge optionals;
   in
     mkIf osCfg.desktop.enable (mkMerge [
+      (mkIf (osCfg.desktop.manager == "plasma") {
+        services.caffeine.enable = true;
+      })
+
       (mkIf cfg.applications.enable {
         programs = {
           joplin-desktop = {

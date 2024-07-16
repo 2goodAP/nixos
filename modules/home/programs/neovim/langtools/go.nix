@@ -4,31 +4,31 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.system.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim.langtools;
   inherit (lib) mkIf mkMerge optionals;
 in
   mkIf (builtins.elem "go" cfg.languages) (mkMerge [
     {
-      environment.systemPackages =
-        (optionals cfg.lsp.enable (with pkgs; [
-          gofumpt
-          goimports-reviser
-          golangci-lint
-          gopls
-        ]))
-        ++ (optionals cfg.dap.enable [pkgs.delve]);
+      programs.neovim = {
+        plugins = optionals cfg.dap.enable [pkgs.vimPlugins.nvim-dap-go];
 
-      tgap.system.programs.neovim.startPackages = optionals cfg.dap.enable [
-        pkgs.vimPlugins.nvim-dap-go
-      ];
+        extraPackages =
+          (optionals cfg.lsp.enable (with pkgs; [
+            gofumpt
+            goimports-reviser
+            golangci-lint
+            gopls
+          ]))
+          ++ (optionals cfg.dap.enable [pkgs.delve]);
+      };
     }
 
     (mkIf cfg.lsp.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
+      programs.neovim.extraLuaConfig = ''
         require("lspconfig").sqls.setup({
-          capabilities = capabilities,
+          capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
-            _set_lsp_keymaps(bufnr)
+            require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
           end,
         })
 
@@ -43,7 +43,7 @@ in
     })
 
     (mkIf cfg.dap.enable {
-      tgap.system.programs.neovim.luaExtraConfig = ''
+      programs.neovim.extraLuaConfig = ''
         require("dap").adapters.delve = {
           type = "server",
           port = "''${port}",

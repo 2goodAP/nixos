@@ -22,9 +22,12 @@ in {
     pkgs,
     ...
   }: {
-    imports = [../common];
+    imports = [
+      ../common/common.nix
+      ../common/applications.nix
+    ];
 
-    tgap.home.programs.jupyter.enable = true;
+    tgap.home.programs.applications.jupyter.enable = true;
     home.packages = lib.optionals osConfig.tgap.system.programs.qmk.enable [pkgs.via];
   };
 }
