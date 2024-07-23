@@ -18,7 +18,7 @@ in {
 
   home-manager.users."${uname}" = {pkgs, ...}: {
     imports = [
-      ../common/common.nix
+      ../common/programs.nix
       ../common/applications.nix
     ];
 

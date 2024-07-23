@@ -23,7 +23,7 @@ in {
     ...
   }: {
     imports = [
-      ../common/common.nix
+      ../common/programs.nix
       ../common/applications.nix
     ];
 

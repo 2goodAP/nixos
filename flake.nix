@@ -55,7 +55,7 @@
               extraSpecialArgs = {inherit inputs system;};
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.root = import ./users/common/common.nix;
+              users.root = import ./users/common/programs.nix;
 
               sharedModules = [
                 # nur modules for `config.nur` options

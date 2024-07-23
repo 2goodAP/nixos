@@ -1,28 +1,22 @@
 {
-  config,
-  pkgs,
-  ...
-}: {
   imports = [
-    ../common
-    ./programs
+    ../common/programs.nix
+    ../common/applications.nix
+    ./programs.nix
   ];
+
+  fonts.fontconfig.enable = true;
 
   tgap.home = {
     desktop.nixosApplications.enable = false;
     programs = {
       enable = true;
-      jupyter.enable = true;
+      applications = {
+        enable = true;
+        jupyter.enable = true;
+      };
     };
   };
-
-  home.packages = with pkgs; [
-    aws-workspaces
-    insomnia
-    (nerdfonts.override {fonts = ["CascadiaCode" "FiraCode"];})
-    openvpn
-    slack
-  ];
 
   xdg.desktopEntries = {
     firefoxGL = {
@@ -57,6 +51,43 @@
       settings = {
         StartupNotify = "true";
         StartupWMClass = "firefox";
+      };
+    };
+
+    localsendGL = {
+      categories = ["Network"];
+      comment = "Localsend over nixGL";
+      exec = "nixGLIntel localsend_app";
+      genericName = "An open source cross-platform alternative to AirDrop";
+      icon = "localsend";
+      name = "LocalSend GL";
+      settings.StartupWMClass = "localsend_app";
+    };
+
+    sioyekGL = {
+      categories = ["Development" "Viewer"];
+      comment = "Sioyek over nixGL";
+      exec = "nixGLIntel sioyek %f";
+      genericName = "PDF viewer for reading research papers and technical books";
+      icon = "sioyek-icon-linux";
+      mimeType = ["application/pdf"];
+      name = "Sioyek GL";
+      settings = {
+        Keywords = "pdf;viewer;reader;research";
+        StartupNotify = "true";
+      };
+    };
+
+    weztermGL = {
+      categories = ["System" "TerminalEmulator" "Utility"];
+      comment = "Wez's Terminal Emulator over nixGL";
+      exec = "nixGLIntel wezterm start --cwd .";
+      genericName = "Terminal Emulator";
+      icon = "org.wezfurlong.wezterm";
+      name = "WezTerm GL";
+      settings = {
+        Keywords = "shell;prompt;command;commandline;cmd";
+        StartupWMClass = "org.wezfurlong.wezterm";
       };
     };
 

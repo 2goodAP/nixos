@@ -64,16 +64,18 @@
       ];
 
       extraSpecialArgs.osConfig = {
-        system.stateVersion = "23.11";
+        system.stateVersion = "24.05";
 
         tgap.system = {
           laptop.enable = true;
-          programs.iosTools.enable = true;
-
           desktop = {
             enable = true;
             gaming.enable = false;
             manager = "plasma";
+          };
+          programs = {
+            defaultShell = "nu";
+            iosTools.enable = true;
           };
         };
       };

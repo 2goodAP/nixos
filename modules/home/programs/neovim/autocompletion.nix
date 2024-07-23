@@ -14,7 +14,7 @@
 
   config = let
     cfg = config.tgap.home.programs.neovim;
-    inherit (lib) mkIf optionals optionalString;
+    inherit (lib) getExe mkIf optionals optionalString;
   in
     mkIf cfg.autocompletion.enable {
       programs.neovim = {
@@ -29,25 +29,20 @@
             cmp-under-comparator
             nvim-cmp
           ])
-          ++ (
-            optionals cfg.autocompletion.dictionary.enable [pkgs.vimPlugins.cmp-dictionary]
-          )
-          ++ (
-            optionals cfg.autocompletion.snippets.enable (with pkgs; [
-              vimPlugins.cmp_luasnip
-              vimPlugins.luasnip
-            ])
-          )
-          ++ (
-            optionals cfg.langtools.lsp.enable (with pkgs.vimPlugins; [
-              cmp-nvim-lsp
-              cmp-nvim-lsp-signature-help
-              cmp-nvim-lsp-document-symbol
-            ])
-          )
-          ++ (
-            optionals cfg.git.enable [pkgs.vimPlugins.cmp-git]
-          );
+          ++ (optionals cfg.autocompletion.dictionary.enable (with pkgs.vimPlugins; [
+            cmp-dictionary
+            plenary-nvim
+          ]))
+          ++ (optionals cfg.autocompletion.snippets.enable (with pkgs.vimPlugins; [
+            cmp_luasnip
+            luasnip
+          ]))
+          ++ (optionals cfg.langtools.lsp.enable (with pkgs.vimPlugins; [
+            cmp-nvim-lsp
+            cmp-nvim-lsp-signature-help
+            cmp-nvim-lsp-document-symbol
+          ]))
+          ++ (optionals cfg.git.enable [pkgs.vimPlugins.cmp-git]);
 
         extraLuaConfig = ''
           -- Set up nvim-cmp.
@@ -101,7 +96,10 @@
             sources = cmp.config.sources({
           ${
             optionalString cfg.autocompletion.dictionary.enable ''
-              {name = "dictionary"},
+              {
+                name = "dictionary",
+                keyword_length = 2,
+              },
             ''
           }
           ${
@@ -145,11 +143,17 @@
 
           ${optionalString cfg.autocompletion.dictionary.enable ''
             require("cmp_dictionary").setup({
-              dic = {
-                spelllang = {
-                  -- Better config format for switching between languages.
-                  en = "${pkgs.hunspellDicts.en_US-large}/share/hunspell/en_US.dic",
-                },
+              paths = {
+                "${pkgs.hunspellDicts.en_AU-large}/share/hunspell/en_AU.dic",
+                "${pkgs.hunspellDicts.en_CA-large}/share/hunspell/en_CA.dic",
+                "${pkgs.hunspellDicts.en_GB-large}/share/hunspell/en_GB.dic",
+                "${pkgs.hunspellDicts.en_US-large}/share/hunspell/en_US.dic",
+              },
+              exact_length = 2,
+              first_case_insensitive = true,
+              document = {
+                enable = true,
+                command = {"${getExe pkgs.wordnet}", "''${label}", "-over"},
               },
             })
 
