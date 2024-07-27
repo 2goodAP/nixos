@@ -119,34 +119,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      portal2 = {
-        categories = ["Game"];
-        comment = "Valve: Portal 2";
-        exec = (
-          "env launch-game -fmp Portal_2"
-          + " /home/${uname}/Wine/Games/Portal/Portal_2 portal2.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Portal_2/Portal2_Icon.png";
-        name = "Portal 2";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
-      portalReloaded = {
-        categories = ["Game"];
-        comment = "Mod: Portal Reloaded";
-        exec = (
-          "env launch-game -fmp Portal_2"
-          + " \"/home/${uname}/Wine/Games/Portal/Portal Reloaded\" portal2.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Portal_2/Portal_Reloaded_Icon.png";
-        name = "Portal Reloaded";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
       prey = {
         categories = ["Game"];
         comment = "Arcane: Prey";

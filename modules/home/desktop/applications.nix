@@ -158,23 +158,16 @@
 
         home.packages =
           (with pkgs; [
-            (gimp-with-plugins.override {
-              plugins = with gimpPlugins; [bimp gap gmic];
-            })
             libreoffice-fresh
             tor-browser-bundle-bin
             wev
+            (gimp-with-plugins.override {
+              plugins = with gimpPlugins; [bimp gap gmic];
+            })
           ])
           ++ (optionals cfg.nixosApplications.enable (with pkgs; [
             gparted
-            (nextcloud-client.overrideAttrs (oldAttrs: {
-              src = fetchFromGitHub {
-                owner = "nextcloud";
-                repo = "desktop";
-                rev = "v${oldAttrs.version}";
-                hash = "sha256-hZjmAdh9QQ2bAIYL3K7scl59kz9Wxnv9f6rKMeuKb7U=";
-              };
-            }))
+            nextcloud-client
             zoom-us
           ]))
           ++ (optionals osCfg.programs.iosTools.enable [pkgs.localsend]);
