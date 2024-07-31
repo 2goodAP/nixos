@@ -174,20 +174,6 @@ in {
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
-
-      transistor = {
-        categories = ["Game"];
-        comment = "Supergiant: Transistor";
-        exec = (
-          "env launch-game -w 1920 -h 1080 -fm /home/${uname}/Wine/Games/Transistor"
-          + " Transistor.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Transistor/Transistor_Icon.png";
-        name = "Transistor";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
     };
   };
 }
