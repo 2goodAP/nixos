@@ -24,11 +24,25 @@ in {
     tgap.home.desktop.gaming.enable = true;
 
     xdg.desktopEntries = {
+      animalWell = {
+        categories = ["Game"];
+        comment = "Billy Basso: Animal Well";
+        exec = (
+          "launch-game -fm /home/${uname}/Wine/Games/Animal_Well"
+          + " SmartSteamLoader_x64.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Animal_Well/AW_Icon.png";
+        name = "Animal Well";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
       dmc5 = {
         categories = ["Game"];
         comment = "CAPCOM: Devil May Cry 5";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Devil_May_Cry_5"
+          "launch-game -fm /home/${uname}/Wine/Games/Devil_May_Cry_5"
           + " DevilMayCry5.exe"
         );
         genericName = "Game";
@@ -41,10 +55,7 @@ in {
       dishonored2 = {
         categories = ["Game"];
         comment = "Arcane: Dishonored 2";
-        exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Dishonored_2"
-          + " Dishonored2.exe"
-        );
+        exec = "launch-game -fm /home/${uname}/Wine/Games/Dishonored_2 Dishonored2.exe";
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Dishonored_2/Dishonored2_Icon.png";
         name = "Dishonored 2";
@@ -56,7 +67,7 @@ in {
         categories = ["Game"];
         comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
+          "launch-game -fm /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
           + " DefEd/bin/EoCApp.exe"
         );
         genericName = "Game";
@@ -70,7 +81,7 @@ in {
         categories = ["Game"];
         comment = "CAPCOM: Ghost Trick - Phantom Detective";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Ghost_Trick_Phantom_Detective"
+          "launch-game -fm /home/${uname}/Wine/Games/Ghost_Trick_Phantom_Detective"
           + " Ghost_Trick.exe"
         );
         genericName = "Game";
@@ -83,7 +94,7 @@ in {
       hades = {
         categories = ["Game"];
         comment = "Supergiant: Hades - The Godlike Roguelike";
-        exec = "env launch-game -fm /home/${uname}/Wine/Games/Hades x64/Hades.exe";
+        exec = "launch-game -fm /home/${uname}/Wine/Games/Hades x64/Hades.exe";
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Hades/Hades_Icon.png";
         name = "Hades";
@@ -95,7 +106,7 @@ in {
         categories = ["Game"];
         comment = "Team Cherry: Hollow Knight";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Hollow_Knight"
+          "launch-game -fm /home/${uname}/Wine/Games/Hollow_Knight"
           + " HollowKnight.exe"
         );
         genericName = "Game";
@@ -105,16 +116,13 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      manifoldGarden = {
+      newNTasty = {
         categories = ["Game"];
-        comment = "Willian Chyr: Manifold Garden";
-        exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Manifold_Garden"
-          + " ManifoldGarden.exe"
-        );
+        comment = "Oddworld Inhabitants: Oddworld New n Tasty";
+        exec = "launch-game -fm /home/${uname}/Wine/Games/Oddworld_New_n_Tasty NNT.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Manifold_Garden/MG_Icon.png";
-        name = "Manifold Garden";
+        icon = "/home/${uname}/Wine/Misc/Oddworld/NNT_Icon.png";
+        name = "New n Tasty";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -123,7 +131,7 @@ in {
         categories = ["Game"];
         comment = "Arcane: Prey";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Prey"
+          "launch-game -fm /home/${uname}/Wine/Games/Prey"
           + " Binaries/Danielle/x64-GOG/Release/Prey.exe"
         );
         genericName = "Game";
@@ -137,8 +145,9 @@ in {
         categories = ["Game"];
         comment = "Rockstar: Red Dead Redemption 2";
         exec = (
-          ''env PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b" ''
-          + "launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe"
+          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
+          + " launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2"
+          + " Launcher.exe"
         );
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/RDR2/RDR2_Icon.png";
@@ -151,7 +160,7 @@ in {
         categories = ["Game"];
         comment = "Mimimi: Shadow Gambit - The Cursed Crew";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
+          "launch-game -fm /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
           + " ShadowGambit_TCC.exe"
         );
         genericName = "Game";
@@ -165,7 +174,7 @@ in {
         categories = ["Game"];
         comment = "Croteam: The Talos Principle";
         exec = (
-          "env launch-game -fm /home/${uname}/Wine/Games/The_Talos_Principle"
+          "launch-game -fm /home/${uname}/Wine/Games/The_Talos_Principle"
           + " Bin/x64/Talos.exe"
         );
         genericName = "Game";
