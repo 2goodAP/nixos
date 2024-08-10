@@ -44,12 +44,12 @@ in
 
         require("conform").setup({
           formatters_by_ft = {
-            javascript = {{"biome-check", "biome"}},
-            javascriptreact = {{"biome-check", "biome"}},
-            json = {"biome", "jq"},
-            jsonc = {"biome", "jq"},
-            typescript = {{"biome-check", "biome"}},
-            typescriptreact = {{"biome-check", "biome"}},
+            javascript = {"biome-check", "biome"},
+            javascriptreact = {"biome-check", "biome"},
+            json = {"biome", "jq", stop_after_first = true},
+            jsonc = {"biome", "jq", stop_after_first = true},
+            typescript = {"biome-check", "biome"},
+            typescriptreact = {"biome-check", "biome"},
           },
         })
 

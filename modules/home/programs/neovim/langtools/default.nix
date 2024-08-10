@@ -161,8 +161,16 @@
                 type = "lua";
                 config = ''
                   require("conform").setup({
+                    default_format_opts = {
+                      -- The default options passed to conform.format()
+                      lsp_format = "fallback",
+                    },
+                    format_after_save = {
+                      -- Extra options passed to conform.format()
+                      lsp_format = "fallback",
+                    },
                     formatters_by_ft = {
-                      ["*"] = {{"trim_newlines", "trim_whitespace"}},
+                      ["*"] = {"trim_newlines", "trim_whitespace"},
                       asciidoc = {"typos"},
                       bibtex = {"bibtex-tidy"},
                       html = {"typos"},
@@ -173,11 +181,6 @@
                       text = {"typos"},
                       toml = {"taplo"},
                       yaml = {"yq"},
-                    },
-                    format_on_save = {
-                      -- These options will be passed to conform.format()
-                      timeout_ms = 500,
-                      lsp_fallback = true,
                     },
                   })
                 '';
@@ -196,7 +199,7 @@
                     proto = {"buf_lint"},
                     plaintex = {"chktex"},
                     rst = {{"rstcheck", "vale"}},
-                    tex = {"chktex"},
+                    tex = {{"chktex", "vale"}},
                     xml = {"vale"},
                     yaml = {"yamllint"},
                   }

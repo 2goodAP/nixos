@@ -11,19 +11,26 @@
   ];
 
   options.tgap.home.programs = let
-    inherit (lib) mkEnableOption;
+    inherit (lib) mkEnableOption mkOption types;
   in {
     enable = mkEnableOption "Whether or not to install core CLI applications.";
+
+    nushellPlugins = mkOption {
+      type = types.listOf types.package;
+      default = with pkgs.nushellPlugins; [formats gstat query];
+      description = "The nushell plugins to install alongside nushell.";
+    };
   };
 
   config = let
     cfg = config.tgap.home.programs;
-    nushellDefault = osConfig.tgap.system.programs.defaultShell == "nu";
-    inherit (lib) getExe mkIf mkMerge recursiveUpdate;
+    nushellDefault = osConfig.tgap.system.programs.defaultShell == "nushell";
+    inherit (lib) getExe getExe' mkIf mkMerge recursiveUpdate;
   in
     mkIf cfg.enable (mkMerge [
       {
         home.packages = [pkgs.tmuxPlugins.rose-pine];
+        services.pueue.enable = true;
 
         programs = let
           rose-pine-tm-theme = pkgs.fetchFromGitHub {
@@ -41,19 +48,17 @@
             sparseCheckout = ["extras/lazygit" "extras/tmux" "extras/yazi"];
           };
         in {
+          atuin.enable = true;
+          carapace.enable = true;
           fd.enable = true;
           jq.enable = true;
           ripgrep.enable = true;
-
-          atuin = {
-            enable = true;
-            enableBashIntegration = true;
-            enableNushellIntegration = nushellDefault;
-          };
+          zoxide.enable = true;
 
           bat = {
             enable = true;
             config = {
+              style = "changes,header-filename,header-filesize,numbers,rule,snip";
               theme = "RosePineDawn";
               map-syntax = [
                 "*.config:INI"
@@ -87,29 +92,8 @@
               source <(${getExe pkgs.yq-go} shell-completion bash)
             '';
 
-            shellAliases = {
-              br = "broot";
-              brs = "broot -s";
-              brl = "broot -dsp";
-              diff = "diff --color";
-              egrep = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
-              grep = "grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
-              less = "less -FRi";
-              la = "ls -a";
-              ll = "ls -lFh";
-              lla = "ls -laFh";
-              sed = "sed -E";
-            };
-
-            sessionVariables = {
-              PATH = "$PATH:$HOME/.local/bin";
-              HISTSIZE = 10000;
-              XDG_CONFIG_HOME = "$HOME/.config";
-              PAGER = "${config.programs.bash.shellAliases.less}";
-            };
-
             profileExtra = ''
-              # Preferred editor for local and remote sessions
+              # Set preferred editor for local and remote sessions
               if [[ -n "$SSH_CONNECTION" ]]; then
                 export EDITOR='vim'
                 export VISUAL='vim'
@@ -118,12 +102,30 @@
                 export VISUAL='nvim'
               fi
             '';
+
+            shellAliases = {
+              br = "broot";
+              brl = "broot -dsp";
+              brs = "broot -s";
+              diff = "diff --color";
+              egrep = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+              grep = "grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+              la = "ls -a";
+              less = "less -FRi";
+              ll = "ls -lFh";
+              lla = "ls -laFh";
+              sed = "sed -E";
+            };
+
+            sessionVariables = {
+              PAGER = "${config.programs.bash.shellAliases.less}";
+              PATH = "$PATH:$HOME/.local/bin";
+              XDG_CONFIG_HOME = "$HOME/.config";
+            };
           };
 
           broot = {
             enable = true;
-            enableBashIntegration = true;
-            enableNushellIntegration = nushellDefault;
             settings.modal = true;
           };
 
@@ -158,8 +160,6 @@
               '';
           in {
             enable = true;
-            enableBashIntegration = true;
-            enableNushellIntegration = nushellDefault;
             settings = recursiveUpdate (lib.importTOML presetsTOML) {
               add_newline = false;
             };
@@ -189,78 +189,89 @@
               lib.importTOML "${tokyonight}/extras/yazi/tokyonight_day.toml"
             ) {manager.highlight = "${tokyonight}/extras/yazi/tokyonight_day.tmTheme";};
           };
-
-          zoxide = {
-            enable = true;
-            enableBashIntegration = true;
-            enableNushellIntegration = nushellDefault;
-          };
         };
       }
 
-      (mkIf nushellDefault {
-        programs.bash.initExtra = ''
-          # Start nushell by default from bashInteractive
-          exec ${getExe config.programs.nushell.package} -i \
-            --plugins "[ \
-              '${getExe pkgs.nushellPlugins.formats}', \
-              '${getExe pkgs.nushellPlugins.gstat}', \
-              '${getExe pkgs.nushellPlugins.query}', \
-            ]"
-        '';
-
-        programs.nushell = {
-          enable = true;
-          envFile.source = ./nushell/env.nu;
-          configFile.source = ./nushell/config.nu;
-
-          environmentVariables =
-            {
-              PATH = "($env.PATH | split row (char esep) | append ~/.local/bin)";
-              NU_LIB_DIRS = "[${pkgs.nu_scripts}/share/nu_scripts]";
-            }
-            // (
-              if config.programs.starship.enable
-              then {
-                PROMPT_INDICATOR = "{|| '' }";
-                PROMPT_INDICATOR_VI_INSERT = "{|| 'I ' }";
-                PROMPT_INDICATOR_VI_NORMAL = "{|| 'N ' }";
-              }
-              else {
-                PROMPT_COMMAND = "{|| create_left_prompt }";
-                PROMPT_COMMAND_RIGHT = "{|| create_right_prompt }";
-                PROMPT_INDICATOR = "{|| '> ' }";
-                PROMPT_INDICATOR_VI_INSERT = "{|| '> ' }";
-                PROMPT_INDICATOR_VI_NORMAL = "{|| '< ' }";
-                PROMPT_MULTILINE_INDICATOR = "{|| '... ' }";
-              }
-            );
-
-          extraConfig = ''
-            # Theme
-            use `themes/nu-themes/rose-pine-dawn.nu`
-            $env.config.color_config = (rose-pine-dawn)
-
-            # Custom completions
-            (ls `${pkgs.nu_scripts}/share/nu_scripts/custom-completions`
-              | where ($'($it.name)' | path type) == "dir"
-              | each {|d| $'($d.name)' | path basename
-              | ['source `custom-completions', $'($in)', $'($in).nu`']
-              | path join} | to text)
+      (let
+        inherit (lib) concatMapStringsSep;
+        pluginMsgPackz =
+          pkgs.runCommand "plugin.msgpackz" {
+            buildInputs = [pkgs.nushell];
+          } ''
+            nu --plugin-config $out -c '${concatMapStringsSep "\n"
+              (p: "plugin add `${getExe p}`")
+              cfg.nushellPlugins}'
           '';
+      in
+        mkIf nushellDefault {
+          xdg.configFile."nushell/plugin.msgpackz".source = pluginMsgPackz;
 
-          shellAliases = {
-            br = "broot";
-            brs = "broot -s";
-            brl = "broot -dsp";
-            diff = "diff --color";
-            less = "less -FRi";
-            la = "ls -a";
-            ll = "ls -l";
-            lla = "ls -adl";
-            sed = "sed -E";
+          programs.nushell = {
+            enable = true;
+            configFile.source = ./nushell/config.nu;
+            envFile.source = ./nushell/env.nu;
+            package = osConfig.users.defaultUserShell;
+
+            environmentVariables =
+              {
+                BATPIPE = "color";
+                EDITOR = "nvim";
+                LESSOPEN =
+                  "'|"
+                  + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
+                  + " %s'";
+                NU_LIB_DIRS = "['${pkgs.nu_scripts}/share/nu_scripts']";
+                PAGER = "'${config.programs.nushell.shellAliases.less}'";
+                VISUAL = "nvim";
+                XDG_CONFIG_HOME = "($env.HOME | path join '.config')";
+              }
+              // (
+                if config.programs.starship.enable
+                then {
+                  PROMPT_INDICATOR = "{|| '' }";
+                  PROMPT_INDICATOR_VI_INSERT = "{|| 'I ' }";
+                  PROMPT_INDICATOR_VI_NORMAL = "{|| 'N ' }";
+                }
+                else {
+                  PROMPT_COMMAND = "{|| create_left_prompt }";
+                  PROMPT_COMMAND_RIGHT = "{|| create_right_prompt }";
+                  PROMPT_INDICATOR = "{|| '> ' }";
+                  PROMPT_INDICATOR_VI_INSERT = "{|| '> ' }";
+                  PROMPT_INDICATOR_VI_NORMAL = "{|| '< ' }";
+                  PROMPT_MULTILINE_INDICATOR = "{|| '... ' }";
+                }
+              );
+
+            extraConfig = ''
+              # Theme
+              use themes/nu-themes/rose-pine-dawn.nu
+              $env.config.color_config = (rose-pine-dawn)
+
+              # Background tasks with pueue
+              use modules/background_task/task.nu
+            '';
+
+            extraEnv = ''
+              # Add some local dirs to PATH
+              $env.PATH = (
+                $env.PATH | split row (char esep)
+                | append ($env.HOME | path join ".local" "bin")
+                | uniq
+              )
+            '';
+
+            shellAliases = {
+              br = "broot";
+              brl = "broot -dsp";
+              brs = "broot -s";
+              diff = "diff --color";
+              la = "ls -a";
+              less = "less -FRi";
+              ll = "ls -l";
+              lla = "ls -adl";
+              sed = "sed -E";
+            };
           };
-        };
-      })
+        })
     ]);
 }

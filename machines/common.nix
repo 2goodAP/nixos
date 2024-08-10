@@ -13,7 +13,6 @@
     programs = {
       enable = true;
       androidTools.enable = true;
-      defaultShell = "nu";
       iosTools.enable = true;
       qmk.enable = true;
       virtualisation.enable = true;

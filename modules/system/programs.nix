@@ -15,8 +15,8 @@
     virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
 
     defaultShell = mkOption {
-      type = types.enum ["bash" "nu"];
-      default = "nu";
+      type = types.enum ["bash" "nushell"];
+      default = "nushell";
       description = "The default shell assigned to user accounts.";
     };
   };
@@ -28,7 +28,10 @@
   in
     mkIf cfg.enable (mkMerge [
       {
-        users.defaultUserShell = pkgs.bashInteractive;
+        users.defaultUserShell =
+          if (cfg.defaultShell == "nushell")
+          then pkgs.nushell
+          else pkgs.bashInteractive;
 
         # List packages installed in system profile.
         environment.systemPackages =
@@ -108,11 +111,12 @@
       })
 
       (mkIf cfg.virtualisation.enable {
+        hardware.nvidia-container-toolkit.enable = nvidia;
+
         virtualisation = {
           docker = {
             enable = true;
             enableOnBoot = false;
-            enableNvidia = nvidia;
             storageDriver = "overlay2";
             rootless.enable = true;
           };

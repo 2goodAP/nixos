@@ -15,7 +15,7 @@
 
   config = let
     cfg = config.tgap.home.programs.applications;
-    inherit (lib) mkIf mkMerge replaceStrings;
+    inherit (lib) mkIf mkMerge;
   in
     mkIf cfg.enable (mkMerge [
       {
