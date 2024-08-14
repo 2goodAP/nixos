@@ -29,20 +29,20 @@
             cmp-under-comparator
             nvim-cmp
           ])
-          ++ (optionals cfg.autocompletion.dictionary.enable (with pkgs.vimPlugins; [
+          ++ optionals cfg.autocompletion.dictionary.enable (with pkgs.vimPlugins; [
             cmp-dictionary
             plenary-nvim
-          ]))
-          ++ (optionals cfg.autocompletion.snippets.enable (with pkgs.vimPlugins; [
+          ])
+          ++ optionals cfg.autocompletion.snippets.enable (with pkgs.vimPlugins; [
             cmp_luasnip
             luasnip
-          ]))
-          ++ (optionals cfg.langtools.lsp.enable (with pkgs.vimPlugins; [
+          ])
+          ++ optionals cfg.langtools.lsp.enable (with pkgs.vimPlugins; [
             cmp-nvim-lsp
             cmp-nvim-lsp-signature-help
             cmp-nvim-lsp-document-symbol
-          ]))
-          ++ (optionals cfg.git.enable [pkgs.vimPlugins.cmp-git]);
+          ])
+          ++ optionals cfg.git.enable [pkgs.vimPlugins.cmp-git];
 
         extraLuaConfig = ''
           -- Set up nvim-cmp.

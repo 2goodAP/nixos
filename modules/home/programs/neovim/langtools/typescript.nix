@@ -25,12 +25,12 @@ in
   mkIf (builtins.elem "typescript" cfg.languages) (mkMerge [
     {
       programs.neovim.extraPackages =
-        (optionals cfg.lsp.enable (with pkgs; [
+        optionals cfg.lsp.enable (with pkgs; [
           biome
           nodejs
           nodePackages.typescript-language-server
-        ]))
-        ++ (optionals cfg.dap.enable [vscode-js-debug]);
+        ])
+        ++ optionals cfg.dap.enable [vscode-js-debug];
     }
 
     (mkIf cfg.lsp.enable {

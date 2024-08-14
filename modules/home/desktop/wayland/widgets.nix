@@ -25,7 +25,7 @@ in
 
             modules-left =
               ["${cfg.windowManager}/workspaces"]
-              ++ (optionals (cfg.windowManager == "sway") ["${cfg.windowManager}/mode"]);
+              ++ optionals (cfg.windowManager == "sway") ["${cfg.windowManager}/mode"];
             modules-center = ["${cfg.windowManager}/window"];
             modules-right = [
               "idle_inhibitor"

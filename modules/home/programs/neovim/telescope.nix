@@ -62,12 +62,12 @@
             '';
           }
         ])
-        ++ (optionals cfg.langtools.dap.enable [
+        ++ optionals cfg.langtools.dap.enable [
           {
             plugin = pkgs.vimPlugins.telescope-dap-nvim;
             type = "lua";
             config = "require('telescope').load_extension('dap')";
           }
-        ]);
+        ];
     };
 }

@@ -168,7 +168,7 @@
               '';
             }
           ]
-          ++ (optionals cfg.treesitter.extraPlugins.enable (with pkgs.vimPlugins; [
+          ++ optionals cfg.treesitter.extraPlugins.enable (with pkgs.vimPlugins; [
             {
               plugin = nvim-autopairs;
               type = "lua";
@@ -319,7 +319,7 @@
               type = "lua";
               config = "require('nvim-ts-autotag').setup({})";
             }
-          ]));
+          ]);
       };
     };
 }

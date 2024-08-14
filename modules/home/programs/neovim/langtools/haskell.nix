@@ -14,15 +14,15 @@ in
           optionals cfg.langtools.lsp.enable [pkgs.vimPlugins.haskell-tools-nvim];
 
         extraPackages =
-          (optionals cfg.langtools.lsp.enable (with pkgs.haskellPackages; [
+          optionals cfg.langtools.lsp.enable (with pkgs.haskellPackages; [
             cabal-fmt
             haskell-language-server
             hlint
             hoogle
-          ]))
-          ++ (optionals cfg.langtools.dap.enable (with pkgs; [
+          ])
+          ++ optionals cfg.langtools.dap.enable (with pkgs; [
             haskellPackages.haskell-debug-adapter
-          ]));
+          ]);
       };
     }
 

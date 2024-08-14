@@ -112,9 +112,9 @@
                     "--adaptive-sync"
                     "--force-grab-cursor"
                   ]
-                  ++ (optionals (cfg.gaming.vkDeviceID != null) [
+                  ++ optionals (cfg.gaming.vkDeviceID != null) [
                     "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
-                  ]);
+                  ];
 
                 env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
                   __GLX_VENDOR_LIBRARY_NAME = "nvidia";

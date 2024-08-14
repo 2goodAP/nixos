@@ -39,7 +39,7 @@
             '';
           }
         ])
-        ++ (optionals cfg.motion.harpoon.enable [
+        ++ optionals cfg.motion.harpoon.enable [
           pkgs.vimPlugins.plenary-nvim
           {
             plugin = pkgs.vimPlugins.harpoon;
@@ -48,8 +48,8 @@
               require("telescope").load_extension('harpoon')
             '';
           }
-        ])
-        ++ (optionals cfg.motion.leap.enable (with pkgs.vimPlugins; [
+        ]
+        ++ optionals cfg.motion.leap.enable (with pkgs.vimPlugins; [
           vim-repeat
           {
             plugin = leap-nvim;
@@ -65,6 +65,6 @@
             type = "lua";
             config = "require('flit').setup()";
           }
-        ]));
+        ]);
     };
 }

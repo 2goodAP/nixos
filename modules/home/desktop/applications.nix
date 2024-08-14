@@ -156,7 +156,45 @@
           };
         };
 
-        home.packages =
+        home.packages = let
+          pyVersion = "312";
+
+          # Install python with `OpenTimelineIO` & `otio-kdenlive-adapter`
+          # for Kdenlive's `OpenTimelineIO Export` & `OpenTimelineIO Import`.
+          kdenlivePython =
+            (builtins.getAttr "python${pyVersion}" pkgs).withPackages
+            (ps: [
+              ps.pip
+              ps.setuptools
+
+              (ps.buildPythonPackage rec {
+                pname = "OpenTimelineIO";
+                version = "0.17.0";
+                format = "wheel";
+                src = builtins.fetchurl {
+                  url =
+                    "https://files.pythonhosted.org/packages/95/c2/"
+                    + "19fd190f4c584216e06860f4b26670ff8635bd9cb6339ab92d216a08aaae/"
+                    + "${pname}-${version}-cp${pyVersion}-cp${pyVersion}"
+                    + "-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
+                  sha256 = "sha256:0kbg00ls0sfiffqqmi58nvz0zd89qfya0jgb9wnbd0fx7p7yzx54";
+                };
+              })
+
+              (ps.buildPythonPackage rec {
+                pname = "otio_kdenlive_adapter";
+                version = "0.0.2";
+                format = "wheel";
+                src = builtins.fetchurl {
+                  url =
+                    "https://files.pythonhosted.org/packages/56/81/"
+                    + "adc84754021a436458faa037e0b85366a283550bfef54ac2bcc85e39e161/"
+                    + "${pname}-${version}-py3-none-any.whl";
+                  sha256 = "sha256-cUJu1kb0PFWix9T3VakWaLPwpOZTIuJf0xRpBbIhhxk=";
+                };
+              })
+            ]);
+        in
           (with pkgs; [
             libreoffice-fresh
             tor-browser-bundle-bin
@@ -165,12 +203,24 @@
               plugins = with gimpPlugins; [bimp gap gmic];
             })
           ])
-          ++ (optionals cfg.nixosApplications.enable (with pkgs; [
-            gparted
-            nextcloud-client
-            zoom-us
-          ]))
-          ++ (optionals osCfg.programs.iosTools.enable [pkgs.localsend]);
+          ++ optionals cfg.nixosApplications.enable ([
+              (pkgs.symlinkJoin {
+                name = "kdenlive";
+                paths = [pkgs.kdenlive];
+                buildInputs = [pkgs.makeWrapper];
+                postBuild = ''
+                  wrapProgram $out/bin/kdenlive --suffix LD_LIBRARY_PATH : ${
+                    lib.makeLibraryPath [pkgs.stdenv.cc.cc] + "64"
+                  } --prefix PATH : ${lib.makeBinPath [kdenlivePython]}
+                '';
+              })
+            ]
+            ++ (with pkgs; [
+              gparted
+              nextcloud-client
+              zoom-us
+            ]))
+          ++ optionals osCfg.programs.iosTools.enable [pkgs.localsend];
       })
 
       (mkIf (osCfg.desktop.gaming.enable && cfg.gaming.enable) {

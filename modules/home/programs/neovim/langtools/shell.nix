@@ -12,7 +12,7 @@ in
   mkIf (builtins.elem "shell" cfg.neovim.langtools.languages) (mkMerge [
     {
       programs.neovim.extraPackages =
-        (optionals cfg.neovim.langtools.lsp.enable (with pkgs; [
+        optionals cfg.neovim.langtools.lsp.enable (with pkgs; [
           dotenv-linter
           nodejs
           nodePackages.bash-language-server
@@ -20,8 +20,8 @@ in
           shellharden
           shfmt
           vale
-        ]))
-        ++ (optionals cfg.neovim.langtools.dap.enable (with pkgs; [bashdb nodejs]));
+        ])
+        ++ optionals cfg.neovim.langtools.dap.enable (with pkgs; [bashdb nodejs]);
     }
 
     (mkIf cfg.neovim.langtools.lsp.enable {

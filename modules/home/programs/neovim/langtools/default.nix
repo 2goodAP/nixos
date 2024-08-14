@@ -214,14 +214,14 @@
                 '';
               }
             ])
-            ++ (optionals cfg.langtools.lsp.lspsaga.enable [
+            ++ optionals cfg.langtools.lsp.lspsaga.enable [
               {
                 plugin = pkgs.vimPlugins.lspsaga-nvim;
                 type = "lua";
                 config = "require('lspsaga').setup({})";
               }
-            ])
-            ++ (optionals cfg.langtools.lsp.lspSignature.enable [
+            ]
+            ++ optionals cfg.langtools.lsp.lspSignature.enable [
               {
                 plugin = pkgs.vimPlugins.lsp_signature-nvim;
                 type = "lua";
@@ -234,8 +234,8 @@
                   })
                 '';
               }
-            ])
-            ++ (optionals cfg.langtools.lsp.ufo.enable [
+            ]
+            ++ optionals cfg.langtools.lsp.ufo.enable [
               {
                 plugin = pkgs.vimPlugins.nvim-ufo;
                 type = "lua";
@@ -265,7 +265,7 @@
                   require("ufo").setup()
                 '';
               }
-            ]);
+            ];
 
           extraLuaConfig = ''
             -- Mappings.

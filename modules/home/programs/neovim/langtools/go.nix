@@ -13,13 +13,13 @@ in
         plugins = optionals cfg.dap.enable [pkgs.vimPlugins.nvim-dap-go];
 
         extraPackages =
-          (optionals cfg.lsp.enable (with pkgs; [
+          optionals cfg.lsp.enable (with pkgs; [
             gofumpt
             goimports-reviser
             golangci-lint
             gopls
-          ]))
-          ++ (optionals cfg.dap.enable [pkgs.delve]);
+          ])
+          ++ optionals cfg.dap.enable [pkgs.delve];
       };
     }
 

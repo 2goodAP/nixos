@@ -13,8 +13,8 @@ in
         plugins = optionals cfg.langtools.lsp.enable [pkgs.vimPlugins.rustaceanvim];
 
         extraPackages =
-          (optionals cfg.langtools.lsp.enable [pkgs.rustfmt])
-          ++ (optionals cfg.langtools.dap.enable [pkgs.lldb]);
+          optionals cfg.langtools.lsp.enable [pkgs.rustfmt]
+          ++ optionals cfg.langtools.dap.enable [pkgs.lldb];
       };
     }
 

@@ -24,7 +24,7 @@ in
             rope
             vulture
           ])
-          ++ (optionals cfg.langtools.dap.enable [pyPkgs.debugpy]);
+          ++ optionals cfg.langtools.dap.enable [pyPkgs.debugpy];
       };
     }
 

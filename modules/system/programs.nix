@@ -60,15 +60,15 @@
             wget
             yq-go
           ])
-          ++ (optionals cfg.androidTools.enable (with pkgs; [
+          ++ optionals cfg.androidTools.enable (with pkgs; [
             android-file-transfer
             android-tools
-          ]))
-          ++ (optionals cfg.iosTools.enable (with pkgs; [
+          ])
+          ++ optionals cfg.iosTools.enable (with pkgs; [
             ifuse
             libimobiledevice
-          ]))
-          ++ (optionals cfg.qmk.enable [pkgs.qmk]);
+          ])
+          ++ optionals cfg.qmk.enable [pkgs.qmk];
 
         programs = {
           gnupg.agent.enable = true;
