@@ -9,7 +9,12 @@
   inherit (lib) optionals;
 in {
   overlays =
-    optionals cfg.laptop.enable [
+    [
+      (final: prev: {
+        wezterm = inputs.wezterm.packages.${system}.default;
+      })
+    ]
+    ++ optionals cfg.laptop.enable [
       (final: prev: {
         nbfc-linux = inputs.nbfc-linux.defaultPackage.${system};
       })

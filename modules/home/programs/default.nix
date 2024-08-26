@@ -29,8 +29,12 @@
   in
     mkIf cfg.enable (mkMerge [
       {
-        home.packages = [pkgs.tmuxPlugins.rose-pine];
         services.pueue.enable = true;
+
+        home.packages = with pkgs; [
+          ripgrep-all
+          tmuxPlugins.rose-pine
+        ];
 
         programs = let
           rose-pine-tm-theme = pkgs.fetchFromGitHub {
