@@ -26,7 +26,6 @@
   in
     mkMerge [
       {
-        i18n.defaultLocale = "en_US.UTF-8";
         powerManagement.cpuFreqGovernor = mkDefault (
           if cfg.laptop.enable
           then "userspace"
@@ -39,6 +38,11 @@
         console = {
           font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";
           useXkbConfig = true;
+        };
+
+        i18n.extraLocaleSettings = {
+          LC_TIME = "en_SC.UTF-8";
+          LC_MEASUREMENT = "C.UTF-8";
         };
 
         services = {
