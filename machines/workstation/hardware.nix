@@ -34,11 +34,11 @@
         inherit (lib) concatStrings splitVersion;
       in
         config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
-          version = "550.40.67";
+          version = "550.40.71";
           persistencedVersion = "550.54.14";
           settingsVersion = "550.54.14";
-          sha256_64bit = "sha256-c28Nq5jA6CMrDqu8szIHSrxNTlzNr7NRrYQLmL26Brg=";
-          openSha256 = "sha256-SdkHGIfyujPCZ908LVc96kkl7gX0ovWjUuB7Vc5HYag=";
+          sha256_64bit = "sha256-LDh3Kz7Iop+Y2rxXANuPPkDr6WKPuZ5KV9L3+RPa2d0=";
+          openSha256 = "sha256-0HGAE0SlQmEc75E0h7Oq7qu7rVfLhQoBqQF1OuHSa2Y=";
           settingsSha256 = "sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
           persistencedSha256 = "sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
           url =
