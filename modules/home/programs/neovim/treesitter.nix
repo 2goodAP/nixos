@@ -7,7 +7,7 @@
   options.tgap.home.programs.neovim.treesitter = let
     inherit (lib) mkEnableOption;
   in {
-    enable = mkEnableOption "Whether or not to enable core tree-sitter features for neovim.";
+    enable = mkEnableOption "core tree-sitter features for neovim";
     extraPlugins.enable = mkEnableOption "Whether oor not to enable extra tree-sitter features for neovim.";
   };
 

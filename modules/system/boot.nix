@@ -7,10 +7,10 @@
   options.tgap.system.boot = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    secureBoot.enable = mkEnableOption "Whether or not to enable UEFI secure boot.";
+    secureBoot.enable = mkEnableOption "UEFI secure boot";
 
     encrypted-btrfs = {
-      enable = mkEnableOption "Whether or not to enable encrypted btrfs partitions.";
+      enable = mkEnableOption "encrypted btrfs partitions";
 
       root = {
         partlabel = mkOption {

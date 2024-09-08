@@ -7,9 +7,9 @@
   options.tgap.home.programs.neovim.autocompletion = let
     inherit (lib) mkEnableOption;
   in {
-    enable = mkEnableOption "Whether or not to enable autocompletion-related plugins.";
-    dictionary.enable = mkEnableOption "Whether or not to enable dictionary autocompletion.";
-    snippets.enable = mkEnableOption "Whether or not to enable code snippets.";
+    enable = mkEnableOption "autocompletion-related plugins";
+    dictionary.enable = mkEnableOption "dictionary autocompletion";
+    snippets.enable = mkEnableOption "code snippets";
   };
 
   config = let

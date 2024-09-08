@@ -8,8 +8,8 @@
     inherit (lib) mkEnableOption;
   in {
     applications = {
-      enable = mkEnableOption "Whether or not to install extra CLI applications.";
-      jupyter.enable = mkEnableOption "Whether or not to enable jupyter user-settings.";
+      enable = mkEnableOption "extra CLI applications";
+      jupyter.enable = mkEnableOption "jupyter user-settings";
     };
   };
 

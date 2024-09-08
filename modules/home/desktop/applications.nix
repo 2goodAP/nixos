@@ -8,8 +8,8 @@
   options.tgap.home.desktop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    applications.enable = mkEnableOption "Whether or not to install common desktop apps.";
-    gaming.enable = mkEnableOption "Whether or not to install gaming related apps.";
+    applications.enable = mkEnableOption "common desktop apps";
+    gaming.enable = mkEnableOption "gaming related apps";
 
     nixosApplications.enable = mkOption {
       type = types.bool;

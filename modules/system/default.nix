@@ -16,8 +16,8 @@
   options.tgap.system = let
     inherit (lib) mkEnableOption;
   in {
-    apparmor.enable = mkEnableOption "Whether or not to enable apparmor.";
-    audio.enable = mkEnableOption "Whether or not to enable audio-related services.";
+    apparmor.enable = mkEnableOption "apparmor";
+    audio.enable = mkEnableOption "audio-related services";
   };
 
   config = let

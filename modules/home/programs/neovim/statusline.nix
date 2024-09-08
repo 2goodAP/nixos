@@ -7,8 +7,8 @@
   options.tgap.home.programs.neovim = let
     inherit (lib) mkEnableOption;
   in {
-    statusline.enable = mkEnableOption "Whether or not to enable lualine.";
-    tabline.enable = mkEnableOption "Whether or not to enable bufferline.";
+    statusline.enable = mkEnableOption "lualine";
+    tabline.enable = mkEnableOption "bufferline";
   };
 
   config = let

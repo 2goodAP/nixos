@@ -14,7 +14,7 @@
   options.tgap.home.programs = let
     inherit (lib) mkEnableOption;
   in {
-    enable = mkEnableOption "Whether or not to install core CLI applications.";
+    enable = mkEnableOption "core CLI applications";
   };
 
   config = let

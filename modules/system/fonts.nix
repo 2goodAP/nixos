@@ -173,8 +173,9 @@
     inherit (lib) concatMapStrings;
   in {
     environment.systemPackages = with pkgs; [
+      corefonts
       garamond-libre
-      liberation_ttf
+      libertine
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif

@@ -6,7 +6,7 @@
   options.tgap.system = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    bluetooth.enable = mkEnableOption "Whether or not to enable bluetooth-related services.";
+    bluetooth.enable = mkEnableOption "bluetooth-related services";
 
     network = {
       enable = mkOption {

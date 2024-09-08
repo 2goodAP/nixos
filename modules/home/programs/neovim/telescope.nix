@@ -7,7 +7,7 @@
   options.tgap.home.programs.neovim.telescope.enable = let
     inherit (lib) mkEnableOption;
   in
-    mkEnableOption "Whether or not to enable telescope.";
+    mkEnableOption "telescope";
 
   config = let
     cfg = config.tgap.home.programs.neovim;

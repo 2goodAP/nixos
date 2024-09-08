@@ -7,7 +7,7 @@
   options.tgap.home.programs.neovim.git.enable = let
     inherit (lib) mkEnableOption;
   in
-    mkEnableOption "Whether or not to enable git-related plugins.";
+    mkEnableOption "git-related plugins";
 
   config = let
     cfg = config.tgap.home.programs.neovim.git;

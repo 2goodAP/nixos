@@ -7,9 +7,9 @@
   options.tgap.home.programs.neovim.filetype = let
     inherit (lib) mkEnableOption;
   in {
-    editorconfig.enable = mkEnableOption "Whether or not to enable editorconfig.nvim.";
-    glow.enable = mkEnableOption "Whether or not to enable glow.nvim.";
-    neorg.enable = mkEnableOption "Whether or not to enable neorg.";
+    editorconfig.enable = mkEnableOption "editorconfig.nvim";
+    glow.enable = mkEnableOption "glow.nvim";
+    neorg.enable = mkEnableOption "neorg";
   };
 
   config = let

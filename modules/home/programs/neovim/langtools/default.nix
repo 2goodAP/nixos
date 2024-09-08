@@ -22,7 +22,7 @@
   options.tgap.home.programs.neovim.langtools = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    dap.enable = mkEnableOption "Whether or not to enable dap-related plugins.";
+    dap.enable = mkEnableOption "dap-related plugins";
 
     languages = mkOption {
       type = types.listOf types.str;
@@ -35,10 +35,10 @@
     };
 
     lsp = {
-      enable = mkEnableOption "Whether or not to enable lsp-related plugins.";
-      lspsaga.enable = mkEnableOption "Whether or not to enable lspsaga.nvim.";
-      lspSignature.enable = mkEnableOption "Whether or not to enable lsp-signature.nvim.";
-      ufo.enable = mkEnableOption "Whether or not to enable ufo.nvim.";
+      enable = mkEnableOption "lsp-related plugins";
+      lspsaga.enable = mkEnableOption "lspsaga.nvim";
+      lspSignature.enable = mkEnableOption "lsp-signature.nvim";
+      ufo.enable = mkEnableOption "ufo.nvim";
     };
   };
 

@@ -19,8 +19,8 @@
   options.tgap.home.programs.neovim = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to install neovim.";
-    alias = mkEnableOption "Whether or not to enable vi and vim aliases.";
+    enable = mkEnableOption "neovim";
+    alias = mkEnableOption "vi and vim aliases";
 
     runtimepath = mkOption {
       type = types.str;

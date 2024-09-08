@@ -7,7 +7,7 @@
   options.tgap.system.laptop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to enable laptop mode.";
+    enable = mkEnableOption "laptop mode";
 
     model = mkOption {
       type = types.enum ["Acer Nitro AN515-51"];

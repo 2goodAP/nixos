@@ -7,12 +7,12 @@
   options.tgap.system.programs = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to install common system-wide programs.";
-    androidTools.enable = mkEnableOption "Whether or not enable Android helper packages.";
+    enable = mkEnableOption "common system-wide programs";
+    androidTools.enable = mkEnableOption "Android helper packages";
     cms.enable = mkEnableOption "Whether to enable color management systems.";
-    iosTools.enable = mkEnableOption "Whether or not enable iOS helper packages.";
-    qmk.enable = mkEnableOption "Whether or not enable qmk and related udev packages.";
-    virtualisation.enable = mkEnableOption "Whether or not to enable Docker and VirtualBox.";
+    iosTools.enable = mkEnableOption "iOS helper packages";
+    qmk.enable = mkEnableOption "qmk and related udev packages";
+    virtualisation.enable = mkEnableOption "Docker and VirtualBox";
 
     defaultShell = mkOption {
       type = types.enum ["bash" "nushell"];

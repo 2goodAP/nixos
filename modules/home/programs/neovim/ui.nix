@@ -7,7 +7,7 @@
   options.tgap.home.programs.neovim.ui.enable = let
     inherit (lib) mkEnableOption;
   in
-    mkEnableOption "Whether or not to enable fancy ui for neovim.";
+    mkEnableOption "fancy ui for neovim";
 
   config = let
     cfg = config.tgap.home.programs.neovim.ui;

@@ -38,6 +38,20 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
+      darkestDungeon2 = {
+        categories = ["Game"];
+        comment = "Red Hook Studios: Darkest Dungeon II";
+        exec = (
+          "launch-game -fm /home/${uname}/Wine/Games/Darkest_Dungeon_II"
+          + " DarkestDungeonII.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Darkest_Dungeon/DD2_Icon.png";
+        name = "Darkest Dungeon II";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
       dmc5 = {
         categories = ["Game"];
         comment = "CAPCOM: Devil May Cry 5";
@@ -47,7 +61,7 @@ in {
         );
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/DMC5/DMC5_Icon.png";
-        name = "DMC5";
+        name = "Devil May Cry 5";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -63,7 +77,7 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      dos2 = {
+      divinityOriginalSin2 = {
         categories = ["Game"];
         comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
         exec = (
@@ -112,6 +126,34 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Hollow_Knight/HK_Icon.png";
         name = "Hollow Knight";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      intoTheBreach = {
+        categories = ["Game"];
+        comment = "Subset Games: Into the Breach";
+        exec = (
+          "launch-game -fm /home/${uname}/Wine/Games/Into_the_Breach"
+          + " Breach.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Breach/Breach_Icon.png";
+        name = "Into the Breach";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      kingdomComeDeliverance = {
+        categories = ["Game"];
+        comment = "Warhorse Studios: Kingdom Come Deliverance";
+        exec = (
+          "launch-game -fm /home/${uname}/Wine/Games/Kingdom_Come_Deliverance"
+          + " Bin/Win64/KingdomCome.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/KCD/KCD_Icon.png";
+        name = "Kingdom Come: Deliverance";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -166,20 +208,6 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
         name = "Shadow Gambit";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
-      talos = {
-        categories = ["Game"];
-        comment = "Croteam: The Talos Principle";
-        exec = (
-          "launch-game -fm /home/${uname}/Wine/Games/The_Talos_Principle"
-          + " Bin/x64/Talos.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Talos/Talos_Icon.png";
-        name = "Talos";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };

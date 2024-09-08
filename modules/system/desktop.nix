@@ -3,26 +3,66 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  gsCfg = config.tgap.system.desktop.gaming.gamescope;
+in {
   options.tgap.system.desktop = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    enable = mkEnableOption "Whether or not to enable a graphical DE or WM.";
+    enable = mkEnableOption "a graphical DE or WM";
 
     gaming = {
-      enable = mkEnableOption "Whether or not to enable gaming-related features.";
-      steam.enable = mkEnableOption "Whether or not to install the Steam desktop app.";
+      enable = mkEnableOption "gaming-related features";
+      steam.enable = mkEnableOption "the Steam desktop app";
 
-      vkDeviceID = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "The vulkan deviceID of the preferred GPU to use with gamescope.";
-      };
+      gamescope = {
+        width = mkOption {
+          type = types.int;
+          default = 2560;
+          description = "The width of the nested gamescope window.";
+        };
 
-      vkVendorID = mkOption {
-        type = types.enum ["1002" "13B5" "8086" "10DE"];
-        default = "10DE";
-        description = "The vulkan vendorID of the preferred GPU to use with gamescope.";
+        height = mkOption {
+          type = types.int;
+          default = 1440;
+          description = "The height of the nested gamescope window.";
+        };
+
+        refreshRate = mkOption {
+          type = types.int;
+          default = 165;
+          description = "The refresh rate for the nested gamescope window.";
+        };
+
+        extraArgs = mkOption {
+          type = types.str;
+          default = "-f";
+          description = "Extra args for the steam gamescope command.";
+        };
+
+        finalArgs = mkOption {
+          type = types.str;
+          default =
+            "-W ${builtins.toString gsCfg.width}"
+            + " -H ${builtins.toString gsCfg.height}"
+            + " -r ${builtins.toString gsCfg.refreshRate}"
+            + " --framerate-limit ${builtins.toString gsCfg.refreshRate}"
+            + " -o 60 ${gsCfg.extraArgs}";
+          description = "Compiled/final args for the steam gamescope command.";
+          readOnly = true;
+        };
+
+        vkDeviceID = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "The vulkan deviceID of the preferred GPU to use with gamescope.";
+        };
+
+        vkVendorID = mkOption {
+          type = types.enum ["1002" "13B5" "8086" "10DE"];
+          default = "10DE";
+          description = "The vulkan vendorID of the preferred GPU to use with gamescope.";
+        };
       };
     };
 
@@ -84,7 +124,6 @@
             else pkgs.steamPackages.steam-fhsenv-without-steam
           )
           .override {
-            extraEnv = {};
             extraLibraries = ps:
               with ps; [
                 gamemode
@@ -107,13 +146,13 @@
 
                 args =
                   [
-                    "--expose-wayland"
                     "--rt"
                     "--adaptive-sync"
                     "--force-grab-cursor"
+                    "--force-composition"
                   ]
-                  ++ optionals (cfg.gaming.vkDeviceID != null) [
-                    "--prefer-vk-device ${cfg.gaming.vkVendorID}:${cfg.gaming.vkDeviceID}"
+                  ++ optionals (gsCfg.vkDeviceID != null) [
+                    "--prefer-vk-device ${gsCfg.vkVendorID}:${gsCfg.vkDeviceID}"
                   ];
 
                 env = optionalAttrs config.hardware.nvidia.prime.offload.enable {
@@ -158,7 +197,11 @@
                 }
 
                 declare {PREFIX,FULLSCREEN,PROTON_BUILD,MANGOHUD}=""
-                WIDTH=2560 HEIGHT=1440 REF_RATE=165 FPS_LIMIT=$REF_RATE OPENGL=false
+                OPENGL=false
+                WIDTH=${builtins.toString gsCfg.width}
+                HEIGHT=${builtins.toString gsCfg.height}
+                REF_RATE=${builtins.toString gsCfg.refreshRate}
+                FPS_LIMIT=${builtins.toString gsCfg.refreshRate}
 
                 OPTS="$( \
                   ${getExe' pkgs.util-linux "getopt"} --name "''${0##*/}" \
@@ -273,15 +316,14 @@
                 # ---------------
 
                 cd "$GAME_DIR"
-                PROTON_HEAP_DELAY_FREE=1 PULSE_LATENCY_MSEC=30 \
-                  ${config.security.wrapperDir}/gamescope \
+                PROTON_HEAP_DELAY_FREE=1 PULSE_LATENCY_MSEC=30 gamescope \
                   -W $(("$WIDTH")) -H $(("$HEIGHT")) -r $(("$REF_RATE")) \
                   --framerate-limit $(("$FPS_LIMIT")) -o 60 $FULLSCREEN -- \
                   ${getExe' pkgs.gamemode "gamemoderun"} \
                   ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice -- \
                   $MANGOHUD ${getExe steam.run} \
-                  "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" run \
-                  "$GAME_DIR/$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
+                  "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" \
+                  waitforexitandrun "$GAME_DIR/$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
                 disown $!
               '';
             in [
