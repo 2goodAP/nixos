@@ -16,6 +16,7 @@ in
         extraPackages =
           optionals cfg.langtools.lsp.enable (with pkgs.haskellPackages; [
             cabal-fmt
+            ghci-dap
             haskell-language-server
             hlint
             hoogle
@@ -58,7 +59,7 @@ in
       programs.neovim.extraLuaConfig = ''
         require("conform").setup({
           formatters_by_ft = {
-            cabal = {"cabal-fmt"},
+            cabal = {"cabal_fmt"},
           },
         })
 

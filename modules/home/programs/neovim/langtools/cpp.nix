@@ -10,8 +10,13 @@ in
   mkIf (builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
       programs.neovim = {
-        extraPackages = with pkgs; [clang flawfinder];
         plugins = [pkgs.vimPlugins.clangd_extensions-nvim];
+
+        extraPackages = with pkgs; [
+          clang
+          clang-tools
+          flawfinder
+        ];
 
         extraLuaConfig = ''
           require("lspconfig").clangd.setup({
@@ -43,7 +48,7 @@ in
         extraLuaConfig = ''
           require("dap").adapters.lldb = {
             type = "executable",
-            command = "${getExe' pkgs.lldb "lldb-vscode"}", -- Must be absolute path
+            command = "${getExe' pkgs.lldb "lldb-dap"}", -- Must be absolute path
             name = "lldb",
           }
 

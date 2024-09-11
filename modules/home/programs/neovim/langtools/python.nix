@@ -11,20 +11,19 @@ in
     {
       programs.neovim = {
         extraPackages = optionals cfg.langtools.lsp.enable (with pkgs; [
-          mypy
           ruff
+          (python3.withPackages (ps:
+            (with ps; [
+              bandit
+              mypy
+              pylsp-mypy
+              python-lsp-ruff
+              python-lsp-server
+              rope
+              vulture
+            ])
+            ++ optionals cfg.langtools.dap.enable [ps.debugpy]))
         ]);
-
-        extraPython3Packages = pyPkgs:
-          (with pyPkgs; [
-            bandit
-            pylsp-mypy
-            python-lsp-ruff
-            python-lsp-server
-            rope
-            vulture
-          ])
-          ++ optionals cfg.langtools.dap.enable [pyPkgs.debugpy];
       };
     }
 
