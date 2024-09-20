@@ -28,14 +28,14 @@ in
         optionals cfg.lsp.enable (with pkgs; [
           biome
           nodejs
-          nodePackages.typescript-language-server
+          typescript-language-server
         ])
         ++ optionals cfg.dap.enable [vscode-js-debug];
     }
 
     (mkIf cfg.lsp.enable {
       programs.neovim.extraLuaConfig = ''
-        require("lspconfig").tsserver.setup({
+        require("lspconfig").ts_ls.setup({
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
