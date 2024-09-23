@@ -99,7 +99,7 @@ in {
           + " Ghost_Trick.exe"
         );
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Ghost_Trick/Ghost_Trick_Icon.png";
+        icon = "/home/${uname}/Wine/Misc/Ghost_Trick/GT_Icon.png";
         name = "Ghost Trick";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
