@@ -144,20 +144,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      kingdomComeDeliverance = {
-        categories = ["Game"];
-        comment = "Warhorse Studios: Kingdom Come Deliverance";
-        exec = (
-          "launch-game -fm /home/${uname}/Wine/Games/Kingdom_Come_Deliverance"
-          + " Bin/Win64/KingdomCome.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/KCD/KCD_Icon.png";
-        name = "Kingdom Come: Deliverance";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
       newNTasty = {
         categories = ["Game"];
         comment = "Oddworld Inhabitants: Oddworld New n Tasty";
