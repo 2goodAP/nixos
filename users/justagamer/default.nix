@@ -159,8 +159,8 @@ in {
         categories = ["Game"];
         comment = "Arcane: Prey";
         exec = (
-          "launch-game -fm /home/${uname}/Wine/Games/Prey"
-          + " Binaries/Danielle/x64-GOG/Release/Prey.exe"
+          ''WINEDLLOVERRIDES="d3dcompiler_47=n;dxgi=n,b" launch-game -fm ''
+          + "/home/${uname}/Wine/Games/Prey Binaries/Danielle/x64-GOG/Release/Prey.exe"
         );
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Prey/Prey_Icon.png";
@@ -173,8 +173,8 @@ in {
         categories = ["Game"];
         comment = "Rockstar: Red Dead Redemption 2";
         exec = (
-          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
-          + " launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2"
+          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b" ''
+          + "launch-game -fm /home/${uname}/Wine/Games/Red_Dead_Redemption_2"
           + " Launcher.exe"
         );
         genericName = "Game";
@@ -194,6 +194,20 @@ in {
         genericName = "Game";
         icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
         name = "Shadow Gambit";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      ufo50 = {
+        categories = ["Game"];
+        comment = "Mossmouth: UFO 50";
+        exec = (
+          "launch-game -w 1920 -h 1080 -fm "
+          + "/home/${uname}/Wine/Games/UFO_50 ufo50.exe"
+        );
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/UFO_50/UFO_Icon.ico";
+        name = "UFO 50";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
