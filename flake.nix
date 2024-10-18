@@ -13,16 +13,16 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nbfc-linux = {
-      url = "github:nbfc-linux/nbfc-linux";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    umu-launcher = {
+      url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -51,7 +51,7 @@
           }: {
             nixpkgs = {
               config.allowUnfree = true;
-              inherit (import ./overlays {inherit config inputs lib system;}) overlays;
+              overlays = import ./overlays {inherit config inputs lib system;};
             };
 
             home-manager = {

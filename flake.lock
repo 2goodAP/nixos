@@ -114,7 +114,7 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems_2"
+        "systems": "systems"
       },
       "locked": {
         "lastModified": 1726560853,
@@ -132,7 +132,7 @@
     },
     "flake-utils_2": {
       "inputs": {
-        "systems": "systems_3"
+        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1710146030,
@@ -282,27 +282,6 @@
         "owner": "glennrp",
         "repo": "libpng",
         "rev": "8439534daa1d3a5705ba92e653eda9251246dd61",
-        "type": "github"
-      }
-    },
-    "nbfc-linux": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "utils": "utils"
-      },
-      "locked": {
-        "lastModified": 1726501950,
-        "narHash": "sha256-SKAakWAPg6gotoDLJG1eHg/G7cIFY9E6iBNl/CNZpps=",
-        "owner": "nbfc-linux",
-        "repo": "nbfc-linux",
-        "rev": "839bc0622f666e8d936b340b7f34188fd3081588",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nbfc-linux",
-        "repo": "nbfc-linux",
         "type": "github"
       }
     },
@@ -494,10 +473,10 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
-        "nbfc-linux": "nbfc-linux",
         "nixpkgs": "nixpkgs",
         "nixpkgs-wayland": "nixpkgs-wayland",
         "nur": "nur",
+        "umu-launcher": "umu-launcher",
         "wezterm": "wezterm"
       }
     },
@@ -573,21 +552,6 @@
         "type": "github"
       }
     },
-    "systems_3": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -610,21 +574,25 @@
         "type": "github"
       }
     },
-    "utils": {
+    "umu-launcher": {
       "inputs": {
-        "systems": "systems"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1710146030,
-        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
+        "dir": "packaging/nix",
+        "lastModified": 1729102213,
+        "narHash": "sha256-KLi7sZmf+D8d6JYVmJs2WVNLhJgtjvJPPdm2ekbrpDI=",
+        "owner": "Open-Wine-Components",
+        "repo": "umu-launcher",
+        "rev": "a6b84b1aed6582ab2a500e5d109548b5ce64b97c",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
+        "dir": "packaging/nix",
+        "owner": "Open-Wine-Components",
+        "repo": "umu-launcher",
         "type": "github"
       }
     },

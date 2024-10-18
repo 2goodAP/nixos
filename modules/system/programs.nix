@@ -23,7 +23,7 @@
 
   config = let
     cfg = config.tgap.system.programs;
-    nvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
+    hasNvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
     inherit (lib) getExe mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
@@ -102,8 +102,8 @@
       }
 
       (mkIf cfg.cms.enable {
-        environment.systemPackages = optionals nvidia [pkgs.argyllcms];
-        services.colord.enable = !nvidia;
+        environment.systemPackages = optionals hasNvidia [pkgs.argyllcms];
+        services.colord.enable = !hasNvidia;
       })
 
       (mkIf cfg.iosTools.enable {
@@ -111,7 +111,7 @@
       })
 
       (mkIf cfg.virtualisation.enable {
-        hardware.nvidia-container-toolkit.enable = nvidia;
+        hardware.nvidia-container-toolkit.enable = hasNvidia;
 
         virtualisation = {
           docker = {

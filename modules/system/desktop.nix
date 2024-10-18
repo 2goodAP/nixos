@@ -165,8 +165,7 @@ in {
             };
 
             environment.systemPackages = let
-              launch-game = pkgs.writeScriptBin "launch-game" ''
-                #!${getExe pkgs.bash}
+              launchTemplate = ''
 
                 # Command-line parsing
                 # --------------------
@@ -180,38 +179,34 @@ in {
                 A command-line game launcher to launch games with added bells-and-whistles.
 
                 Options:
-                  -p, --prefix <prefix>              name of the proton prefix to use from
-                                                     $HOME/Wine/Prefixes
-                  -w, --width <width>                output-width passed to gamescope
-                  -h, --height <height>              output-height passed to gamescope
-                  -r, --refresh-rate <ref-rate>      nested-refresh-rate passed to gamescope
-                  -f, --fullscreen                   make the gamescope window fullscreen
-                  -F, --fps-limit <fps-limit>        framerate-limit passed to gamescope
-                  -P, --proton-build <proton-build>  name of the proton build to use from
-                                                     $STEAM_COMPAT_CLIENT_INSTALL_PATH
-                                                     (only GE builds supported)
-                  -m, --mangohud                     enable mangohud overlay
-                  -o, --opengl                       enable OpenGL specific tweaks
-                      --help                         display this help
+                  -p, --prefix <prefix>          name of the proton prefix to use from
+                                                 $HOME/Wine/Prefixes
+                  -w, --width <width>            output-width passed to gamescope
+                  -h, --height <height>          output-height passed to gamescope
+                  -r, --refresh-rate <ref-rate>  nested-refresh-rate passed to gamescope
+                  -f, --fullscreen               make the gamescope window fullscreen
+                  -F, --fps-limit <fps-limit>    framerate-limit passed to gamescope
+                  -P, --proton <proton>          name of the proton build to use
+                  -m, --mangohud                 enable mangohud overlay
+                  -o, --opengl                   enable OpenGL specific tweaks
+                      --help                     display this help
                 EOF
                 }
 
-                declare {PREFIX,FULLSCREEN,PROTON_BUILD,MANGOHUD}=""
+                declare {PREFIX,FULLSCREEN,PROTON,MANGOHUD}=""
                 OPENGL=false
                 WIDTH=${builtins.toString gsCfg.width}
                 HEIGHT=${builtins.toString gsCfg.height}
                 REF_RATE=${builtins.toString gsCfg.refreshRate}
                 FPS_LIMIT=${builtins.toString gsCfg.refreshRate}
 
-                OPTS="$( \
+                if ! OPTS="$( \
                   ${getExe' pkgs.util-linux "getopt"} --name "''${0##*/}" \
                   --options 'p:w:h:r:F:P:fmo' --longoptions 'help,prefix:,width:' \
-                  --longoptions 'height:,refresh-rate:,fps-limit:,proton-build:' \
+                  --longoptions 'height:,refresh-rate:,fps-limit:,proton:' \
                   --longoptions 'fullscreen,mangohud,opengl' \
                   -- "$@" \
-                )"
-
-                if [[ $? -ne 0 ]]; then
+                )"; then
                   show_help >&2
                   exit 1
                 fi
@@ -239,8 +234,8 @@ in {
                       FPS_LIMIT="$2"
                       shift 2
                       ;;
-                    -P|--proton-build)
-                      PROTON_BUILD="$2"
+                    -P|--proton)
+                      PROTON="$2"
                       shift 2
                       ;;
                     -f|--fullscreen)
@@ -285,25 +280,13 @@ in {
                 # Default behaviors
                 # -----------------
 
-                # Proton Build
+                # Proton
 
-                export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/compatibilitytools.d"
-                if [[ -z "$PROTON_BUILD" ]]; then
-                  PROTON_BUILD="$(basename $(${getExe' pkgs.coreutils "ls"} -drv \
-                    "$STEAM_COMPAT_CLIENT_INSTALL_PATH"/GE-Proton*))"
-                elif [[ ! -d "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD" ]]; then
-                    export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/steamapps/common"
-                fi
+                %proton%
 
                 # Prefix
 
-                if [[ -z "$PREFIX" ]]; then
-                  PREFIX="$(${getExe' pkgs.coreutils "basename"} "$GAME_DIR")"
-                fi
-                export STEAM_COMPAT_DATA_PATH="$HOME/Wine/Prefixes/''${PREFIX// /_}"
-                if [[ ! -d "$STEAM_COMPAT_DATA_PATH" ]]; then
-                  ${getExe' pkgs.coreutils "mkdir"} -p "$STEAM_COMPAT_DATA_PATH"
-                fi
+                %prefix%
 
                 # OpenGL Specific
                 # ---------------
@@ -315,20 +298,74 @@ in {
                 # Launch the game
                 # ---------------
 
-                cd "$GAME_DIR"
-                PROTON_HEAP_DELAY_FREE=1 PULSE_LATENCY_MSEC=30 gamescope \
+                cd "$GAME_DIR" || exit 2
+                PROTON_VERB="waitforexitandrun" \
+                  PROTON_HEAP_DELAY_FREE=1 PULSE_LATENCY_MSEC=30 gamescope \
                   -W $(("$WIDTH")) -H $(("$HEIGHT")) -r $(("$REF_RATE")) \
                   --framerate-limit $(("$FPS_LIMIT")) -o 60 $FULLSCREEN -- \
                   ${getExe' pkgs.gamemode "gamemoderun"} \
                   ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice -- \
-                  $MANGOHUD ${getExe steam.run} \
-                  "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON_BUILD/proton" \
-                  waitforexitandrun "$GAME_DIR/$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
+                  $MANGOHUD %command% \
+                  "$EXE_PATH" "$@" &> "/tmp/$PREFIX.log" &
                 disown $!
               '';
+
+              umu-launch =
+                pkgs.writeShellScriptBin "umu-launch"
+                (builtins.replaceStrings ["%proton%" "%prefix%" "%command%"] [
+                    ''
+                      GE_REGEX='^GE-Proton[[:digit:]]+-[[:digit:]]+$'
+                      SP_REGEX='^Proton [-. [:alnum:]]+$'
+                      STEAM_ROOT="$HOME/.local/share/Steam"
+                      if [[ -z "$PROTON" ]]; then
+                        PROTONPATH="GE-Proton"
+                      elif [[ "$PROTON" =~ $GE_REGEX ]]; then
+                        PROTONPATH="$STEAM_ROOT/compatibilitytools.d/$PROTON"
+                      elif [[ "$PROTON" =~ $SP_REGEX ]]; then
+                        PROTONPATH="$STEAM_ROOT/steamapps/common/$PROTON"
+                      fi
+                      export PROTONPATH
+                    ''
+                    ''
+                      if [[ -z "$PREFIX" ]]; then
+                        PREFIX="$(${getExe' pkgs.coreutils "basename"} "$GAME_DIR")"
+                      fi
+                      export WINEPREFIX="$HOME/Wine/Prefixes/''${PREFIX// /_}"
+                    ''
+                    "${getExe' pkgs.umu-launcher "umu-run"}"
+                  ]
+                  launchTemplate);
+
+              steam-launch =
+                pkgs.writeShellScriptBin "steam-launch"
+                (builtins.replaceStrings ["%proton%" "%prefix%" "%command%"] [
+                    ''
+                      export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/compatibilitytools.d"
+                      if [[ -z "$PROTON" ]]; then
+                        PROTON="$(${getExe' pkgs.coreutils "basename"} \
+                          "$(${getExe' pkgs.coreutils "ls"} -drv \
+                          "$STEAM_COMPAT_CLIENT_INSTALL_PATH"/GE-Proton* | head -n 1)")"
+                      elif [[ ! -d "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON" ]]; then
+                          export STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.local/share/Steam/steamapps/common"
+                      fi
+                    ''
+                    ''
+                      if [[ -z "$PREFIX" ]]; then
+                        PREFIX="$(${getExe' pkgs.coreutils "basename"} "$GAME_DIR")"
+                      fi
+                      export STEAM_COMPAT_DATA_PATH="$HOME/Wine/Prefixes/''${PREFIX// /_}"
+                      if [[ ! -d "$STEAM_COMPAT_DATA_PATH" ]]; then
+                        ${getExe' pkgs.coreutils "mkdir"} -p "$STEAM_COMPAT_DATA_PATH"
+                      fi
+                    ''
+                    ''${getExe steam.run} "$STEAM_COMPAT_CLIENT_INSTALL_PATH/$PROTON/proton" waitforexitandrun''
+                  ]
+                  launchTemplate);
             in [
-              launch-game
+              steam-launch
               steam.run
+              umu-launch
+              pkgs.umu-launcher
             ];
           }
 
