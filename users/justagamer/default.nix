@@ -37,69 +37,56 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      darkestDungeon2 = {
-        categories = ["Game"];
-        comment = "Red Hook Studios: Darkest Dungeon II";
-        exec =
-          "GAMEID=1940340 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Darkest_Dungeon_II DarkestDungeonII.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Darkest_Dungeon/DD2_Icon.png";
-        name = "Darkest Dungeon II";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
+      # dmc5 = {
+      #   categories = ["Game"];
+      #   comment = "CAPCOM: Devil May Cry 5";
+      #   exec =
+      #     "GAMEID=601150 umu-launch -fm"
+      #     + " /home/${uname}/Wine/Games/Devil_May_Cry_5 DevilMayCry5.exe";
+      #   genericName = "Game";
+      #   icon = "/home/${uname}/Wine/Misc/DMC5/DMC5_Icon.png";
+      #   name = "Devil May Cry 5";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
 
-      dmc5 = {
-        categories = ["Game"];
-        comment = "CAPCOM: Devil May Cry 5";
-        exec =
-          "GAMEID=601150 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Devil_May_Cry_5 DevilMayCry5.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/DMC5/DMC5_Icon.png";
-        name = "Devil May Cry 5";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
+      # dishonored2 = {
+      #   categories = ["Game"];
+      #   comment = "Arcane: Dishonored 2";
+      #   exec =
+      #     "GAMEID=403640 umu-launch -fm"
+      #     + " /home/${uname}/Wine/Games/Dishonored_2 Dishonored2.exe";
+      #   genericName = "Game";
+      #   icon = "/home/${uname}/Wine/Misc/Dishonored_2/Dishonored2_Icon.png";
+      #   name = "Dishonored 2";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
 
-      dishonored2 = {
-        categories = ["Game"];
-        comment = "Arcane: Dishonored 2";
-        exec =
-          "GAMEID=403640 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Dishonored_2 Dishonored2.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Dishonored_2/Dishonored2_Icon.png";
-        name = "Dishonored 2";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
+      # divinityOriginalSin2 = {
+      #   categories = ["Game"];
+      #   comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
+      #   exec =
+      #     ''GAMEID=435150 umu-launch -fmP "Proton - Experimental"''
+      #     + " /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
+      #     + " DefEd/bin/EoCApp.exe";
+      #   genericName = "Game";
+      #   icon = "/home/${uname}/Wine/Misc/DOS2/DOS2_Icon.png";
+      #   name = "Divinity Original Sin 2";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
 
-      divinityOriginalSin2 = {
+      godOfWarRagnarok = {
         categories = ["Game"];
-        comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
+        comment = "Sony Santa Monica: God of War Ragnarok";
         exec =
-          ''GAMEID=435150 umu-launch -fmP "Proton - Experimental"''
-          + " /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
-          + " DefEd/bin/EoCApp.exe";
+          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="version=n,b"''
+          + " GAMEID=2322010 umu-launch -fm"
+          + " /home/${uname}/Wine/Games/God_of_War_Ragnarok GoWR.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/DOS2/DOS2_Icon.png";
-        name = "Divinity Original Sin 2";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
-      ghostTrick = {
-        categories = ["Game"];
-        comment = "CAPCOM: Ghost Trick - Phantom Detective";
-        exec =
-          "GAMEID=1967430 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Ghost_Trick_Phantom_Detective"
-          + " Ghost_Trick.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Ghost_Trick/GT_Icon.png";
-        name = "Ghost Trick";
+        icon = "/home/${uname}/Wine/Misc/GoWR/GoWR_Icon.png";
+        name = "God of War Ragnarok";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -156,6 +143,19 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
+      nineSols = {
+        categories = ["Game"];
+        comment = "RedCandleGames: Nine Sols";
+        exec =
+          "GAMEID=1809540 umu-launch -fm"
+          + " /home/${uname}/Wine/Games/Nine_Sols NineSols.exe";
+        genericName = "Game";
+        icon = "/home/${uname}/Wine/Misc/Nine_Sols/NS_Icon.png";
+        name = "Nine Sols";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
       prey = {
         categories = ["Game"];
         comment = "Arcane: Prey";
@@ -170,34 +170,33 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      rdr2 = {
-        categories = ["Game"];
-        comment = "Rockstar: Red Dead Redemption 2";
-        exec = (
-          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
-          + " GAMEID=1174180 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe"
-        );
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/RDR2/RDR2_Icon.png";
-        name = "RDR2";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
+      # rdr2 = {
+      #   categories = ["Game"];
+      #   comment = "Rockstar: Red Dead Redemption 2";
+      #   exec =
+      #     ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
+      #     + " GAMEID=1174180 umu-launch -fm"
+      #     + " /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe";
+      #   genericName = "Game";
+      #   icon = "/home/${uname}/Wine/Misc/RDR2/RDR2_Icon.png";
+      #   name = "Red Dead Redemption 2";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
 
-      shadowGambit = {
-        categories = ["Game"];
-        comment = "Mimimi: Shadow Gambit - The Cursed Crew";
-        exec =
-          "GAMEID=1545560 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
-          + " ShadowGambit_TCC.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
-        name = "Shadow Gambit";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
+      # shadowGambit = {
+      #   categories = ["Game"];
+      #   comment = "Mimimi: Shadow Gambit - The Cursed Crew";
+      #   exec =
+      #     "GAMEID=1545560 umu-launch -fm"
+      #     + " /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
+      #     + " ShadowGambit_TCC.exe";
+      #   genericName = "Game";
+      #   icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
+      #   name = "Shadow Gambit";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
 
       ufo50 = {
         categories = ["Game"];
