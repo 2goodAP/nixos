@@ -40,35 +40,16 @@
         envFile.source = ./env.nu;
         package = osConfig.users.defaultUserShell;
 
-        environmentVariables =
-          {
-            BATPIPE = "'color'";
-            EDITOR = "'nvim'";
-            LESSOPEN =
-              "'|"
-              + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
-              + " %s'";
-            NU_LIB_DIRS = "['${nu_scripts}']";
-            PAGER = "'${config.programs.nushell.shellAliases.less}'";
-            VISUAL = "'nvim'";
-            XDG_CONFIG_HOME = "($env.HOME | path join '.config')";
-          }
-          // (
-            if config.programs.starship.enable
-            then {
-              PROMPT_INDICATOR = "{|| '' }";
-              PROMPT_INDICATOR_VI_INSERT = "{|| 'I ' }";
-              PROMPT_INDICATOR_VI_NORMAL = "{|| 'N ' }";
-            }
-            else {
-              PROMPT_COMMAND = "{|| create_left_prompt }";
-              PROMPT_COMMAND_RIGHT = "{|| create_right_prompt }";
-              PROMPT_INDICATOR = "{|| '> ' }";
-              PROMPT_INDICATOR_VI_INSERT = "{|| '> ' }";
-              PROMPT_INDICATOR_VI_NORMAL = "{|| '< ' }";
-              PROMPT_MULTILINE_INDICATOR = "{|| '... ' }";
-            }
-          );
+        environmentVariables = {
+          BATPIPE = "color";
+          EDITOR = "nvim";
+          LESSOPEN =
+            "|"
+            + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
+            + " %s";
+          PAGER = "${config.programs.nushell.shellAliases.less}";
+          VISUAL = "nvim";
+        };
 
         extraConfig = ''
           # Theme
@@ -78,14 +59,39 @@
           use modules/background_task/task.nu
         '';
 
-        extraEnv = ''
-          # Add some local dirs to PATH
-          $env.PATH = (
-            $env.PATH | split row (char esep)
-            | append ($env.HOME | path join ".local" "bin")
-            | uniq
+        extraEnv =
+          (
+            if config.programs.starship.enable
+            then ''
+              $env.PROMPT_INDICATOR = {|| "" }
+              $env.PROMPT_INDICATOR_VI_INSERT = {|| "I " }
+              $env.PROMPT_INDICATOR_VI_NORMAL = {|| "N " }
+            ''
+            else ''
+              $env.PROMPT_COMMAND = {|| create_left_prompt }
+              $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+              $env.PROMPT_INDICATOR = {|| "> " }
+              $env.PROMPT_INDICATOR_VI_INSERT = {|| "> " }
+              $env.PROMPT_INDICATOR_VI_NORMAL = {|| "< " }
+              $env.PROMPT_MULTILINE_INDICATOR = {|| "... " }
+            ''
           )
-        '';
+          + ''
+            # Update NU_LIB_DIRS to include nu_scripts
+            $env.NU_LIB_DIRS = (
+              $env.NU_LIB_DIRS? | default [] | prepend '${nu_scripts}'
+            )
+
+            # Set XDG_CONFIG_HOME to ~/.config
+            $env.XDG_CONFIG_HOME = ($env.HOME | path join '.config')
+
+            # Add some local dirs to PATH
+            $env.PATH = (
+              $env.PATH | split row (char esep)
+              | append ($env.HOME | path join ".local" "bin")
+              | uniq
+            )
+          '';
 
         shellAliases = {
           br = "broot";
