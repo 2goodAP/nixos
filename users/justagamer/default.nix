@@ -143,29 +143,16 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      nineSols = {
+      oriWillOfWisps = {
         categories = ["Game"];
-        comment = "RedCandleGames: Nine Sols";
+        comment = "Moon Studios GmbH: Ori and the Will of the Wisps";
         exec =
-          "GAMEID=1809540 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Nine_Sols NineSols.exe";
+          "GAMEID=1057090 umu-launch -fm"
+          + " /home/${uname}/Wine/Games/Ori_and_the_Will_of_the_Wisps"
+          + " oriwotw.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Nine_Sols/NS_Icon.png";
-        name = "Nine Sols";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
-      prey = {
-        categories = ["Game"];
-        comment = "Arcane: Prey";
-        exec =
-          ''WINEDLLOVERRIDES="d3dcompiler_47=n;dxgi=n,b" GAMEID=480490''
-          + " umu-launch -fm /home/${uname}/Wine/Games/Prey"
-          + " Binaries/Danielle/x64-GOG/Release/Prey.exe";
-        genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Prey/Prey_Icon.png";
-        name = "Prey";
+        icon = "/home/${uname}/Wine/Misc/Ori/WotW.png";
+        name = "Ori and the Will of the Wisps";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
