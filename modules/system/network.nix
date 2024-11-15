@@ -6,14 +6,8 @@
   options.tgap.system = let
     inherit (lib) mkEnableOption mkOption types;
   in {
-    bluetooth.enable = mkEnableOption "bluetooth-related services";
-
     network = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether or not to enable networking services.";
-      };
+      enable = mkEnableOption "networking services" // {default = true;};
 
       hostName = mkOption {
         type = types.str;
@@ -30,11 +24,9 @@
         description = "The network interface chips present in the laptop.";
       };
 
-      wifiRandMacAddress = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to enable MAC address randomization of a Wi-Fi device during scanning.";
-      };
+      wifiRandMacAddress =
+        mkEnableOption "MAC address randomization of a Wi-Fi device during scanning"
+        // {default = true;};
     };
   };
 
@@ -43,13 +35,6 @@
     inherit (lib) mkIf mkMerge optionalAttrs;
   in
     mkMerge [
-      (mkIf cfg.bluetooth.enable {
-        hardware = {
-          bluetooth.enable = true;
-          xpadneo.enable = true;
-        };
-      })
-
       (mkIf cfg.network.enable {
         networking = {
           inherit (cfg.network) hostName nameservers;

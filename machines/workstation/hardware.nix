@@ -5,6 +5,10 @@
   ...
 }: {
   boot = {
+    kernelModules = ["kvm-intel"];
+    kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
+    kernelParams = ["split_lock_detect=off"];
+
     initrd = {
       availableKernelModules = [
         "xhci_pci"
@@ -16,12 +20,10 @@
       ];
       kernelModules = ["dm-snapshot"];
     };
-
-    kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
-    kernelModules = ["kvm-intel"];
   };
 
   hardware = {
+    bluetooth.enable = true;
     enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = true;
 
@@ -34,11 +36,11 @@
         inherit (lib) concatStrings splitVersion;
       in
         config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
-          version = "550.40.76";
+          version = "550.40.79";
           persistencedVersion = "550.54.14";
           settingsVersion = "550.54.14";
-          sha256_64bit = "sha256-dgeK0gIOrCvt7Au8sihBVjNwqAIhBjLK/X1q5hG5F8k=";
-          openSha256 = "sha256-VU0awnFnFbM7MUcKiHCQ+fHhnrL/kZom4ymRX3qeuKk=";
+          sha256_64bit = "sha256-t/i/MeAkw03evuil0lbQnDiOVQmc8xAZqGo5P+BnUt8=";
+          openSha256 = "sha256-mWoI6j/OqAPrGrw6QwdOT9kFPzg3PSNSZW5JDlRTB+s=";
           settingsSha256 = "sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
           persistencedSha256 = "sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
           url =

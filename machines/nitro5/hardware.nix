@@ -4,6 +4,9 @@
   ...
 }: {
   boot = {
+    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    kernelModules = ["kvm-intel"];
+
     initrd = {
       availableKernelModules = [
         "xhci_pci"
@@ -15,12 +18,10 @@
       ];
       kernelModules = ["dm-snapshot"];
     };
-
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-    kernelModules = ["kvm-intel"];
   };
 
   hardware = {
+    bluetooth.enable = true;
     enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = true;
 

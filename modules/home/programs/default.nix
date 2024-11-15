@@ -26,6 +26,7 @@
       services.pueue.enable = true;
 
       home.packages = with pkgs; [
+        carapace
         ripgrep-all
         tmuxPlugins.rose-pine
       ];
@@ -47,7 +48,6 @@
         };
       in {
         atuin.enable = true;
-        carapace.enable = true;
         fd.enable = true;
         jq.enable = true;
         ripgrep.enable = true;
@@ -88,6 +88,10 @@
 
             # yq completions
             source <(${getExe pkgs.yq-go} shell-completion bash)
+
+            # carapace-bin setup
+            export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+            source <(${getExe pkgs.carapace} _carapace)
           '';
 
           profileExtra = ''

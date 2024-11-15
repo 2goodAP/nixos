@@ -8,7 +8,7 @@
   time.timeZone = "Asia/Kathmandu";
 
   tgap.system = {
-    desktop.gaming.enable = true;
+    audio.simultOutput.enable = true;
 
     boot = {
       secureBoot.enable = true;
@@ -21,9 +21,17 @@
       };
     };
 
-    network = {
+    desktop.gaming = {
       enable = true;
+      controllers = {
+        dualsense.enable = true;
+        xbone.enable = true;
+      };
+    };
+
+    network = {
       inherit hostName;
+      enable = true;
       nameservers = ["9.9.9.9"];
       interfaces = ["enp4s0" "wlo1"];
     };

@@ -27,13 +27,11 @@ in
         });
       }
       // optionalAttrs (enableGaming && cfg.gaming.steam.enable) {
-        steamPackages = prev.steamPackages.overrideScope (sf: sp: {
-          steam = sp.steam.overrideAttrs (oldAttrs: {
-            postInstall =
-              builtins.replaceStrings [",steam,"]
-              [",gamescope ${gsCfg.finalArgs} -- steam,"]
-              oldAttrs.postInstall;
-          });
+        steam-unwrapped = prev.steam-unwrapped.overrideAttrs (oldAttrs: {
+          postInstall =
+            builtins.replaceStrings [",steam,"]
+            [",gamescope ${gsCfg.finalArgs} -- steam,"]
+            oldAttrs.postInstall;
         });
       })
   ]

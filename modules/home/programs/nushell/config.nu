@@ -78,7 +78,7 @@ $env.config = {
         vi_normal: block # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (underscore is the default)
     }
 
-    footer_mode: "25" # always, never, number_of_rows, auto
+    footer_mode: 25 # never, always, auto, number_of_rows
     float_precision: 4 # the precision for displaying floats in tables
     buffer_editor: "" # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
     use_ansi_coloring: true

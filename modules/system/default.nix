@@ -5,9 +5,11 @@
   ...
 }: {
   imports = [
+    ./audio.nix
     ./boot.nix
     ./desktop.nix
     ./fonts.nix
+    ./gaming.nix
     ./laptop.nix
     ./network.nix
     ./programs.nix
@@ -16,8 +18,7 @@
   options.tgap.system = let
     inherit (lib) mkEnableOption;
   in {
-    apparmor.enable = mkEnableOption "apparmor";
-    audio.enable = mkEnableOption "audio-related services";
+    apparmor.enable = mkEnableOption "apparmor" // {default = true;};
   };
 
   config = let
@@ -138,18 +139,6 @@
         security.apparmor = {
           enable = true;
           killUnconfinedConfinables = true;
-        };
-      })
-
-      (mkIf cfg.audio.enable {
-        services.pipewire = {
-          enable = true;
-          jack.enable = true;
-          pulse.enable = true;
-          alsa = {
-            enable = true;
-            support32Bit = true;
-          };
         };
       })
 

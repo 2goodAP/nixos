@@ -23,176 +23,193 @@ in {
     home.packages = [pkgs.ryujinx];
     tgap.home.desktop.gaming.enable = true;
 
-    xdg.desktopEntries = {
-      animalWell = {
+    xdg.desktopEntries = let
+      wineDir = "/home/${uname}/Wine";
+    in {
+      animal-well = {
         categories = ["Game"];
-        comment = "Billy Basso: Animal Well";
+        comment = "Billy Basso: Exploration, Metroidvania";
         exec =
           "GAMEID=813230 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Animal_Well SmartSteamLoader_x64.exe";
+          + " ${wineDir}/Games/Animal_Well SmartSteamLoader_x64.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Animal_Well/AW_Icon.png";
+        icon = "${wineDir}/Misc/Animal_Well/AW_Icon.png";
         name = "Animal Well";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      # dmc5 = {
+      # devil-may-cry-5 = {
       #   categories = ["Game"];
-      #   comment = "CAPCOM: Devil May Cry 5";
+      #   comment = "CAPCOM: Action, Hack and Slash";
       #   exec =
       #     "GAMEID=601150 umu-launch -fm"
-      #     + " /home/${uname}/Wine/Games/Devil_May_Cry_5 DevilMayCry5.exe";
+      #     + " ${wineDir}/Games/Devil_May_Cry_5 DevilMayCry5.exe";
       #   genericName = "Game";
-      #   icon = "/home/${uname}/Wine/Misc/DMC5/DMC5_Icon.png";
+      #   icon = "${wineDir}/Misc/DMC5/DMC5_Icon.png";
       #   name = "Devil May Cry 5";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
 
-      # dishonored2 = {
+      # dishonored-2 = {
       #   categories = ["Game"];
-      #   comment = "Arcane: Dishonored 2";
+      #   comment = "Arcane: Stealth, First-Person";
       #   exec =
       #     "GAMEID=403640 umu-launch -fm"
-      #     + " /home/${uname}/Wine/Games/Dishonored_2 Dishonored2.exe";
+      #     + " ${wineDir}/Games/Dishonored_2 Dishonored2.exe";
       #   genericName = "Game";
-      #   icon = "/home/${uname}/Wine/Misc/Dishonored_2/Dishonored2_Icon.png";
+      #   icon = "${wineDir}/Misc/Dishonored_2/Dishonored2_Icon.png";
       #   name = "Dishonored 2";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
 
-      # divinityOriginalSin2 = {
+      # divinity-original-sin-2 = {
       #   categories = ["Game"];
-      #   comment = "Larian: Divinity Original Sin 2 - Definitive Edition";
+      #   comment = "Larian: Tactical RPG, Turn-Based Strategy";
       #   exec =
       #     ''GAMEID=435150 umu-launch -fmP "Proton - Experimental"''
-      #     + " /home/${uname}/Wine/Games/Divinity_Original_Sin_2"
+      #     + " ${wineDir}/Games/Divinity_Original_Sin_2"
       #     + " DefEd/bin/EoCApp.exe";
       #   genericName = "Game";
-      #   icon = "/home/${uname}/Wine/Misc/DOS2/DOS2_Icon.png";
+      #   icon = "${wineDir}/Misc/DOS2/DOS2_Icon.png";
       #   name = "Divinity Original Sin 2";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
 
-      godOfWarRagnarok = {
+      # god-of-war-ragnarok = {
+      #   categories = ["Game"];
+      #   comment = "Sony Santa Monica: Action, Story Rich, Adventure";
+      #   exec =
+      #     ''WINEDLLOVERRIDES="version=n,b" PROTONPATH=GE-Proton GAMEID=2322010''
+      #     + " PROTON_ENABLE_NVAPI=1 MANGOHUD=1"
+      #     + " WINEPREFIX=${wineDir}/Prefixes/God_of_War gamemoderun umu-run"
+      #     + " ${wineDir}/Games/God_of_War_Ragnarok/DynamicFOV-Non-Steam.exe";
+      #   genericName = "Game";
+      #   icon = "${wineDir}/Misc/GoWR/GoWR_Icon.png";
+      #   name = "God of War Ragnarok";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
+
+      god-of-war = {
         categories = ["Game"];
-        comment = "Sony Santa Monica: God of War Ragnarok";
+        comment = "Sony Santa Monica: Action, Story Rich, Adventure";
         exec =
-          ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="version=n,b"''
-          + " GAMEID=2322010 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/God_of_War_Ragnarok GoWR.exe";
+          ''WINEDLLOVERRIDES="xinput1_4=n,b" GAMEID=1593500''
+          + " PROTON_ENABLE_NVAPI=1 umu-launch -fm"
+          + " ${wineDir}/Games/God_of_War GoW.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/GoWR/GoWR_Icon.png";
-        name = "God of War Ragnarok";
+        icon = "${wineDir}/Misc/GoW/GoW_Icon.png";
+        name = "God of War";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
       hades = {
         categories = ["Game"];
-        comment = "Supergiant: Hades - The Godlike Roguelike";
+        comment = "Supergiant: Action Roguelike, Hack and Slash";
         exec =
           "GAMEID=1145360 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Hades x64/Hades.exe";
+          + " ${wineDir}/Games/Hades x64/Hades.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Hades/Hades_Icon.png";
+        icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
         name = "Hades";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      hollowKnight = {
+      hollow-knight = {
         categories = ["Game"];
-        comment = "Team Cherry: Hollow Knight";
+        comment = "Team Cherry: Metroidvania, Souls-like";
         exec =
           "GAMEID=367520 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Hollow_Knight HollowKnight.exe";
+          + " ${wineDir}/Games/Hollow_Knight HollowKnight.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Hollow_Knight/HK_Icon.png";
+        icon = "${wineDir}/Misc/Hollow_Knight/HK_Icon.png";
         name = "Hollow Knight";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      intoTheBreach = {
+      into-the-breach = {
         categories = ["Game"];
-        comment = "Subset Games: Into the Breach";
+        comment = "Subset Games: Turn-Based Strategy, Mechs";
         exec =
-          "steam-launch -fm /home/${uname}/Wine/Games/Into_the_Breach"
-          + " Breach.exe";
+          "GAMEID=590380 umu-launch -fm"
+          + " ${wineDir}/Games/Into_the_Breach Breach.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Breach/Breach_Icon.png";
+        icon = "${wineDir}/Misc/Breach/Breach_Icon.png";
         name = "Into the Breach";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      newNTasty = {
+      new-n-tasty = {
         categories = ["Game"];
-        comment = "Oddworld Inhabitants: Oddworld New n Tasty";
+        comment = "Oddworld Inhabitants: Puzzle Platformer, Adventure";
         exec =
-          "steam-launch -fm /home/${uname}/Wine/Games/Oddworld_New_n_Tasty"
-          + " NNT.exe";
+          "GAMEID=314660 umu-launch -fm"
+          + " ${wineDir}/Games/Oddworld_New_n_Tasty NNT.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Oddworld/NNT_Icon.png";
+        icon = "${wineDir}/Misc/Oddworld/NNT_Icon.png";
         name = "New n Tasty";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      oriWillOfWisps = {
+      ori-will-of-the-wisps = {
         categories = ["Game"];
-        comment = "Moon Studios GmbH: Ori and the Will of the Wisps";
+        comment = "Moon Studios GmbH: Metroidvania, Platformer, Action";
         exec =
-          "GAMEID=1057090 umu-launch -fm"
-          + " /home/${uname}/Wine/Games/Ori_and_the_Will_of_the_Wisps"
+          "GAMEID=1057090 umu-launch -fmx"
+          + " ${wineDir}/Games/Ori_and_the_Will_of_the_Wisps"
           + " oriwotw.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/Ori/WotW.png";
+        icon = "${wineDir}/Misc/Ori/WotW_Icon.png";
         name = "Ori and the Will of the Wisps";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      # rdr2 = {
+      # red-dead-redemption-2 = {
       #   categories = ["Game"];
-      #   comment = "Rockstar: Red Dead Redemption 2";
+      #   comment = "Rockstar: Open World, Story Rich, Western";
       #   exec =
       #     ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
       #     + " GAMEID=1174180 umu-launch -fm"
-      #     + " /home/${uname}/Wine/Games/Red_Dead_Redemption_2 Launcher.exe";
+      #     + " ${wineDir}/Games/Red_Dead_Redemption_2 Launcher.exe";
       #   genericName = "Game";
-      #   icon = "/home/${uname}/Wine/Misc/RDR2/RDR2_Icon.png";
+      #   icon = "${wineDir}/Misc/RDR2/RDR2_Icon.png";
       #   name = "Red Dead Redemption 2";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
 
-      # shadowGambit = {
+      # shadow-gambit = {
       #   categories = ["Game"];
-      #   comment = "Mimimi: Shadow Gambit - The Cursed Crew";
+      #   comment = "Mimimi: Strategy, Tactical RPG, Stealth";
       #   exec =
       #     "GAMEID=1545560 umu-launch -fm"
-      #     + " /home/${uname}/Wine/Games/Shadow_Gambit_The_Cursed_Crew"
+      #     + " ${wineDir}/Games/Shadow_Gambit_The_Cursed_Crew"
       #     + " ShadowGambit_TCC.exe";
       #   genericName = "Game";
-      #   icon = "/home/${uname}/Wine/Misc/Shadow_Gambit/SG_Icon.png";
+      #   icon = "${wineDir}/Misc/Shadow_Gambit/SG_Icon.png";
       #   name = "Shadow Gambit";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
 
-      ufo50 = {
+      ufo-50 = {
         categories = ["Game"];
-        comment = "Mossmouth: UFO 50";
+        comment = "Mossmouth: Retro, 50-in-1";
         exec =
-          "GAMEID=1147860 umu-launch -w 1920 -h 1080 -fm"
-          + " /home/${uname}/Wine/Games/UFO_50 ufo50.exe";
+          "GAMEID=1147860 umu-launch -w 1920 -h 1080 -fmx"
+          + " ${wineDir}/Games/UFO_50 ufo50.exe";
         genericName = "Game";
-        icon = "/home/${uname}/Wine/Misc/UFO_50/UFO_Icon.ico";
+        icon = "${wineDir}/Misc/UFO_50/UFO_Icon.ico";
         name = "UFO 50";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};

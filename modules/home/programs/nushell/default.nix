@@ -57,6 +57,9 @@
 
           # Background tasks with pueue
           use modules/background_task/task.nu
+
+          # carapace-bin setup
+          source ${config.xdg.cacheHome}/carapace/init.nu
         '';
 
         extraEnv =
@@ -90,6 +93,16 @@
               $env.PATH | split row (char esep)
               | append ($env.HOME | path join ".local" "bin")
               | uniq
+            )
+
+            # carapace-bin setup
+            let carapace_cache = "${config.xdg.cacheHome}/carapace"
+            if not ($carapace_cache | path exists) {
+              mkdir $carapace_cache
+            }
+            $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense'
+            ${getExe pkgs.carapace} _carapace nushell | save -f (
+              [$carapace_cache, "init.nu"] | path join
             )
           '';
 
