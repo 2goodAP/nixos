@@ -39,6 +39,17 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
+      balatro = {
+        categories = ["Game"];
+        comment = "Playstack: Roguelike, Deckbuilder";
+        exec = "GAMEID=2379780 umu-launch -fm ${wineDir}/Games/Balatro Balatro.exe";
+        genericName = "Game";
+        icon = "${wineDir}/Misc/Balatro/Balatro_Icon.png";
+        name = "Balatro";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
       # devil-may-cry-5 = {
       #   categories = ["Game"];
       #   comment = "CAPCOM: Action, Hack and Slash";
@@ -79,31 +90,16 @@ in {
       #   settings = {DBusActivatable = "false";};
       # };
 
-      # god-of-war-ragnarok = {
-      #   categories = ["Game"];
-      #   comment = "Sony Santa Monica: Action, Story Rich, Adventure";
-      #   exec =
-      #     ''WINEDLLOVERRIDES="version=n,b" PROTONPATH=GE-Proton GAMEID=2322010''
-      #     + " PROTON_ENABLE_NVAPI=1 MANGOHUD=1"
-      #     + " WINEPREFIX=${wineDir}/Prefixes/God_of_War gamemoderun umu-run"
-      #     + " ${wineDir}/Games/God_of_War_Ragnarok/DynamicFOV-Non-Steam.exe";
-      #   genericName = "Game";
-      #   icon = "${wineDir}/Misc/GoWR/GoWR_Icon.png";
-      #   name = "God of War Ragnarok";
-      #   prefersNonDefaultGPU = true;
-      #   settings = {DBusActivatable = "false";};
-      # };
-
-      god-of-war = {
+      god-of-war-ragnarok = {
         categories = ["Game"];
         comment = "Sony Santa Monica: Action, Story Rich, Adventure";
         exec =
-          ''WINEDLLOVERRIDES="xinput1_4=n,b" GAMEID=1593500''
-          + " PROTON_ENABLE_NVAPI=1 umu-launch -fm"
-          + " ${wineDir}/Games/God_of_War GoW.exe";
+          ''WINEDLLOVERRIDES="version,xinput1_4=n,b" GAMEID=2322010''
+          + " PROTON_ENABLE_NVAPI=1 umu-launch -fmxp God_of_War"
+          + " ${wineDir}/Games/God_of_War_Ragnarok GoWR.exe";
         genericName = "Game";
-        icon = "${wineDir}/Misc/GoW/GoW_Icon.png";
-        name = "God of War";
+        icon = "${wineDir}/Misc/GoWR/GoWR_Icon.png";
+        name = "God of War Ragnarok";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };

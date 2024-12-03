@@ -13,7 +13,7 @@
   ];
 
   options.tgap.home.desktop.wayland = let
-    inherit (lib) mkEnableOption mkOption types;
+    inherit (lib) mkOption types;
   in {
     windowManager = mkOption {
       type = types.enum ["sway"];
@@ -36,7 +36,7 @@
 
   config = let
     osCfg = osConfig.tgap.system.desktop;
-    inherit (lib) getExe getExe' mkIf;
+    inherit (lib) mkIf;
   in
     mkIf (osCfg.enable && osCfg.manager == "wayland") {
       gtk = {
@@ -45,6 +45,17 @@
         iconTheme = {
           name = "Papirus";
           package = pkgs.papirus-icon-theme;
+        };
+      };
+
+      home = {
+        packages = [pkgs.bibata-cursors];
+
+        pointerCursor = {
+          gtk.enable = true;
+          name = "Bibata-Modern-Classic";
+          package = pkgs.bibata-cursors;
+          size = 32;
         };
       };
 
