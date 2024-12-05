@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  osConfig,
   pkgs,
   ...
 }: {
@@ -55,6 +56,10 @@
           recursive = true;
         };
       }
+
+      (mkIf osConfig.hardware.bluetooth.enable {
+        services.mpris-proxy.enable = true;
+      })
 
       (mkIf cfg.jupyter.enable {
         home.file.jupyter-settings = {

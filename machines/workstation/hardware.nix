@@ -10,6 +10,7 @@
     kernelParams = ["split_lock_detect=off"];
 
     initrd = {
+      kernelModules = ["dm-snapshot"];
       availableKernelModules = [
         "xhci_pci"
         "ahci"
@@ -18,7 +19,6 @@
         "sd_mod"
         "rtsx_pci_sdmmc"
       ];
-      kernelModules = ["dm-snapshot"];
     };
   };
 

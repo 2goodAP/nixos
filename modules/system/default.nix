@@ -34,7 +34,7 @@
         );
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
-        system.stateVersion = "24.05";
+        system.stateVersion = "24.11";
 
         console = {
           font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";
