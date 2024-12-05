@@ -39,17 +39,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      balatro = {
-        categories = ["Game"];
-        comment = "Playstack: Roguelike, Deckbuilder";
-        exec = "GAMEID=2379780 umu-launch -fm ${wineDir}/Games/Balatro Balatro.exe";
-        genericName = "Game";
-        icon = "${wineDir}/Misc/Balatro/Balatro_Icon.png";
-        name = "Balatro";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
       # devil-may-cry-5 = {
       #   categories = ["Game"];
       #   comment = "CAPCOM: Action, Hack and Slash";
@@ -197,6 +186,19 @@ in {
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
+
+      slay-the-spire = {
+        categories = ["Game"];
+        comment = "Mega Crit: Roguelike, Deckbuilder";
+        exec =
+          "GAMEID=646570 umu-launch -fm"
+          + " ${wineDir}/Games/Slay_the_Spire SlayTheSpire.exe";
+        genericName = "Game";
+        icon = "${wineDir}/Misc/StS/StS_Icon.png";
+        name = "Slay the Spire";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
 
       ufo-50 = {
         categories = ["Game"];
