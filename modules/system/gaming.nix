@@ -135,34 +135,35 @@ in {
             A command-line game launcher to launch games with added bells-and-whistles.
 
             Options:
-              -p, --prefix <prefix>          name of the proton prefix to use from
-                                             $HOME/Wine/Prefixes
-              -w, --width <width>            output-width passed to gamescope
-              -h, --height <height>          output-height passed to gamescope
-              -r, --refresh-rate <ref-rate>  nested-refresh-rate passed to gamescope
-              -f, --fullscreen               make the gamescope window fullscreen
-              -F, --fps-limit <fps-limit>    framerate-limit passed to gamescope
-              -P, --proton <proton>          name of the proton build to use
-              -m, --mangohud                 enable mangohud overlay
-              -o, --opengl                   enable OpenGL specific tweaks
-              -x, --no-hidraw                disable HID raw and emulate xinput
-                                             for controller compatibility
-                  --help                     display this help
+              -e, --gamescope              enable gamescope nested composition
+              -w, --width <width>          output-width passed to gamescope
+              -h, --height <height>        output-height passed to gamescope
+              -r, --ref-rate <ref-rate>    nested-refresh-rate passed to gamescope
+              -l, --fps-limit <fps-limit>  framerate-limit passed to gamescope
+              -g, --gs-args <gs-args>      extra args passed to gamescope
+              -p, --prefix <prefix>        name of the proton prefix to use from
+                                           $HOME/Wine/Prefixes
+              -t, --proton <proton>        name of the proton build to use
+              -m, --mangohud               enable mangohud overlay
+              -o, --opengl                 enable OpenGL specific tweaks
+              -x, --no-hidraw              disable HID raw and emulate xinput
+                                           for controller compatibility
+                  --help                   display this help
             EOF
             }
 
-            declare {prefix,fullscreen,proton,mangohud}=""
-            declare opengl=false hidraw=1
-            width=${builtins.toString gsCfg.width}
-            height=${builtins.toString gsCfg.height}
-            ref_rate=${builtins.toString gsCfg.refreshRate}
-            fps_limit=${builtins.toString gsCfg.refreshRate}
+            declare {gs_cmd,gs_args,prefix,proton,mangohud}=""
+            declare gs_enable=false opengl=false hidraw=1
+            declare width=${builtins.toString gsCfg.width}
+            declare height=${builtins.toString gsCfg.height}
+            declare ref_rate=${builtins.toString gsCfg.refreshRate}
+            declare fps_limit=${builtins.toString gsCfg.refreshRate}
 
             if ! opts="$( \
               ${getExe' pkgs.util-linux "getopt"} --name "''${0##*/}" \
-              --options 'p:w:h:r:F:P:fmox' --longoptions 'help,prefix:,width:' \
-              --longoptions 'height:,refresh-rate:,fps-limit:,proton:' \
-              --longoptions 'fullscreen,mangohud,opengl,no-hidraw' \
+              --options 'ew:h:r:l:g:p:t:mox' --longoptions 'help,gamescope' \
+              --longoptions 'width:,height:,ref-rate:,fps-limit:,gs-args:' \
+              --longoptions 'prefix:,proton:,mangohud,opengl,no-hidraw' \
               -- "$@" \
             )"; then
               show_help >&2
@@ -172,9 +173,9 @@ in {
             eval set -- "$opts"
             while true; do
               case "$1" in
-                -p|--prefix)
-                  prefix="$2"
-                  shift 2
+                -e|--gamescope)
+                  gs_enable=true
+                  shift
                   ;;
                 -w|--width)
                   width="$2"
@@ -184,21 +185,25 @@ in {
                   height="$2"
                   shift 2
                   ;;
-                -r|--refresh-rate)
+                -r|--ref-rate)
                   ref_rate="$2"
                   shift 2
                   ;;
-                -F|--fps-limit)
+                -l|--fps-limit)
                   fps_limit="$2"
                   shift 2
                   ;;
-                -P|--proton)
-                  proton="$2"
+                -g|--gs-args)
+                  gs_args="$2"
                   shift 2
                   ;;
-                -f|--fullscreen)
-                  fullscreen="-f"
-                  shift
+                -p|--prefix)
+                  prefix="$2"
+                  shift 2
+                  ;;
+                -t|--proton)
+                  proton="$2"
+                  shift 2
                   ;;
                 -m|--mangohud)
                   mangohud="${getExe' pkgs.mangohud "mangohud"}"
@@ -241,10 +246,15 @@ in {
 
             set -e
 
-            # Default behaviors
-            # -----------------
-
             # Vars and Functions
+            # ------------------
+
+            if [[ "$gs_enable" == true ]]; then
+              gs_cmd="$(printf "%s %s %s" \
+                "gamescope -W $((width)) -H $((height)) -r $((ref_rate))" \
+                "--framerate-limit $((fps_limit)) -o 60 $gs_args --" \
+                "${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice --")"
+            fi
 
             steam_root="$HOME/.local/share/Steam"
             prefix_root="$HOME/Wine/Prefixes"
@@ -258,16 +268,20 @@ in {
             }
 
             # Proton
+            # ------
 
             steam_proton='^Proton [-. [:alnum:]]+$'
             if [[ -z "$proton" ]]; then
               PROTONPATH="GE-Proton"
             elif [[ "$proton" =~ $steam_proton ]]; then
               PROTONPATH="$steam_root/steamapps/common/$proton"
+            else
+              PROTONPATH="$proton"
             fi
             export PROTONPATH
 
             # Prefix
+            # ------
 
             if [[ -z "$prefix" ]]; then
               prefix="$(${getExe' pkgs.coreutils "basename"} "$game_dir")"
@@ -295,7 +309,7 @@ in {
             if [[ "$PROTONPATH" == "GE-Proton" ]]; then
               active_proton+="/$(find_latest_proton "$active_proton" 'GE-Proton')"
             elif [[ -x "$active_proton/$PROTONPATH/files/bin/wine" ]]; then
-              active_proton+="$PROTONPATH"
+              active_proton+="/$PROTONPATH"
             elif [[ -x "$PROTONPATH/files/bin/wine" ]]; then
               active_proton="$PROTONPATH"
             else
@@ -311,12 +325,8 @@ in {
             # ---------------
 
             cd "$game_dir" || exit 2
-            PROTON_VERB="waitforexitandrun" \
-              PROTON_HEAP_DELAY_FREE=1 PULSE_LATENCY_MSEC=30 gamescope \
-              -W $((width)) -H $((height)) -r $((ref_rate)) \
-              --framerate-limit $((fps_limit)) -o 60 $fullscreen -- \
-              ${getExe' pkgs.gamemode "gamemoderun"} \
-              ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice -- \
+            PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 \
+              $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} \
               $mangohud ${getExe' pkgs.umu-launcher "umu-run"} \
               "$exe_path" "$@" &>> "$log_file" &
             disown $!
