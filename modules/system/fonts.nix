@@ -173,20 +173,16 @@
     inherit (lib) concatMapStrings;
   in {
     environment.systemPackages = with pkgs; [
+      cascadia-code
       corefonts
       garamond-libre
       libertine
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.monaspace
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       noto-fonts-color-emoji
-      (nerdfonts.override {
-        fonts = [
-          "CascadiaCode"
-          "JetBrainsMono"
-          "Monaspace"
-        ];
-      })
     ];
 
     fonts.fontconfig = {

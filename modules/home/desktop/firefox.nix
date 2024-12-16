@@ -147,7 +147,7 @@ in
             };
           };
 
-          extensions = with config.nur.repos.rycee.firefox-addons; [
+          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
             skip-redirect
             ublock-origin
           ];
@@ -236,57 +236,95 @@ in
           };
 
           extraConfig = let
-            customDNS = "https://sky.rethinkdns.com/1:-N8BGADgfwP_6dv_8t-_8NARVnMhAGF6ANg=";
+            betterfox = builtins.fetchTarball {
+              url = "https://github.com/yokoffing/Betterfox/archive/refs/tags/133.0.tar.gz";
+              sha256 = "sha256:108slz69gpdki9y0z1vnxh1n48bfdadvdyck4366n67qvvkdmvsj";
+            };
           in ''
-            ${builtins.readFile ./arkenfox-user.js}
+            ${builtins.readFile "${betterfox}/user.js"}
 
-            // START User Overrides
-            user_pref("_user.js.parrot", "START: user overrides");
+            /****************************************************************************
+             * START: MY OVERRIDES                                                      *
+            ****************************************************************************/
+            // visit https://github.com/yokoffing/Betterfox/wiki/Common-Overrides
+            // visit https://github.com/yokoffing/Betterfox/wiki/Optional-Hardening
+            // Enter your personal overrides below this line:
 
-            // Set DNS over HTTPS (Rethink DNS).
+            // WORKAROUND: switch to 'Standard' tracking protection
+            // to avoid issues related to 'Strict' ETP
+            user_pref("browser.contentblocking.category", "standard");
+
+            // PREF: disable Firefox Sync
+            user_pref("identity.fxaccounts.enabled", false);
+
+            // PREF: disable the Firefox View tour from popping up
+            user_pref("browser.firefox-view.feature-tour", "{\"screen\":\"\",\"complete\":true}");
+
+            // PREF: disable login manager
+            user_pref("signon.rememberSignons", false);
+
+            // PREF: disable address and credit card manager
+            user_pref("extensions.formautofill.addresses.enabled", false);
+            user_pref("extensions.formautofill.creditCards.enabled", false);
+
+            // PREF: do not allow embedded tweets, Instagram, Reddit, and Tiktok posts
+            user_pref("urlclassifier.trackingSkipURLs", "");
+            user_pref("urlclassifier.features.socialtracking.skipURLs", "");
+
+            // PREF: enable HTTPS-Only Mode
+            // Warn me before loading sites that don't support HTTPS
+            // in both Normal and Private Browsing windows.
+            user_pref("dom.security.https_only_mode", true);
+            user_pref("dom.security.https_only_mode_error_page_user_suggestions", true);
+
+            // PREF: enforce DNS-over-HTTPS (DoH)
             user_pref("network.trr.mode", 3);
-            user_pref("network.trr.custom_uri", "${customDNS}");
-            user_pref("network.trr.uri", "${customDNS}");
+            // PREF: set DoH provider (HaGeZi Pro + TIF)
+            user_pref("network.trr.uri", "https://dns.dnswarden.com/00000000000000000000018");
 
-            // Leave IPv6 enabled.
-            user_pref("network.dns.disableIPv6", false);
+            // PREF: disable disk cache
+            user_pref("browser.cache.disk.enable", false);
+
+            // PREF: ask where to save every file
+            user_pref("browser.download.useDownloadDir", false);
+
+            // PREF: ask whether to open or save new file types
+            user_pref("browser.download.always_ask_before_handling_new_types", true);
+
+            // PREF: display the installation prompt for all extensions
+            user_pref("extensions.postDownloadThirdPartyPrompt", false);
+
+            // PREF: enforce certificate pinning
+            // [ERROR] MOZILLA_PKIX_ERROR_KEY_PINNING_FAILURE
+            // 1 = allow user MiTM (such as your antivirus) (default)
+            // 2 = strict
+            user_pref("security.cert_pinning.enforcement_level", 2);
+
+            // PREF: delete all browsing data on shutdown
+            user_pref("privacy.sanitize.sanitizeOnShutdown", true);
+            user_pref("privacy.clearOnShutdown_v2.cache", true); // DEFAULT
+            user_pref("privacy.clearOnShutdown_v2.cookiesAndStorage", true); // DEFAULT
+            user_pref("privacy.clearOnShutdown_v2.historyFormDataAndDownloads", true); // DEFAULT
+
+            // PREF: after crashes or restarts, do not save extra session data
+            // such as form content, scrollbar positions, and POST data
+            user_pref("browser.sessionstore.privacy_level", 2);
 
             // Use search engine URL as the browser startup homepage.
             user_pref("browser.startup.page", 1);
             user_pref("browser.startup.homepage", "${searxBaseURL}/preferences${searxPrefs}");
 
-            // Reenable search engines.
-            user_pref("keyword.enabled", true);
-            // Enable favicons, the icons in bookmarks
-            user_pref("browser.shell.shortcutFavicons", true);
+            /****************************************************************************
+             * SECTION: SMOOTHFOX                                                       *
+            ****************************************************************************/
+            // visit https://github.com/yokoffing/Betterfox/blob/main/Smoothfox.js
+            // Enter your scrolling overrides below this line:
 
-            // Strict third party requests, may cause images/video to break.
-            // Must use "Smart Referrer" extension if set to 0.
-            user_pref("network.http.referer.XOriginPolicy", 2);
-
-            // Enable playing DRM content.
-            user_pref("media.gmp-widevinecdm.enabled", true);
-            user_pref("media.eme.enabled", true);
-
-            // Disable fingerprinting resist to fix timezones.
-            user_pref("privacy.resistFingerprinting", false);
-            user_pref("privacy.resistFingerprinting.pbmode", false);
-
-            // Autoplaying settings
-            // 0=Allow all, 1=Block non-muted media (default), 5=Block all
-            user_pref("media.autoplay.default", 5);
-
-            // WebGL is a security risk, but sometimes breaks things like 23andMe
-            // or Google Maps (not always).
-            user_pref("webgl.disabled", true);
-
-            // Disable Pocket, it's proprietary trash.
-            user_pref("extensions.pocket.enabled", false);
-            // Disable Mozilla account.
-            user_pref("identity.fxaccounts.enabled", false);
-
-            // END User Overrides
-            user_pref("_user.js.parrot", "SUCCESS: user overrides");
+            // OPTION: SMOOTH SCROLLING (recommended for 90hz+ displays)
+            user_pref("apz.overscroll.enabled", true); // DEFAULT NON-LINUX
+            user_pref("general.smoothScroll", true); // DEFAULT
+            user_pref("general.smoothScroll.msdPhysics.enabled", true);
+            user_pref("mousewheel.default.delta_multiplier_y", 300); // 250-400; adjust this number to your liking
           '';
         };
       };

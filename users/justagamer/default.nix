@@ -30,7 +30,7 @@ in {
         categories = ["Game"];
         comment = "CAPCOM: Action, Hack and Slash";
         exec =
-          "GAMEID=601150 umu-launch -m"
+          "GAMEID=601150 umu-launch -em"
           + " ${wineDir}/Games/Devil_May_Cry_5 DevilMayCry5.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/DMC5/DMC5_Icon.png";
@@ -57,7 +57,7 @@ in {
         categories = ["Game"];
         comment = "Mega Crit: Roguelike, Deckbuilder";
         exec =
-          "GAMEID=646570 umu-launch -m"
+          "GAMEID=646570 umu-launch -em"
           + " ${wineDir}/Games/Slay_the_Spire SlayTheSpire.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/StS/StS_Icon.png";
@@ -70,7 +70,7 @@ in {
         categories = ["Game"];
         comment = "Subset Games: Turn-Based Strategy, Mechs";
         exec =
-          "GAMEID=590380 umu-launch -m"
+          "GAMEID=590380 umu-launch -em"
           + " ${wineDir}/Games/Into_the_Breach Breach.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/Breach/Breach_Icon.png";
@@ -83,7 +83,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Billy Basso: Exploration, Metroidvania";
       #   exec =
-      #     "GAMEID=813230 umu-launch -m"
+      #     "GAMEID=813230 umu-launch -em"
       #     + " ${wineDir}/Games/Animal_Well SmartSteamLoader_x64.exe";
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Animal_Well/AW_Icon.png";
@@ -96,7 +96,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Arcane: Stealth, First-Person";
       #   exec =
-      #     "GAMEID=403640 umu-launch -m"
+      #     "GAMEID=403640 umu-launch -em"
       #     + " ${wineDir}/Games/Dishonored_2 Dishonored2.exe";
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Dishonored_2/Dishonored2_Icon.png";
@@ -109,7 +109,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Larian: Tactical RPG, Turn-Based Strategy";
       #   exec =
-      #     ''GAMEID=435150 umu-launch -mt "GE-Proton8-32"''
+      #     ''GAMEID=435150 umu-launch -emt "GE-Proton8-32"''
       #     + " ${wineDir}/Games/Divinity_Original_Sin_2"
       #     + " DefEd/bin/EoCApp.exe";
       #   genericName = "Game";
@@ -123,7 +123,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Supergiant: Action Roguelike, Hack and Slash";
       #   exec =
-      #     "GAMEID=1145360 umu-launch -m"
+      #     "GAMEID=1145360 umu-launch -em"
       #     + " ${wineDir}/Games/Hades x64/Hades.exe";
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
@@ -136,7 +136,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Team Cherry: Metroidvania, Souls-like";
       #   exec =
-      #     "GAMEID=367520 umu-launch -m"
+      #     "GAMEID=367520 umu-launch -em"
       #     + " ${wineDir}/Games/Hollow_Knight HollowKnight.exe";
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Hollow_Knight/HK_Icon.png";
@@ -149,7 +149,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Moon Studios GmbH: Metroidvania, Platformer, Action";
       #   exec =
-      #     "GAMEID=1057090 umu-launch -mx"
+      #     "GAMEID=1057090 umu-launch -emx"
       #     + " ${wineDir}/Games/Ori_and_the_Will_of_the_Wisps"
       #     + " oriwotw.exe";
       #   genericName = "Game";
@@ -164,7 +164,7 @@ in {
       #   comment = "Rockstar: Open World, Story Rich, Western";
       #   exec =
       #     ''PROTON_ENABLE_NVAPI=1 WINEDLLOVERRIDES="dinput8,version=n,b"''
-      #     + " GAMEID=1174180 umu-launch -m"
+      #     + " GAMEID=1174180 umu-launch -em"
       #     + " ${wineDir}/Games/Red_Dead_Redemption_2 Launcher.exe";
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/RDR2/RDR2_Icon.png";
@@ -177,7 +177,7 @@ in {
       #   categories = ["Game"];
       #   comment = "Mimimi: Strategy, Tactical RPG, Stealth";
       #   exec =
-      #     "GAMEID=1545560 umu-launch -m"
+      #     "GAMEID=1545560 umu-launch -em"
       #     + " ${wineDir}/Games/Shadow_Gambit_The_Cursed_Crew"
       #     + " ShadowGambit_TCC.exe";
       #   genericName = "Game";

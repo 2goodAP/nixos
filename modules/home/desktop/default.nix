@@ -5,11 +5,11 @@
   ...
 }: {
   imports = [
-    ./applications.nix
-    ./firefox
-    ./wayland
     ./keepassxc
     ./speedcrunch
+    ./wayland
+    ./applications.nix
+    ./firefox.nix
   ];
 
   options.tgap.home.desktop.terminal = let
@@ -102,7 +102,7 @@
                   },
                 },
                 {
-                  family = "CaskaydiaCove Nerd Font",
+                  family = "Cascadia Code",
                   italic = true,
                   weight = intensity == "Bold" and "DemiBold" or (intensity == "Half" and "DemiLight" or "Regular"),
 

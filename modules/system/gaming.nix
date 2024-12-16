@@ -39,7 +39,7 @@ in {
       extraArgs = mkOption {
         type = types.str;
         default = "-f";
-        description = "Extra args for the steam gamescope command.";
+        description = "Extra args for the gamescope command.";
       };
 
       finalArgs = mkOption {
@@ -106,7 +106,6 @@ in {
                 "--rt"
                 "--adaptive-sync"
                 "--force-grab-cursor"
-                "--force-composition"
               ]
               ++ optionals (gsCfg.vkDeviceID != null) [
                 "--prefer-vk-device ${gsCfg.vkVendorID}:${gsCfg.vkDeviceID}"
@@ -152,8 +151,8 @@ in {
             EOF
             }
 
-            declare {gs_cmd,gs_args,prefix,proton,mangohud}=""
-            declare gs_enable=false opengl=false hidraw=1
+            declare {gs_cmd,prefix,proton,mangohud}=""
+            declare gs_args='${gsCfg.extraArgs}' gs_enable=false opengl=false hidraw=1
             declare width=${builtins.toString gsCfg.width}
             declare height=${builtins.toString gsCfg.height}
             declare ref_rate=${builtins.toString gsCfg.refreshRate}

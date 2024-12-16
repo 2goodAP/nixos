@@ -70,7 +70,13 @@
 
               search_url_a = "https://arxiv.org/search/?searchtype=all&source=header&query=";
               search_url_g = "https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=";
-              search_url_s = "https://www.startpage.com/sp/search?abp=1&t=light&lui=english&prfe=8248e70cd4db24a655713454e687a846b356ab6136b42142c55afc10919ed7872a95b4fa5f8f923c4f56dfe54b1eabeced0c2df702f7264f2ea021fdf96e7d64aaf2ebc59ba008d23de46f0f&query=";
+              search_url_s =
+                "https://us.startpage.com/sp/search"
+                + "?&abp=1&t=device&lui=english"
+                + "&sc=YyhP7EwjtGmX00&cat=web&prfe=fb87077e586ff7276b"
+                + "486ed2188e443936775c3976b69d8f6550982948156465cb14"
+                + "e689e00738659b51db36277aa4d52cb1b1912381b9f483ed3f"
+                + "d0b226a682c306cf98c07621c8c236ad";
               middle_click_search_engine = "a";
               shift_middle_click_search_engine = "s";
 

@@ -62,9 +62,6 @@
               users.root = import ./users/common/programs.nix;
 
               sharedModules = [
-                # nur modules for `config.nur` options
-                nur.nixosModules.nur
-
                 # custom home-manager modules
                 (import ./modules/home)
               ];
@@ -96,6 +93,7 @@
           # external nixos modules
           home-manager.nixosModules.home-manager
           lanzaboote.nixosModules.lanzaboote
+          nur.modules.nixos.default
 
           # custom nixos modules
           (import ./modules/system)

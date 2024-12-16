@@ -42,7 +42,7 @@
         services = {
           pipewire = {
             extraConfig = let
-              quant = 96;
+              quant = 128;
               rate = 48000;
             in {
               pipewire = {
