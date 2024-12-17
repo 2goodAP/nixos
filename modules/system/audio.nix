@@ -27,13 +27,30 @@
   in
     mkIf cfg.enable (mkMerge [
       {
-        services.pipewire = {
+        services.pipewire = let
+          pipewire-git = pkgs.pipewire.overrideAttrs (oldAttrs: rec {
+            version = "e4ff13a7";
+            buildInputs = oldAttrs.buildInputs ++ (with pkgs; [libebur128 liblc3]);
+
+            src = pkgs.fetchFromGitLab {
+              domain = "gitlab.freedesktop.org";
+              owner = "pipewire";
+              repo = "pipewire";
+              rev = version;
+              sha256 = "sha256-k6IIoE2B72X6FMvx3KJfjNHm/8M+k9EsabM3GjCDqmA=";
+            };
+          });
+        in {
           enable = true;
           jack.enable = true;
           pulse.enable = true;
+          package = pipewire-git;
           alsa = {
             enable = true;
             support32Bit = true;
+          };
+          wireplumber.package = pkgs.wireplumber.override {
+            pipewire = pipewire-git;
           };
         };
       }
