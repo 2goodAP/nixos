@@ -39,29 +39,29 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      doom-eternal = {
+      divinity-original-sin-2 = {
         categories = ["Game"];
-        comment = "ID Software: Action, First-Person Shooter";
+        comment = "Larian: Tactical RPG, Turn-Based Strategy";
         exec =
-          "GAMEID=782330 PROTON_ENABLE_NVAPI=1 umu-launch -m"
-          + " ${wineDir}/Games/DOOM_Eternal DOOMEternalx64vk.exe"
-          + " -- +com_skipIntroVideo 1 +set m_smooth 0";
+          ''GAMEID=435150 umu-launch -emt "GE-Proton8-32"''
+          + " ${wineDir}/Games/Divinity_Original_Sin_2"
+          + " DefEd/bin/EoCApp.exe";
         genericName = "Game";
-        icon = "${wineDir}/Misc/DOOM_Eternal/DE_Icon.png";
-        name = "DOOM Eternal";
+        icon = "${wineDir}/Misc/DOS2/DOS2_Icon.png";
+        name = "Divinity Original Sin 2";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
 
-      slay-the-spire = {
+      hades = {
         categories = ["Game"];
-        comment = "Mega Crit: Roguelike, Deckbuilder";
+        comment = "Supergiant: Action Roguelike, Hack and Slash";
         exec =
-          "GAMEID=646570 umu-launch -em"
-          + " ${wineDir}/Games/Slay_the_Spire SlayTheSpire.exe";
+          "GAMEID=1145360 umu-launch -em"
+          + " ${wineDir}/Games/Hades x64/Hades.exe";
         genericName = "Game";
-        icon = "${wineDir}/Misc/StS/StS_Icon.png";
-        name = "Slay the Spire";
+        icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
+        name = "Hades";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -75,6 +75,19 @@ in {
         genericName = "Game";
         icon = "${wineDir}/Misc/Breach/Breach_Icon.png";
         name = "Into the Breach";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      slay-the-spire = {
+        categories = ["Game"];
+        comment = "Mega Crit: Roguelike, Deckbuilder";
+        exec =
+          "GAMEID=646570 umu-launch -em"
+          + " ${wineDir}/Games/Slay_the_Spire SlayTheSpire.exe";
+        genericName = "Game";
+        icon = "${wineDir}/Misc/StS/StS_Icon.png";
+        name = "Slay the Spire";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -101,33 +114,6 @@ in {
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Dishonored_2/Dishonored2_Icon.png";
       #   name = "Dishonored 2";
-      #   prefersNonDefaultGPU = true;
-      #   settings = {DBusActivatable = "false";};
-      # };
-
-      # divinity-original-sin-2 = {
-      #   categories = ["Game"];
-      #   comment = "Larian: Tactical RPG, Turn-Based Strategy";
-      #   exec =
-      #     ''GAMEID=435150 umu-launch -emt "GE-Proton8-32"''
-      #     + " ${wineDir}/Games/Divinity_Original_Sin_2"
-      #     + " DefEd/bin/EoCApp.exe";
-      #   genericName = "Game";
-      #   icon = "${wineDir}/Misc/DOS2/DOS2_Icon.png";
-      #   name = "Divinity Original Sin 2";
-      #   prefersNonDefaultGPU = true;
-      #   settings = {DBusActivatable = "false";};
-      # };
-
-      # hades = {
-      #   categories = ["Game"];
-      #   comment = "Supergiant: Action Roguelike, Hack and Slash";
-      #   exec =
-      #     "GAMEID=1145360 umu-launch -em"
-      #     + " ${wineDir}/Games/Hades x64/Hades.exe";
-      #   genericName = "Game";
-      #   icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
-      #   name = "Hades";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
