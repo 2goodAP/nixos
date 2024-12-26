@@ -21,7 +21,6 @@
     network = {
       inherit hostName;
       enable = true;
-      nameservers = ["9.9.9.9"];
       interfaces = ["enp7s0f1" "wlp0s20f3"];
       wifiRandMacAddress = false;
     };

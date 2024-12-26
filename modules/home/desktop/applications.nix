@@ -199,13 +199,20 @@
         in
           (with pkgs; [
             libreoffice-fresh
+            localsend
             tor-browser-bundle-bin
             wev
             (gimp-with-plugins.override {
               plugins = with gimpPlugins; [bimp gap gmic];
             })
           ])
-          ++ optionals cfg.nixosApplications.enable ([
+          ++ optionals cfg.nixosApplications.enable (
+            (with pkgs; [
+              gparted
+              nextcloud-client
+              zoom-us
+            ])
+            ++ [
               (pkgs.symlinkJoin {
                 name = "kdenlive";
                 paths = [pkgs.kdenlive];
@@ -217,12 +224,7 @@
                 '';
               })
             ]
-            ++ (with pkgs; [
-              gparted
-              nextcloud-client
-              zoom-us
-            ]))
-          ++ optionals osCfg.programs.iosTools.enable [pkgs.localsend];
+          );
       })
 
       (mkIf (osCfg.desktop.gaming.enable && cfg.gaming.enable) {

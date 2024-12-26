@@ -32,7 +32,6 @@
     network = {
       inherit hostName;
       enable = true;
-      nameservers = ["9.9.9.9"];
       interfaces = ["enp4s0" "wlo1"];
     };
   };

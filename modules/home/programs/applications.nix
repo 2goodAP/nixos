@@ -16,31 +16,53 @@
 
   config = let
     cfg = config.tgap.home.programs.applications;
+    osCfg = osConfig.tgap.system.network;
     inherit (lib) mkIf mkMerge;
   in
     mkIf cfg.enable (mkMerge [
       {
-        programs.beets = {
-          enable = true;
-          package = pkgs.beets-unstable;
+        programs = {
+          aria2 = {
+            enable = true;
+            settings = {
+              enable-dht = true;
+              enable-dht6 = true;
+              listen-port = osCfg.allowedPorts.aria2;
+              dht-listen-port = osCfg.allowedPorts.aria2;
+            };
+          };
 
-          settings = {
-            # Path to the music directory and the music library
-            directory = "~/Music";
-            library = "~/.local/share/beets/beets-music-library.db";
+          beets = {
+            enable = true;
+            package = pkgs.beets-unstable;
 
-            # Move the music files instead of copying to save space
-            import.move = true;
+            settings = {
+              # Path to the music directory and the music library
+              directory = "~/Music";
+              library = "~/.local/share/beets/beets-music-library.db";
 
-            # Plugins
-            plugins = "chroma edit fetchart fromfilename zero";
+              # Move the music files instead of copying to save space
+              import.move = true;
 
-            # Settings for the 'zero' plugin
-            zero = {
-              fields = "comments images day month";
-              # Regexp to identify comments
-              comments = ["EAC" "LAME" "from.+collection" "ripped by"];
-              update_database = true;
+              # Plugins
+              plugins = "chroma edit fetchart fromfilename zero";
+
+              # Settings for the 'zero' plugin
+              zero = {
+                fields = "comments images day month";
+                # Regexp to identify comments
+                comments = ["EAC" "LAME" "from.+collection" "ripped by"];
+                update_database = true;
+              };
+            };
+          };
+
+          yt-dlp = {
+            enable = true;
+            settings = {
+              embed-thumbnail = true;
+              downloader = "http,ftp:aria2c";
+              downloader-args = "aria2c:'-c -x8 -s8 -k1M'";
             };
           };
         };

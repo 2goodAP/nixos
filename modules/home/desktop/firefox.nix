@@ -280,7 +280,7 @@ in
             // PREF: enforce DNS-over-HTTPS (DoH)
             user_pref("network.trr.mode", 3);
             // PREF: set DoH provider (HaGeZi Pro + TIF)
-            user_pref("network.trr.uri", "https://dns.dnswarden.com/00000000000000000000018");
+            user_pref("network.trr.uri", "https://dns.dnswarden.com/g0000000000000000000018");
 
             // PREF: disable disk cache
             user_pref("browser.cache.disk.enable", false);
