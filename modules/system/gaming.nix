@@ -121,7 +121,7 @@ in {
         };
 
         environment.systemPackages = let
-          umuLaunch = pkgs.writeShellScriptBin "umu-launch" ''
+          umu-launch = pkgs.writeShellScriptBin "umu-launch" ''
             # Command-line parsing
             # --------------------
 
@@ -335,7 +335,7 @@ in {
         in [
           steam.run
           pkgs.umu-launcher
-          umuLaunch
+          umu-launch
         ];
       }
 

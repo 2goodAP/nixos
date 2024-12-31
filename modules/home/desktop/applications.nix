@@ -198,13 +198,11 @@
             ]);
         in
           (with pkgs; [
+            gimp
             libreoffice-fresh
             localsend
             tor-browser-bundle-bin
             wev
-            (gimp-with-plugins.override {
-              plugins = with gimpPlugins; [bimp gap gmic];
-            })
           ])
           ++ optionals cfg.nixosApplications.enable (
             (with pkgs; [
