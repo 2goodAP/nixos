@@ -26,6 +26,19 @@ in {
     xdg.desktopEntries = let
       wineDir = "/home/${uname}/Wine";
     in {
+      devil-may-cry-5 = {
+        categories = ["Game"];
+        comment = "CAPCOM: Action, Hack and Slash";
+        exec =
+          "GAMEID=601150 umu-launch -em"
+          + " ${wineDir}/Games/Devil_May_Cry_5 DevilMayCry5.exe";
+        genericName = "Game";
+        icon = "${wineDir}/Misc/DMC5/DMC5_Icon.png";
+        name = "Devil May Cry 5";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
       divinity-original-sin-2 = {
         categories = ["Game"];
         comment = "Larian: Tactical RPG, Turn-Based Strategy";
@@ -66,20 +79,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      last-of-us = {
-        categories = ["Game"];
-        comment = "Naughty Dog: Story-Rich, Shooter";
-        exec =
-          "GAMEID=1888930 umu-launch -em"
-          + " ${wineDir}/Games/The_Last_of_Us_Part_I"
-          + " launcher.exe";
-        genericName = "Game";
-        icon = "${wineDir}/Misc/TLoU/TLoU_Icon.png";
-        name = "The Last of Us Part I";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
       slay-the-spire = {
         categories = ["Game"];
         comment = "Mega Crit: Roguelike, Deckbuilder";
@@ -102,19 +101,6 @@ in {
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Animal_Well/AW_Icon.png";
       #   name = "Animal Well";
-      #   prefersNonDefaultGPU = true;
-      #   settings = {DBusActivatable = "false";};
-      # };
-
-      # devil-may-cry-5 = {
-      #   categories = ["Game"];
-      #   comment = "CAPCOM: Action, Hack and Slash";
-      #   exec =
-      #     "GAMEID=601150 umu-launch -em"
-      #     + " ${wineDir}/Games/Devil_May_Cry_5 DevilMayCry5.exe";
-      #   genericName = "Game";
-      #   icon = "${wineDir}/Misc/DMC5/DMC5_Icon.png";
-      #   name = "Devil May Cry 5";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
