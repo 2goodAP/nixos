@@ -1,5 +1,5 @@
 {
-    "autosave": false,
+    "autosave": true,
     "autosaveInterval": 120,
     "confirmClosingDocument": false,
     "lastModifiedCheckMargin": 500,

@@ -2,8 +2,8 @@
     "preferences": {
         "default_formatter": {
             "python": [
-                "isort",
-                "ruff_format",
+                "ruff",
+                "ruffformat"
             ],
             "R": "formatR",
             "rust": "rustfmt",
@@ -33,14 +33,14 @@
         "width_cutoff": 150
     },
     "styler": {},
-    "formatOnSave": true,
+    "formatOnSave": false,
     "cacheFormatters": false,
     "astyle": {
         "args": []
     },
     "ruff": {
         "args": [
-            "--select=I"
+            "--select I"
         ]
     },
     "suppressFormatterErrors": false

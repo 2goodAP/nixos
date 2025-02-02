@@ -289,7 +289,7 @@ in {
 
             log_file="/tmp/$prefix.log"
             if [[ ! -x "$WINEPREFIX/pfx.lock" ]]; then
-              ${getExe' pkgs.umu-launcher "umu-run"} "" &> "$log_file" || true
+              ${getExe' pkgs.umu "umu-run"} "" &> "$log_file" || true
             else
               ${getExe' pkgs.coreutils "echo"} "" > "$log_file"
             fi
@@ -326,7 +326,7 @@ in {
             cd "$game_dir" || exit 2
             PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 \
               $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} \
-              $mangohud ${getExe' pkgs.umu-launcher "umu-run"} \
+              $mangohud ${getExe' pkgs.umu "umu-run"} \
               "$exe_path" "$@" &>> "$log_file" &
             disown $!
 
@@ -334,7 +334,7 @@ in {
           '';
         in [
           steam.run
-          pkgs.umu-launcher
+          pkgs.umu
           umu-launch
         ];
       }

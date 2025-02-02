@@ -2,8 +2,7 @@
   description = "2goodAP's NixOS configuration with flakes.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/2bdbe4c";
-    nur.url = "github:nix-community/NUR";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -17,12 +16,16 @@
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     wezterm = {
       url = "github:wez/wezterm?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     umu-launcher = {
-      url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
+      url = "github:Open-Wine-Components/umu-launcher/4d1860e?dir=packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

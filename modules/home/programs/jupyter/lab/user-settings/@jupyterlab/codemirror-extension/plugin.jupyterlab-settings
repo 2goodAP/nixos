@@ -5,8 +5,8 @@
         "highlightActiveLine": true,
         "highlightTrailingWhitespace": true,
         "customStyles": {
-            "fontFamily": "FiraCode Nerd Font",
-            "fontSize": 13.38,
+            "fontFamily": "JetBrainsMono Nerd Font",
+            "fontSize": 14,
             "lineHeight": 1.2
         }
     }

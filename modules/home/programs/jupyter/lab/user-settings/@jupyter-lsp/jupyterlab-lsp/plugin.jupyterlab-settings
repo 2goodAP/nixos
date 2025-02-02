@@ -112,8 +112,6 @@
                 "pylsp.rope.extensionModules": null,
                 "pylsp.rope.ropeFolder": null,
                 "pylsp.plugins.jedi.env_vars": null,
-                "pylsp.plugins.black.enabled": true,
-                "pylsp.plugins.isort.enabled": true,
                 "pylsp.plugins.ruff.enabled": true
             },
             "configuration": {
@@ -184,9 +182,6 @@
                 "pylsp.plugins.yapf.enabled": false,
                 "pylsp.rope.extensionModules": null,
                 "pylsp.rope.ropeFolder": null,
-
-                "pylsp.plugins.black.enabled": true,
-                "pylsp.plugins.isort.enabled": true,
                 "pylsp.plugins.ruff.enabled": true
             },
             "rank": 50

@@ -26,15 +26,15 @@ in {
     xdg.desktopEntries = let
       wineDir = "/home/${uname}/Wine";
     in {
-      devil-may-cry-5 = {
+      dead-cells = {
         categories = ["Game"];
-        comment = "CAPCOM: Action, Hack and Slash";
+        comment = "Motion Twin: Adventure, Action Roguelike";
         exec =
-          "GAMEID=601150 umu-launch -em"
-          + " ${wineDir}/Games/Devil_May_Cry_5 DevilMayCry5.exe";
+          "GAMEID=588650 umu-launch -emx"
+          + " ${wineDir}/Games/Dead_Cells deadcells.exe";
         genericName = "Game";
-        icon = "${wineDir}/Misc/DMC5/DMC5_Icon.png";
-        name = "Devil May Cry 5";
+        icon = "${wineDir}/Misc/Dead_Cells/DC_Icon.png";
+        name = "Dead Cells";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };

@@ -14,7 +14,7 @@ in
     (final: prev:
       {wezterm = inputs.wezterm.packages.${system}.default;}
       // optionalAttrs enableGaming {
-        umu-launcher = inputs.umu-launcher.packages.${system}.umu;
+        umu = inputs.umu-launcher.packages.${system}.umu;
 
         gamemode = prev.gamemode.overrideAttrs (oldAttrs: {
           postPatch =
