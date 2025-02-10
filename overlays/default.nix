@@ -14,7 +14,20 @@ in
     (final: prev:
       {wezterm = inputs.wezterm.packages.${system}.default;}
       // optionalAttrs enableGaming {
-        umu = inputs.umu-launcher.packages.${system}.umu;
+        umu-launcher-git = prev.buildFHSEnv {
+          pname = "umu-launcher-git";
+          inherit
+            (final.umu-launcher.passthru.args)
+            version
+            meta
+            targetPkgs
+            multiPkgs
+            executableName
+            runScript
+            extraInstallCommands
+            ;
+          inherit (final.steam-run-free.passthru.args) multiArch profile;
+        };
 
         gamemode = prev.gamemode.overrideAttrs (oldAttrs: {
           postPatch =
@@ -34,6 +47,9 @@ in
             oldAttrs.postInstall;
         });
       })
+  ]
+  ++ optionals enableGaming [
+    inputs.umu-launcher.overlays.default
   ]
   ++ optionals (cfg.enable && cfg.manager == "wayland") [
     inputs.nixpkgs-wayland.overlay

@@ -182,9 +182,9 @@
             },
 
             window_padding = {
-              bottom = 0,
+              bottom = 2,
               left = 5,
-              right = 1,
+              right = 3,
               top = 4,
             },
           }

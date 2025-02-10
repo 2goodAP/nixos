@@ -25,7 +25,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     umu-launcher = {
-      url = "github:Open-Wine-Components/umu-launcher/4d1860e?dir=packaging/nix";
+      url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
