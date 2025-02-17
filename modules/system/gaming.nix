@@ -289,7 +289,7 @@ in {
 
             log_file="/tmp/$prefix.log"
             if [[ ! -x "$WINEPREFIX/pfx.lock" ]]; then
-              ${getExe' pkgs.umu "umu-launcher-git"} "" &> "$log_file" || true
+              ${getExe' pkgs.umu "umu-launcher"} "" &> "$log_file" || true
             else
               ${getExe' pkgs.coreutils "echo"} "" > "$log_file"
             fi
@@ -326,14 +326,14 @@ in {
             cd "$game_dir" || exit 2
             PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 \
               $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} $mangohud \
-              ${getExe pkgs.umu-launcher-git} "$exe_path" "$@" &>> "$log_file" &
+              ${getExe pkgs.umu-launcher} "$exe_path" "$@" &>> "$log_file" &
             disown $!
 
             set +e
           '';
         in [
           steam.run
-          pkgs.umu-launcher-git
+          pkgs.umu-launcher
           umu-launch
         ];
       }

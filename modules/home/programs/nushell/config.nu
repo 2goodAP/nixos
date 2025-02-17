@@ -68,8 +68,7 @@ $env.config = {
     }
 
     filesize: {
-        metric: true # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
-        format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, auto
+        unit: "metric" # metric => KB, MB, GB (ISO standard), binary => KiB, MiB, GiB (Windows standard)
     }
 
     cursor_shape: {

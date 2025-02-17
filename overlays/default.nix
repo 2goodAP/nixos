@@ -14,21 +14,6 @@ in
     (final: prev:
       {wezterm = inputs.wezterm.packages.${system}.default;}
       // optionalAttrs enableGaming {
-        umu-launcher-git = prev.buildFHSEnv {
-          pname = "umu-launcher-git";
-          inherit
-            (final.umu-launcher.passthru.args)
-            version
-            meta
-            targetPkgs
-            multiPkgs
-            executableName
-            runScript
-            extraInstallCommands
-            ;
-          inherit (final.steam-run-free.passthru.args) multiArch profile;
-        };
-
         gamemode = prev.gamemode.overrideAttrs (oldAttrs: {
           postPatch =
             oldAttrs.postPatch
