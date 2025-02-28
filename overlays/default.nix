@@ -12,7 +12,15 @@
 in
   [
     (final: prev:
-      {wezterm = inputs.wezterm.packages.${system}.default;}
+      {
+        wezterm = inputs.wezterm.packages.${system}.default;
+
+        qmk = prev.qmk.overrideAttrs (oldAttrs: {
+          propagatedBuildInputs =
+            oldAttrs.propagatedBuildInputs
+            ++ [final.python3.pkgs.appdirs];
+        });
+      }
       // optionalAttrs enableGaming {
         gamemode = prev.gamemode.overrideAttrs (oldAttrs: {
           postPatch =
