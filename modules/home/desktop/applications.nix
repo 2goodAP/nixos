@@ -213,7 +213,7 @@
             ++ [
               (pkgs.symlinkJoin {
                 name = "kdenlive";
-                paths = [pkgs.kdenlive];
+                paths = [pkgs.kdePackages.kdenlive];
                 buildInputs = [pkgs.makeWrapper];
                 postBuild = ''
                   wrapProgram $out/bin/kdenlive --suffix LD_LIBRARY_PATH : ${

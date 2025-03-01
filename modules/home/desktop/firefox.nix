@@ -76,7 +76,7 @@ in
 
             engines = {
               NixPackages = {
-                definedAliases = ["@nixos" "@np"];
+                definedAliases = ["@nix" "@np"];
                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
 
                 urls = [
@@ -148,7 +148,7 @@ in
             };
           };
 
-          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
             skip-redirect
             ublock-origin
           ];
@@ -280,8 +280,8 @@ in
 
             // PREF: enforce DNS-over-HTTPS (DoH)
             user_pref("network.trr.mode", 3);
-            // PREF: set DoH provider (HaGeZi Pro + TIF)
-            user_pref("network.trr.uri", "https://dns.dnswarden.com/g0000000000000000000018");
+            // PREF: set DoH provider (Quad9)
+            user_pref("network.trr.uri", "https://dns.quad9.net/dns-query");
 
             // PREF: disable disk cache
             user_pref("browser.cache.disk.enable", false);
