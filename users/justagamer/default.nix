@@ -70,7 +70,7 @@ in {
         categories = ["Game"];
         comment = "Subset Games: Turn-Based Strategy, Mechs";
         exec =
-          "GAMEID=590380 umu-launch -em"
+          "GAMEID=590380 umu-launch -emx"
           + " ${wineDir}/Games/Into_the_Breach Breach.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/Breach/Breach_Icon.png";
@@ -83,11 +83,24 @@ in {
         categories = ["Game"];
         comment = "Mega Crit: Roguelike, Deckbuilder";
         exec =
-          "GAMEID=646570 umu-launch -em"
+          "GAMEID=646570 umu-launch -mx"
           + " ${wineDir}/Games/Slay_the_Spire SlayTheSpire.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/StS/StS_Icon.png";
         name = "Slay the Spire";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      star-of-providence = {
+        categories = ["Game"];
+        comment = "Team D-13: Bullet Hell, Action Roguelike";
+        exec =
+          "GAMEID=603960 umu-launch -mx"
+          + " ${wineDir}/Games/Monolith Star_of_Providence.exe";
+        genericName = "Game";
+        icon = "${wineDir}/Misc/SoP/SoP_Icon.png";
+        name = "Star of Providence";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
