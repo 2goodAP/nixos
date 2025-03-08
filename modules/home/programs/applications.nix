@@ -34,22 +34,7 @@
 
           beets = {
             enable = true;
-            package = pkgs.beets-unstable.override (olds: {
-              extraPatches =
-                [
-                  (pkgs.fetchpatch {
-                    # Issue: https://github.com/beetbox/beets/issues/5527
-                    # PR: https://github.com/beetbox/beets/pull/5650
-                    name = "fix-im-backend";
-                    url = "https://github.com/beetbox/beets/commit/1f938674015ee71431fe9bd97c2214f58473efd2.patch";
-                    hash = "sha256-koCYeiUhk1ifo6CptOSu3p7Nz0FFUeiuArTknM/tpVQ=";
-                    excludes = [
-                      "docs/changelog.rst"
-                    ];
-                  })
-                ]
-                ++ olds.extraPatches;
-            });
+            package = pkgs.beets-unstable;
 
             settings = {
               # Path to the music directory and the music library

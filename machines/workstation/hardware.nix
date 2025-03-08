@@ -30,7 +30,7 @@
       open = false;
       modesetting.enable = true;
       nvidiaPersistenced = true;
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
 
       powerManagement = {
         enable = true;

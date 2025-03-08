@@ -73,8 +73,8 @@
                     ninja
                     nix
                     norg
+                    nu
                     objdump
-                    org
                     passwd
                     perl
                     printf
@@ -109,6 +109,9 @@
                     xml
                     yaml
                     yuck
+
+                    tree-sitter-norg-meta
+                    tree-sitter-org-nvim
                   ]
               );
               config = ''
