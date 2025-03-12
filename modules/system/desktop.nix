@@ -55,7 +55,7 @@
 
         services = {
           desktopManager.plasma6.enable = true;
-          power-profiles-daemon.enable = !config.services.tlp.enable;
+          power-profiles-daemon.enable = !config.services.auto-cpufreq.enable;
         };
       })
     ]);

@@ -26,9 +26,10 @@
     cpu.intel.updateMicrocode = true;
 
     nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      open = false;
       modesetting.enable = true;
       nvidiaPersistenced = true;
+      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
       powerManagement.enable = true;
 
       prime = {

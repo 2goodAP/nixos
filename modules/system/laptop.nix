@@ -17,23 +17,14 @@
 
   config = let
     cfg = config.tgap.system;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) getExe' mkIf mkMerge;
   in
     mkIf cfg.laptop.enable (mkMerge [
       {
-        environment = {
-          systemPackages = with pkgs; [
-            acpi
-            nbfc-linux
-          ];
-
-          etc."nbfc/nbfc.json" = {
-            text = ''
-              {"SelectedConfigId": "${cfg.model}"}
-            '';
-            mode = "0644";
-          };
-        };
+        environment.systemPackages = with pkgs; [
+          acpi
+          nbfc-linux
+        ];
 
         services = {
           auto-cpufreq.enable = true;
@@ -54,13 +45,19 @@
           '';
         };
 
-        systemd.services.nbfc_service = {
+        systemd.services.nbfc_service = let
+          nbfc-json = pkgs.writeText "nbfc.json" ''
+            {"SelectedConfigId": "${cfg.laptop.model}"}
+          '';
+        in {
           enable = true;
           description = "NoteBook FanControl service";
           serviceConfig.Type = "simple";
           path = [pkgs.kmod];
-          script = "${pkgs.nbfc-linux}/bin/nbfc_service";
           wantedBy = ["multi-user.target"];
+          script = ''
+            ${getExe' pkgs.nbfc-linux "nbfc_service"} --config-file ${nbfc-json}
+          '';
         };
       }
 
