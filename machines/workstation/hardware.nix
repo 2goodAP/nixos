@@ -27,7 +27,7 @@
     cpu.intel.updateMicrocode = true;
 
     nvidia = {
-      open = false;
+      open = true;
       modesetting.enable = true;
       nvidiaPersistenced = true;
       package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
