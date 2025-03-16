@@ -43,13 +43,25 @@ in
         })
 
         require("conform").setup({
+          formatters = {
+            ["biome-check"] = {
+              args = {
+                "check",
+                "--indent-style",
+                "space",
+                "--write",
+                "--stdin-file-path",
+                "$FILENAME",
+				      },
+            },
+          },
           formatters_by_ft = {
-            javascript = {"biome-check", "biome"},
-            javascriptreact = {"biome-check", "biome"},
-            json = {"biome", "jq", stop_after_first = true},
-            jsonc = {"biome", "jq", stop_after_first = true},
-            typescript = {"biome-check", "biome"},
-            typescriptreact = {"biome-check", "biome"},
+            javascript = {"biome-check"},
+            javascriptreact = {"biome-check"},
+            json = {"biome-check", "jq", stop_after_first = true},
+            jsonc = {"biome-check", "jq", stop_after_first = true},
+            typescript = {"biome-check"},
+            typescriptreact = {"biome-check"},
           },
         })
 

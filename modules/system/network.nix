@@ -22,8 +22,14 @@
     };
 
     allowedPorts = mkOption {
-      type = types.attrsOf types.int;
+      type = types.attrsOf types.port;
       description = "TCP/UDP ports to allow in the firewall.";
+      default = {};
+    };
+
+    allowedPortRanges = mkOption {
+      type = types.attrsOf (types.attrsOf types.port);
+      description = "A range of TCP/UDP ports to allow in the firewall.";
       default = {};
     };
 
@@ -69,10 +75,13 @@
           # Configure the firewall.
           firewall = let
             allowedPorts = mapAttrsToList (_: value: value) cfg.allowedPorts;
+            allowedPortRanges = mapAttrsToList (_: value: value) cfg.allowedPortRanges;
           in {
             enable = true;
             allowedTCPPorts = allowedPorts;
+            allowedTCPPortRanges = allowedPortRanges;
             allowedUDPPorts = allowedPorts;
+            allowedUDPPortRanges = allowedPortRanges;
           };
         };
 

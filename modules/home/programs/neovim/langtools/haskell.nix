@@ -31,7 +31,7 @@ in
       home.file."${cfg.runtimepath}/ftplugin/haskell.lua".text = ''
         local ht = require("haskell-tools")
         local bufnr = vim.api.nvim_get_current_buf()
-        local ht_opts = {noremap = true, silent = true, buffer = bufnr}
+        local ht_opts = {buffer = bufnr, silent = true}
 
         -- haskell-language-server relies heavily on codelenses,
         -- so auto-refresh (see advanced configuration) is enabled by default

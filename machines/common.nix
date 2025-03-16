@@ -6,9 +6,12 @@
       manager = "plasma";
     };
 
-    network.allowedPorts = {
-      localsend = 53317;
-      aria2 = 55000;
+    network = {
+      allowedPorts.aria2 = 55000;
+      allowedPortRanges.localsend = {
+        from = 53316;
+        to = 53318;
+      };
     };
 
     programs = {

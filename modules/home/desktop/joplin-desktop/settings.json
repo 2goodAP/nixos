@@ -1,0 +1,96 @@
+{
+  "$schema": "https://joplinapp.org/schema/settings.json",
+  "editor.codeView": true,
+  "locale": "en_US",
+  "dateFormat": "YYYY-MM-DD",
+  "timeFormat": "HH:mm",
+  "ocr.enabled": true,
+  "theme": 1,
+  "themeAutoDetect": true,
+  "preferredLightTheme": 1,
+  "preferredDarkTheme": 2,
+  "notes.sortOrder.field": "title",
+  "notes.sortOrder.reverse": false,
+  "trackLocation": false,
+  "markdown.plugin.softbreaks": true,
+  "markdown.plugin.typographer": true,
+  "markdown.plugin.fountain": true,
+  "markdown.plugin.sub": true,
+  "markdown.plugin.sup": true,
+  "markdown.plugin.abbr": true,
+  "markdown.plugin.emoji": true,
+  "markdown.plugin.insert": true,
+  "showTrayIcon": true,
+  "startMinimized": true,
+  "style.editor.contentMaxWidth": 0,
+  "ui.layout": {
+    "key": "root",
+    "children": [
+      {
+        "key": "sideBar",
+        "visible": true,
+        "width": 162
+      },
+      {
+        "key": "noteList",
+        "visible": false,
+        "width": 212
+      },
+      {
+        "key": "tempContainer-W7whqV7yXDN1OTIoZ8Z5uw",
+        "children": [
+          {
+            "key": "plugin-view-joplin.plugin.benji.favorites-favorites.panel",
+            "context": {
+              "pluginId": "joplin.plugin.benji.favorites"
+            },
+            "visible": true,
+            "height": 563
+          },
+          {
+            "key": "plugin-view-org.joplinapp.plugins.joplin-calendar-calendar_panel",
+            "context": {
+              "pluginId": "org.joplinapp.plugins.joplin-calendar"
+            },
+            "visible": true
+          }
+        ],
+        "visible": true,
+        "width": 244
+      },
+      {
+        "key": "tempContainer-ZjIAIEFCiQ8m8WezHWYZZ5",
+        "children": [
+          {
+            "key": "plugin-view-joplin.plugin.note.tabs-note.tabs.panel",
+            "context": {
+              "pluginId": "joplin.plugin.note.tabs"
+            },
+            "visible": true,
+            "height": 66
+          },
+          {
+            "key": "editor",
+            "visible": true
+          }
+        ],
+        "visible": true
+      }
+    ],
+    "visible": true
+  },
+  "noteVisiblePanes": ["viewer"],
+  "editor.keyboardMode": "vim",
+  "editor.spellcheckBeta": true,
+  "editor.beta": true,
+  "spellChecker.languages": ["en-US"],
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.lineNumbers": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.codeFolding": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.enableAutocomplete": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.highlightActiveLineGutter": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.highlightActiveLine": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.highlightSpaces": false,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.highlightTrailingSpaces": true,
+  "plugin-io.github.personalizedrefrigerator.codemirror6-settings.highlightSelectionMatches": true,
+  "plugin-io.github.personalizedrefrigerator.snippets-and-autocomplete.snippets-note-id": ""
+}

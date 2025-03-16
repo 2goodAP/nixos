@@ -21,15 +21,26 @@
   config = let
     cfg = config.tgap.home.desktop;
     osCfg = osConfig.tgap.system;
-    inherit (lib) mkIf mkMerge optionals;
+    inherit (lib) importJSON mkIf mkMerge optionals;
   in
     mkIf osCfg.desktop.enable (mkMerge [
       (mkIf cfg.applications.enable {
+        xdg.configFile = {
+          "joplin-desktop/keymap-desktop.json" = {
+            source = ./joplin-desktop/keymap-desktop.json;
+          };
+          "joplin-desktop/plugins" = {
+            source = ./joplin-desktop/plugins;
+            recursive = true;
+          };
+        };
+
         programs = {
           joplin-desktop = {
             enable = true;
+            extraConfig = importJSON ./joplin-desktop/settings.json;
             sync = {
-              interval = "5m";
+              interval = "10m";
               target = "nextcloud";
             };
           };
@@ -41,7 +52,7 @@
               profile = "gpu-hq";
               vo = "gpu";
               hwdec = "auto-safe";
-              ytdl-format = "ytdl-format=bestvideo[height<=?1920][fps<=?60]+bestaudio/best";
+              ytdl-format = "ytdl-format=bestvideo[height<=?3840][fps<=?60]+bestaudio/best";
             };
           };
 

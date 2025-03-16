@@ -75,7 +75,7 @@
               tab[key] = val
               return tab
             end
-            local bufopts = {noremap=true, silent=true, buffer=bufnr}
+            local bufopts = {buffer = bufnr, silent = true}
 
             vim.keymap.set(
               "n", "gD", vim.lsp.buf.declaration,
@@ -128,7 +128,7 @@
               _tab_set_key(bufopts, "desc", "LSP: References")
             )
             vim.keymap.set(
-              "n", "<leader>F", vim.lsp.buf.format,
+              "n", "<leader>T", vim.lsp.buf.format,
               _tab_set_key(bufopts, "desc", "LSP: Format")
             )
           end
@@ -160,15 +160,21 @@
                 plugin = conform-nvim;
                 type = "lua";
                 config = ''
+                  local format_opts = {
+                    -- Extra options passed to conform.format()
+                    timeout_ms = 500,
+                    lsp_format = "fallback",
+                  }
+
                   require("conform").setup({
-                    default_format_opts = {
-                      -- The default options passed to conform.format()
-                      lsp_format = "fallback",
-                    },
-                    format_after_save = {
-                      -- Extra options passed to conform.format()
-                      lsp_format = "fallback",
-                    },
+                    default_format_opts = format_opts,
+                    format_after_save = function(bufnr)
+                      -- Disable with a global or buffer-local variable
+                      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+                        return
+                      end
+                      return format_opts
+                    end,
                     formatters_by_ft = {
                       ["*"] = {"trim_newlines", "trim_whitespace"},
                       asciidoc = {"typos"},
@@ -182,6 +188,33 @@
                       toml = {"taplo"},
                       yaml = {"yq"},
                     },
+                  })
+
+                  vim.keymap.set(
+                    "", "<leader>F", function()
+                      require("conform").format({async = true})
+                    end, {
+                      desc = "Conform: Format buffer",
+                      silent = true,
+                    }
+                  )
+
+                  vim.api.nvim_create_user_command("FormatDisable", function(args)
+                    if args.bang then
+                      -- FormatDisable! will disable formatting just for this buffer
+                      vim.b.disable_autoformat = true
+                    else
+                      vim.g.disable_autoformat = true
+                    end
+                  end, {
+                    desc = "Disable autoformat-on-save",
+                    bang = true,
+                  })
+                  vim.api.nvim_create_user_command("FormatEnable", function()
+                    vim.b.disable_autoformat = false
+                    vim.g.disable_autoformat = false
+                  end, {
+                    desc = "Re-enable autoformat-on-save",
                   })
                 '';
               }
@@ -271,7 +304,7 @@
             -- Mappings.
             -- See `:help vim.diagnostic.*` for documentation on
             -- any of the below functions.
-            local opts = {noremap=true, silent=true}
+            local opts = {silent = true}
             vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opts)
             vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
             vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
