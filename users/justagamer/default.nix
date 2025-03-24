@@ -39,13 +39,14 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      divinity-original-sin-2 = {
+      divinity-original-sin-2 = let
+        gameDir = "Divinity_Original_Sin_2";
+      in {
         categories = ["Game"];
         comment = "Larian: Tactical RPG, Turn-Based Strategy";
         exec =
-          ''GAMEID=435150 umu-launch -emt "GE-Proton8-32"''
-          + " ${wineDir}/Games/Divinity_Original_Sin_2"
-          + " DefEd/bin/EoCApp.exe";
+          ''GAMEID=435150 umu-launch -emp "${gameDir}" -t "GE-Proton8-32"''
+          + " ${wineDir}/Games/${gameDir}/DefEd/bin EoCApp.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/DOS2/DOS2_Icon.png";
         name = "Divinity Original Sin 2";

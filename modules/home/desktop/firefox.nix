@@ -71,7 +71,7 @@ in
               "${defaultEngine}"
               "NixPackages"
               "Startpage"
-              "DuckDuckGo"
+              "ddg"
             ];
 
             engines = {
@@ -102,7 +102,7 @@ in
 
               "${defaultEngine}" = {
                 definedAliases = ["@searx" "@sx"];
-                iconUpdateURL =
+                icon =
                   "https://github.com/searxng/searxng/blob/master/searx"
                   + "/static/themes/simple/img/favicon.png?raw=true";
                 updateInterval = 24 * 60 * 60 * 1000; # every day
@@ -123,7 +123,7 @@ in
 
               Startpage = {
                 definedAliases = ["@startpage" "@sp"];
-                iconUpdateURL = "https://support.startpage.com/favicon.ico";
+                icon = "https://support.startpage.com/favicon.ico";
                 updateInterval = 24 * 60 * 60 * 1000; # every day
 
                 urls = [
