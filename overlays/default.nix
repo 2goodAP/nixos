@@ -15,6 +15,19 @@ in
       {
         wezterm = inputs.wezterm.packages.${system}.default;
 
+        rename = let
+          version = "1.16.3";
+        in
+          prev.rename.overrideAttrs (oldAttrs: {
+            inherit version;
+            src = prev.fetchFromGitHub {
+              owner = "pstray";
+              repo = "rename";
+              rev = "v${version}";
+              sha256 = "sha256-KQsBO94fsa4CbTHNyJxOD96AwUfKNLa9p44odlNgQao=";
+            };
+          });
+
         qmk = prev.qmk.overrideAttrs (oldAttrs: {
           propagatedBuildInputs =
             oldAttrs.propagatedBuildInputs

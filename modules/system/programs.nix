@@ -55,6 +55,7 @@
             pciutils
             psmisc
             pzip
+            rename
             unrar-free
             util-linux
             wget
