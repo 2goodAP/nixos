@@ -98,7 +98,7 @@ in {
         comment = "Team D-13: Bullet Hell, Action Roguelike";
         exec =
           "GAMEID=603960 umu-launch -mx"
-          + " ${wineDir}/Games/Monolith Star_of_Providence.exe";
+          + " ${wineDir}/Games/Star_of_Providence Star_of_Providence.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/SoP/SoP_Icon.png";
         name = "Star of Providence";
