@@ -10,11 +10,19 @@
   inherit (lib) mkIf optionals;
 in
   mkIf (osCfg.enable && osCfg.manager == "wayland") {
-    home.packages = with pkgs; [
-      watershot
-      wev
-      wl-clipboard
-    ];
+    home.packages =
+      (with pkgs; [
+        pavucontrol
+        watershot
+        wev
+        wl-clipboard
+      ])
+      ++ (optionals (cfg.windowManager == "hyprland") (with pkgs; [
+        hyprkeys
+        hyprland-per-window-layout
+        hyprpaper
+        hyprpicker
+      ]));
 
     programs = {
       rofi = {

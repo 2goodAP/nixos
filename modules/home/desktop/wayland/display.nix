@@ -10,6 +10,8 @@
   inherit (lib) getExe getExe' mkIf optionals;
 in
   mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "wayland") {
+    home.packages = [pkgs.wlr-randr];
+
     programs = {
       swaylock.enable = true;
       wlogout.enable = true;
