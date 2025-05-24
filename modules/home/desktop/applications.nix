@@ -21,17 +21,37 @@
   config = let
     cfg = config.tgap.home.desktop;
     osCfg = osConfig.tgap.system;
-    inherit (lib) importJSON mkIf mkMerge optionals;
+    inherit (lib) getExe importJSON mkIf mkMerge optionals;
   in
     mkIf osCfg.desktop.enable (mkMerge [
       (mkIf cfg.applications.enable {
-        xdg.configFile = {
-          "joplin-desktop/keymap-desktop.json" = {
-            source = ./joplin-desktop/keymap-desktop.json;
+        xdg = {
+          autostart = {
+            enable = true;
+            entries =
+              ["${pkgs.keepassxc}/share/applications/org.keepassxc.KeePassXC.desktop"]
+              ++ optionals cfg.nixosApplications.enable [
+                ("${pkgs.nextcloud-client}/share/applications"
+                  + "/com.nextcloud.desktopclient.nextcloud.desktop")
+              ];
           };
-          "joplin-desktop/plugins" = {
-            source = ./joplin-desktop/plugins;
-            recursive = true;
+
+          configFile = {
+            "joplin-desktop/keymap-desktop.json" = {
+              source = ./joplin-desktop/keymap-desktop.json;
+            };
+            "joplin-desktop/plugins" = {
+              source = ./joplin-desktop/plugins;
+              recursive = true;
+            };
+          };
+
+          dataFile."dbus-1/services/org.freedesktop.secrets.service" = {
+            text = ''
+              [D-BUS Service]
+              Name=org.freedesktop.secrets
+              Exec=${getExe pkgs.keepassxc}
+            '';
           };
         };
 
@@ -209,31 +229,34 @@
             ]);
         in
           (with pkgs; [
-            gimp
+            (gimp3-with-plugins.override {
+              plugins = with gimp3Plugins; [
+                gmic
+                lightning
+              ];
+            })
+            git-credential-keepassxc
             libreoffice-fresh
             localsend
+            musescore
             tor-browser-bundle-bin
             wev
           ])
-          ++ optionals cfg.nixosApplications.enable (
-            (with pkgs; [
-              gparted
-              nextcloud-client
-              zoom-us
-            ])
-            ++ [
-              (pkgs.symlinkJoin {
-                name = "kdenlive";
-                paths = [pkgs.kdePackages.kdenlive];
-                buildInputs = [pkgs.makeWrapper];
-                postBuild = ''
-                  wrapProgram $out/bin/kdenlive --suffix LD_LIBRARY_PATH : ${
-                    lib.makeLibraryPath [pkgs.stdenv.cc.cc] + "64"
-                  } --prefix PATH : ${lib.makeBinPath [kdenlivePython]}
-                '';
-              })
-            ]
-          );
+          ++ optionals cfg.nixosApplications.enable (with pkgs; [
+            gparted
+            (symlinkJoin {
+              name = "kdenlive";
+              paths = [kdePackages.kdenlive];
+              buildInputs = [makeWrapper];
+              postBuild = ''
+                wrapProgram $out/bin/kdenlive --suffix LD_LIBRARY_PATH : ${
+                  lib.makeLibraryPath [stdenv.cc.cc] + "64"
+                } --prefix PATH : ${lib.makeBinPath [kdenlivePython]}
+              '';
+            })
+            nextcloud-client
+            zoom-us
+          ]);
       })
 
       (mkIf (osCfg.desktop.gaming.enable && cfg.gaming.enable) {

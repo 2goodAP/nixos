@@ -29,6 +29,7 @@
                     awk
                     bash
                     c
+                    clojure
                     cmake
                     comment
                     commonlisp
@@ -52,6 +53,7 @@
                     hjson
                     html
                     http
+                    hyprlang
                     ini
                     javascript
                     jsdoc
@@ -59,6 +61,7 @@
                     json5
                     julia
                     jq
+                    kdl
                     kotlin
                     latex
                     lua
@@ -72,7 +75,6 @@
                     nasm
                     ninja
                     nix
-                    norg
                     nu
                     objdump
                     passwd
@@ -90,6 +92,7 @@
                     ruby
                     rust
                     scala
+                    scheme
                     scss
                     snakemake
                     sparql
@@ -110,6 +113,7 @@
                     yaml
                     yuck
 
+                    tree-sitter-norg
                     tree-sitter-norg-meta
                     tree-sitter-org-nvim
                   ]

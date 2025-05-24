@@ -70,11 +70,33 @@ in
             order = [
               "${defaultEngine}"
               "NixPackages"
+              "HomeManagerOptions"
               "Startpage"
               "ddg"
             ];
 
             engines = {
+              HomeManagerOptions = {
+                definedAliases = ["@hmopts" "@hm"];
+                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+
+                urls = [
+                  {
+                    template = "https://home-manager-options.extranix.com";
+                    params = [
+                      {
+                        name = "release";
+                        value = "master";
+                      }
+                      {
+                        name = "query";
+                        value = "{searchTerms}";
+                      }
+                    ];
+                  }
+                ];
+              };
+
               NixPackages = {
                 definedAliases = ["@nix" "@np"];
                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";

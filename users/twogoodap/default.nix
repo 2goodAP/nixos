@@ -6,7 +6,6 @@ in {
     initialPassword = "NixOS-${uname}.";
     createHome = true;
     extraGroups = [
-      "audio"
       "cups"
       "disk"
       "docker"

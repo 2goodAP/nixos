@@ -31,6 +31,8 @@
             "cpp"
             "go"
             "haskell"
+            "hypr"
+            "lisp"
             "lua"
             "markdown"
             "nix"

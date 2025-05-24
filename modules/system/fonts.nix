@@ -172,62 +172,64 @@
     cfg = config.tgap.system.fonts;
     inherit (lib) concatMapStrings;
   in {
-    environment.systemPackages = with pkgs; [
-      cascadia-code
-      corefonts
-      garamond-libre
-      libertine
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.monaspace
-      noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
-      noto-fonts-color-emoji
-    ];
+    fonts = {
+      fontconfig = {
+        cache32Bit = true;
 
-    fonts.fontconfig = {
-      cache32Bit = true;
+        defaultFonts.monospace =
+          [
+            "JetBrainsMono Nerd Font"
+            "Noto Sans Mono"
+          ]
+          ++ options.fonts.fontconfig.defaultFonts.monospace.default;
 
-      defaultFonts.monospace =
-        [
-          "JetBrainsMono Nerd Font"
-          "Noto Sans Mono"
-        ]
-        ++ options.fonts.fontconfig.defaultFonts.monospace.default;
+        localConf = let
+          fc-20-autohint-fonts =
+            concatMapStrings (font: ''
+              <match target="pattern">
+                  <test name="family">
+                      <string>${font}</string>
+                  </test>
+                  <edit mode="prepend" name="autohint">
+                      <bool>true</bool>
+                  </edit>
+              </match>
+            '')
+            cfg.autohintFonts;
+        in ''
+          <?xml version="1.0"?>
+          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+          <fontconfig>
+            <!-- 20-autohint-fonts.conf -->
+            ${fc-20-autohint-fonts}
 
-      localConf = let
-        fc-20-autohint-fonts =
-          concatMapStrings (font: ''
-            <match target="pattern">
-                <test name="family">
-                    <string>${font}</string>
-                </test>
-                <edit mode="prepend" name="autohint">
-                    <bool>true</bool>
-                </edit>
-            </match>
-          '')
-          cfg.autohintFonts;
-      in ''
-        <?xml version="1.0"?>
-        <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-        <fontconfig>
-          <!-- 20-autohint-fonts.conf -->
-          ${fc-20-autohint-fonts}
+            <!-- 30-cjk-aliases.conf -->
+            ${builtins.readFile ./fontconfig/30-cjk-aliases.conf}
 
-          <!-- 30-cjk-aliases.conf -->
-          ${builtins.readFile ./fontconfig/30-cjk-aliases.conf}
+            <!-- 56-language-selector-prefer.conf -->
+            ${builtins.readFile ./fontconfig/56-language-selector-prefer.conf}
 
-          <!-- 56-language-selector-prefer.conf -->
-          ${builtins.readFile ./fontconfig/56-language-selector-prefer.conf}
+            <!-- 64-language-selector-cjk-prefer.conf -->
+            ${builtins.readFile ./fontconfig/64-language-selector-cjk-prefer.conf}
 
-          <!-- 64-language-selector-cjk-prefer.conf -->
-          ${builtins.readFile ./fontconfig/64-language-selector-cjk-prefer.conf}
+            <!-- 70-fonts-noto-cjk-prefer.conf -->
+            ${builtins.readFile ./fontconfig/70-fonts-noto-cjk.conf}
+          </fontconfig>
+        '';
+      };
 
-          <!-- 70-fonts-noto-cjk-prefer.conf -->
-          ${builtins.readFile ./fontconfig/70-fonts-noto-cjk.conf}
-        </fontconfig>
-      '';
+      packages = with pkgs; [
+        cascadia-code
+        corefonts
+        garamond-libre
+        libertine
+        nerd-fonts.jetbrains-mono
+        nerd-fonts.monaspace
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
+        noto-fonts-color-emoji
+      ];
     };
   };
 }

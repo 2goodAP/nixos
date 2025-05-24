@@ -8,31 +8,55 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixpkgs-wayland = {
       url = "github:nix-community/nixpkgs-wayland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    niri = {
+      url = "github:YaLTer/niri";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    wezterm = {
-      url = "github:wez/wezterm?dir=nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
     umu-launcher = {
       url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    hyprland.url = "github:hyprwm/hyprland";
-    hy3 = {
-      url = "github:outfoxxed/hy3";
-      inputs.hyprland.follows = "hyprland";
+    wezterm = {
+      url = "github:wez/wezterm?dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    woomer = {
+      url = "github:coffeeispower/woomer";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -83,11 +107,13 @@
               substituters = [
                 "https://cache.nixos.org"
                 "https://cuda-maintainers.cachix.org"
+                "https://hyprland.cachix.org"
                 "https://nixpkgs-wayland.cachix.org"
               ];
               trusted-public-keys = [
                 "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
                 "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+                "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
                 "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
               ];
             };
@@ -112,37 +138,41 @@
         justagamer = import ./users/justagamer;
         twogoodap = import ./users/twogoodap;
         workerap = import ./users/workerap;
+
+        # common `nixosSystem` args
+        systemArgs = {
+          inherit system;
+          specialArgs = {inherit inputs;};
+        };
       in {
-        nitro5 = lib.nixosSystem {
-          inherit system;
+        nitro5 = lib.nixosSystem (systemArgs
+          // {
+            modules =
+              systemModules
+              ++ [
+                # system-specific configuraitons
+                (import ./machines/nitro5 {hostName = "nitro5-nix";})
 
-          modules =
-            systemModules
-            ++ [
-              # system-specific configuraitons
-              (import ./machines/nitro5 {hostName = "nitro5-nix";})
+                # user-specific configurations
+                twogoodap
+                workerap
+              ];
+          });
 
-              # user-specific configurations
-              twogoodap
-              workerap
-            ];
-        };
+        workstation = lib.nixosSystem (systemArgs
+          // {
+            modules =
+              systemModules
+              ++ [
+                # system-specific configuraitons
+                (import ./machines/workstation {hostName = "workstation-nix";})
 
-        workstation = lib.nixosSystem {
-          inherit system;
-
-          modules =
-            systemModules
-            ++ [
-              # system-specific configuraitons
-              (import ./machines/workstation {hostName = "workstation-nix";})
-
-              # user-specific configurations
-              justagamer
-              twogoodap
-              workerap
-            ];
-        };
+                # user-specific configurations
+                justagamer
+                twogoodap
+                workerap
+              ];
+          });
       };
     };
 }

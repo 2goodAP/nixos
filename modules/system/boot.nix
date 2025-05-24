@@ -85,13 +85,12 @@
 
   config = let
     cfg = config.tgap.system.boot;
-    inherit (lib) mkForce mkIf mkMerge optionalAttrs;
+    inherit (lib) mkForce mkIf mkMerge;
   in
     mkIf cfg.encrypted-btrfs.enable (mkMerge [
       {
         boot = {
           consoleLogLevel = 3;
-          plymouth.enable = true;
 
           initrd = mkMerge [
             {
@@ -156,6 +155,11 @@
                 '';
               };
             };
+          };
+
+          plymouth = {
+            enable = true;
+            theme = "breeze";
           };
         };
 

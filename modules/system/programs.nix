@@ -28,10 +28,7 @@
   in
     mkIf cfg.enable (mkMerge [
       {
-        users.defaultUserShell =
-          if (cfg.defaultShell == "nushell")
-          then pkgs.nushell
-          else pkgs.bashInteractive;
+        users.defaultUserShell = pkgs.bashInteractive;
 
         # List packages installed in system profile.
         environment.systemPackages =
@@ -72,26 +69,17 @@
           ++ optionals cfg.qmk.enable [pkgs.qmk];
 
         programs = {
-          gnupg.agent.enable = true;
+          gnupg.agent = {
+            enable = true;
+            settings = {
+              default-new-key-algo = "ed25519/cert";
+              no-allow-external-cache = "";
+            };
+          };
 
           bash = {
             blesh.enable = true;
             vteIntegration = true;
-          };
-
-          git = {
-            enable = true;
-            lfs.enable = true;
-            config = {
-              core.pager = "${getExe pkgs.delta}";
-              delta.navigate = true;
-              diff.colorMoved = "default";
-              init.defaultBranch = "main";
-              interactive.diffFilter = "${getExe pkgs.delta} --color-only";
-              merge.conflictstyle = "diff3";
-              pull.rebase = false;
-              push.autoSetupRemote = true;
-            };
           };
         };
 

@@ -3,7 +3,7 @@
   tgap.system = {
     desktop = {
       enable = true;
-      manager = "plasma";
+      manager = "niri";
     };
 
     network = {

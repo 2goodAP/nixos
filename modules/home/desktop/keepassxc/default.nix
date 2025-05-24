@@ -21,7 +21,7 @@ in
 
           [FdoSecrets]
           Enabled=${
-            if (osCfg.manager == "wayland")
+            if (osCfg.manager == "niri")
             then "true"
             else "false"
           }

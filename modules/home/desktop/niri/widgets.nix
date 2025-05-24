@@ -5,16 +5,14 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.desktop.wayland;
   osCfg = osConfig.tgap.system.desktop;
   inherit (lib) getExe mkIf mkMerge;
 in
-  mkIf (osCfg.enable && osCfg.manager == "wayland") (mkMerge [
+  mkIf (osCfg.enable && osCfg.manager == "niri") (mkMerge [
     {
-      home.packages = [pkgs.libnotify];
-
       programs.waybar = {
-        enable = true;
+        enable = false;
+        systemd.enable = true;
 
         settings = {
           main = {
@@ -24,14 +22,8 @@ in
             position = "top";
             spacing = 4;
 
-            modules-left =
-              ["${cfg.windowManager}/workspaces"]
-              ++ (
-                if (cfg.windowManager == "hyprland")
-                then ["hyprland/submap"]
-                else ["sway/mode"]
-              );
-            modules-center = ["${cfg.windowManager}/window"];
+            modules-left = ["hyprland/workspaces" "hyprland/submap"];
+            modules-center = ["hyprland/window"];
             modules-right = [
               "idle_inhibitor"
               "pulseaudio"
@@ -40,7 +32,7 @@ in
               "temperature"
               "backlight"
               "keyboard-state"
-              "${cfg.windowManager}/language"
+              "hyprland/language"
               "battery"
               "clock"
               "privacy"
@@ -344,59 +336,6 @@ in
             '';
           };
         };
-
-        systemd = {
-          enable = true;
-          target = cfg.systemdTarget;
-        };
-      };
-
-      services = {
-        blueman-applet.enable = true;
-        network-manager-applet.enable = true;
-        swayosd.enable = true;
-
-        mako = {
-          enable = true;
-          borderRadius = 10;
-          defaultTimeout = 10000;
-          sort = "-priority";
-        };
       };
     }
-
-    (mkIf (cfg.windowManager == "sway") {
-      systemd.user = {
-        services.sov = {
-          Install.WantedBy = [cfg.systemdTarget];
-
-          Service = {
-            Environment = "PATH=${pkgs.fontconfig}/bin:${pkgs.sway}/bin";
-            ExecStart = "${getExe pkgs.sov}";
-            StandardInput = "socket";
-          };
-
-          Unit = {
-            Description = "An overlay that shows schemas for all workspaces to make navigation in sway easier";
-            Documentation = "man:sov(1)";
-            PartOf = ["graphical-session.target"];
-            After = [cfg.systemdTarget];
-            ConditionEnvironment = "WAYLAND_DISPLAY";
-          };
-        };
-
-        sockets.sov = {
-          Install.WantedBy = ["sockets.target"];
-
-          Socket = {
-            ListenFIFO = "%t/${cfg.socks.sov}";
-            SocketMode = "0600";
-            RemoveOnStop = "on";
-            # If sov exits due to invalid input, clear the FIFO buffer as there
-            # can be more invalid inputs that can cause sov to crash further.
-            FlushPending = "yes";
-          };
-        };
-      };
-    })
   ])

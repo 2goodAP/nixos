@@ -19,17 +19,23 @@
 
   config = let
     cfg = config.tgap.home.programs;
+    deskCfg = config.tgap.home.desktop;
     nushellDefault = osConfig.tgap.system.programs.defaultShell == "nushell";
-    inherit (lib) getExe mkIf recursiveUpdate;
+    inherit (lib) getExe mkIf recursiveUpdate optionalString;
   in
     mkIf cfg.enable {
       services.pueue.enable = true;
 
-      home.packages = with pkgs; [
-        carapace
-        ripgrep-all
-        tmuxPlugins.rose-pine
-      ];
+      home = {
+        shell.enableBashIntegration = config.programs.bash.enable;
+
+        packages = with pkgs; [
+          carapace
+          git-credential-oauth
+          ripgrep-all
+          tmuxPlugins.rose-pine
+        ];
+      };
 
       programs = let
         rose-pine-tm-theme = pkgs.fetchFromGitHub {
@@ -94,14 +100,16 @@
             source <(${getExe pkgs.carapace} _carapace)
           '';
 
-          profileExtra = ''
+          profileExtra = let
+            neovim = getExe config.programs.neovim.finalPackage;
+          in ''
             # Set preferred editor for local and remote sessions
             if [[ -n "$SSH_CONNECTION" ]]; then
               export EDITOR='vim'
               export VISUAL='vim'
             else
-              export EDITOR='nvim'
-              export VISUAL='nvim'
+              export EDITOR='${neovim}'
+              export VISUAL='${neovim}'
             fi
           '';
 
@@ -134,6 +142,32 @@
         btop = {
           enable = true;
           settings.color_theme = "solarized_light";
+        };
+
+        git = {
+          enable = true;
+          delta.enable = true;
+          extraConfig = {
+            init.defaultBranch = "main";
+            pull.rebase = false;
+            push.autoSetupRemote = true;
+            credential.helper = [
+              (optionalString deskCfg.applications.enable "${
+                getExe pkgs.keepassxc
+              } -vv --git-groups")
+              "cache --timeout 21600  # six hours"
+              (getExe pkgs.git-credential-oauth
+                + optionalString (!deskCfg.applications.enable) " -device")
+            ];
+          };
+          lfs = {
+            enable = true;
+            skipSmudge = true;
+          };
+          signing = {
+            key = null;
+            signByDefault = true;
+          };
         };
 
         lazygit = let
@@ -185,8 +219,6 @@
 
         yazi = {
           enable = true;
-          enableBashIntegration = true;
-          enableNushellIntegration = nushellDefault;
           theme = recursiveUpdate (
             lib.importTOML "${tokyonight}/extras/yazi/tokyonight_day.toml"
           ) {manager.highlight = "${tokyonight}/extras/yazi/tokyonight_day.tmTheme";};

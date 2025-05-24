@@ -2,35 +2,49 @@
   config,
   lib,
   osConfig,
+  pkgs,
   ...
 }: {
   imports = [
     ./keepassxc
     ./speedcrunch
-    ./wayland
+    ./niri
     ./applications.nix
     ./firefox.nix
   ];
 
   options.tgap.home.desktop.terminal = let
     inherit (lib) mkOption types;
-  in
-    mkOption {
+  in {
+    name = mkOption {
       type = types.nullOr (types.enum ["wezterm"]);
       default = "wezterm";
       description = "The terminal emulator program to install.";
     };
 
+    package = mkOption {
+      type = types.package;
+      default = pkgs.${config.tgap.home.desktop.terminal.name};
+      description = "The terminal emulator package.";
+      readOnly = true;
+    };
+  };
+
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.tgap.system.desktop;
-    inherit (lib) mkIf;
+    osCfg = osConfig.tgap.system;
+    inherit (lib) mkIf getExe optionalString;
   in
-    mkIf (osCfg.enable && cfg.terminal == "wezterm") {
+    mkIf (osCfg.desktop.enable && cfg.terminal.name == "wezterm") {
       programs.wezterm = {
         enable = true;
 
-        extraConfig = ''
+        extraConfig = let
+          defaultProg =
+            optionalString
+            (osCfg.programs.defaultShell == "nushell")
+            "default_prog = {'${getExe config.programs.nushell.package}', '-l'},";
+        in ''
           local config = wezterm.config_builder()
 
           -- Start font_rules configuration
@@ -137,7 +151,7 @@
             color_scheme = "Rosé Pine Dawn (Gogh)",
             command_palette_fg_color = colors.tab.inactive.fg,
             command_palette_bg_color = colors.title.inactive,
-            default_gui_startup_args = { "connect", "unix" },
+            ${defaultProg}
             font_rules = font_rules,
             max_fps = 120,
 

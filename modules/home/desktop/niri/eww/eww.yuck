@@ -1,0 +1,95 @@
+(defvar time-visible true)
+
+(defpoll time
+  :interval "1s"
+  :initial-value "YYYY-MM-DD hh:mm:ss"
+  :run-while time-visible
+  `date "+%Y-%m-%d %H:%M:%S"`)
+
+(defpoll sink-volume
+  :interval "2s"
+  :initial-value 0
+  `wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 || echo 0`)
+
+(defpoll source-volume
+  :interval "2s"
+  :initial-value 0
+  `wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 || echo 0`)
+
+(defwidget greeter [?text name]
+  (box
+    :orientation "vertical"
+    :halign "center"
+    text
+    (button
+      :onclick "notify-send 'Hello' 'Hello, ${name}'"
+      "Greet")))
+
+(defwidget labeled-container [name]
+  (box
+    :class "label"
+    :orientation "vertical"
+    :halign "center"
+    name
+    (children)))
+
+(defwindow example
+  :geometry (geometry
+             :x "0%"
+             :y "20px"
+             :width "30px"
+             :height "100%"
+             :anchor "center left")
+  :monitor '["DP-1", 0]'
+  :stacking "fg"
+  :reserve (struts :distance "40px" :side "top")
+  :exclusive true
+  (box
+    :orientation "vertical"
+    :halign "center"
+    (button
+      :onclick `${EWW_CMD} update time-visible=${time-visible ? false : true} && notify-send 'Time' 'Its ${time-visible ? "hiding" : "show"} time'`
+      "${time-visible ? "Hide": "Show"} time")
+    (labeled-container :name "Time" time)
+    (greeter :text "John" :name "Xina")))
+
+(defwindow main-bar
+  :geometry (geometry
+             :x "0%"
+             :y "20px"
+             :width "50px"
+             :height "100%"
+             :anchor "center right")
+  :monitor '["DP-1", 0]'
+  :stacking "fg"
+  :reserve (struts :distance "40px" :side "top")
+  :exclusive true
+  (box
+    :orientation "vertical"
+    :halign "center"
+    :valign "end"
+    (eventbox
+      :onclick "pavucontrol 2> /dev/null"
+      (box
+        :orientation "vertical"
+        (box
+          "Sink: "
+          "${round(sink-volume * 100, 0)}%")
+        (box
+          "Source: "
+          "${round(source-volume * 100, 0)}%")))
+    (box
+      "CPU: "
+      "${round(EWW_CPU.avg, 0)}%")
+    (box
+      "RAM: "
+      "${round(EWW_RAM.used_mem_perc, 0)}%")
+    (box
+      "Temp:"
+      "${EWW_TEMPS.CORETEMP_PACKAGE_ID_0}℃")
+    {formattime(EWW_TIME, "%H:%M")}
+    (systray
+      :spacing 5
+      :orientation "vertical"
+      :space-evenly false
+      :valign "start")))

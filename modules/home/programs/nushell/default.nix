@@ -8,9 +8,9 @@
   options.tgap.home.programs = let
     inherit (lib) mkOption types;
   in {
-    nushellPlugins = mkOption {
+    nushell.plugins = mkOption {
       type = types.listOf types.package;
-      default = with pkgs.nushellPlugins; [formats gstat polars query];
+      default = with pkgs.nushellPlugins; [formats gstat net polars query skim units];
       description = "The nushell plugins to install alongside nushell.";
     };
   };
@@ -18,19 +18,10 @@
   config = let
     cfg = config.tgap.home.programs;
     nushellDefault = osConfig.tgap.system.programs.defaultShell == "nushell";
-    inherit (lib) concatMapStringsSep getExe getExe' mkIf;
-
-    plugin-msgpackz =
-      pkgs.runCommand "plugin.msgpackz" {
-        buildInputs = [pkgs.nushell];
-      } ''
-        nu --plugin-config $out -c '${concatMapStringsSep "\n"
-          (p: "plugin add `${getExe p}`")
-          cfg.nushellPlugins}'
-      '';
+    inherit (lib) getExe getExe' mkIf;
   in
     mkIf (cfg.enable && nushellDefault) {
-      xdg.configFile."nushell/plugin.msgpackz".source = plugin-msgpackz;
+      home.shell.enableNushellIntegration = true;
 
       programs.nushell = let
         nu_scripts = "${pkgs.nu_scripts}/share/nu_scripts";
@@ -38,17 +29,20 @@
         enable = true;
         configFile.source = ./config.nu;
         envFile.source = ./env.nu;
-        package = osConfig.users.defaultUserShell;
+        package = pkgs.nushell;
+        inherit (cfg.nushell) plugins;
 
-        environmentVariables = {
+        environmentVariables = let
+          neovim = getExe config.programs.neovim.finalPackage;
+        in {
           BATPIPE = "color";
-          EDITOR = "nvim";
+          EDITOR = neovim;
           LESSOPEN =
             "|"
             + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
             + " %s";
-          PAGER = "${config.programs.nushell.shellAliases.less}";
-          VISUAL = "nvim";
+          PAGER = config.programs.nushell.shellAliases.less;
+          VISUAL = neovim;
         };
 
         extraConfig = ''

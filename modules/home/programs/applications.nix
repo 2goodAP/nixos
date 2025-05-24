@@ -17,7 +17,7 @@
   config = let
     cfg = config.tgap.home.programs.applications;
     osCfg = osConfig.tgap.system.network;
-    inherit (lib) mkIf mkMerge;
+    inherit (lib) concatStringsSep getExe mkIf mkMerge optionalString;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -70,10 +70,47 @@
           };
         };
 
-        home.packages = with pkgs; [
-          musikcube
-          transmission_4
-        ];
+        services.fluidsynth = {
+          enable = true;
+          soundFont = "${pkgs.soundfont-generaluser}/share/soundfonts/GeneralUser-GS.sf2";
+          soundService = "pipewire-pulse";
+          extraOptions = [
+            "--sample-rate 48000"
+            "--audio-bufcount 2"
+            "--audio-bufsize 128"
+          ];
+        };
+
+        home.packages = let
+          fluidsynth-with-soundfont = pkgs.fluidsynth.overrideAttrs (oldAttrs: {
+            postInstall =
+              (oldAttrs.postInstall or "")
+              + optionalString pkgs.stdenv.hostPlatform.isLinux ''
+                mkdir -p $out/share/soundfonts
+                ln -s ${config.services.fluidsynth.soundFont} \
+                  $out/share/soundfonts/default.sf2
+              '';
+          });
+        in
+          with pkgs; [
+            (symlinkJoin {
+              name = "fluidsynth";
+              buildInputs = [makeWrapper];
+              paths = [
+                fluidsynth-with-soundfont
+                fluidsynth.dev
+                fluidsynth.man
+                soundfont-generaluser
+              ];
+              postBuild = ''
+                wrapProgram $out/bin/fluidsynth --add-flags \
+                  "-a pulseaudio ${concatStringsSep " "
+                  config.services.fluidsynth.extraOptions}"
+              '';
+            })
+            musikcube
+            transmission_4
+          ];
 
         xdg.configFile.musikcube-settings = {
           source = ./musikcube;

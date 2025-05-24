@@ -10,6 +10,7 @@
     ./haskell.nix
     ./lua.nix
     ./markdown.nix
+    ./misc.nix
     ./nix.nix
     ./python.nix
     ./r.nix
@@ -29,8 +30,8 @@
       default = [];
       description = ''
         The extra language servers to be installed. Supported languages are
-        "cpp", "go", "haskell", "lua", "markdown", "nix",
-        "python", "r", "rust", "shell, "sql", "typescript".
+        "cpp", "go", "haskell", "hypr", "lisp", "lua", "markdown",
+        "nix", "python", "r", "rust", "shell, "sql", "typescript".
       '';
     };
 

@@ -7,7 +7,7 @@
   imports = [
     ./audio.nix
     ./boot.nix
-    ./desktop.nix
+    ./display.nix
     ./fonts.nix
     ./gaming.nix
     ./laptop.nix
@@ -34,7 +34,7 @@
         );
         # This value determines the NixOS release from which the default
         # settings for stateful data on the system are taken.
-        system.stateVersion = "24.11";
+        system.stateVersion = "25.05";
 
         console = {
           font = "${pkgs.terminus_font}/share/consolefonts/ter-d18n.psf.gz";
@@ -47,6 +47,7 @@
         };
 
         services = {
+          dbus.implementation = "broker";
           fstrim.enable = true;
           printing.enable = true;
 

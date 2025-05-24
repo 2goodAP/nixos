@@ -61,7 +61,7 @@
         };
       }
 
-      (mkIf (cfg.desktop.enable && cfg.desktop.manager == "wayland") {
+      (mkIf (cfg.desktop.enable && cfg.desktop.manager == "niri") {
         programs.light.enable = true;
       })
     ]);
