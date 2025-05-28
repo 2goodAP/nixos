@@ -127,7 +127,6 @@ in {
 
             function show_help() {
             ${getExe' pkgs.coreutils "cat"} << EOF
-
             Usage:
               ''${0##*/} [options] <game-dir> <exe-path> [-- game-opts]
 
@@ -151,8 +150,8 @@ in {
             EOF
             }
 
-            declare {gs_cmd,prefix,proton,mangohud}=""
-            declare gs_args='${gsCfg.extraArgs}' gs_enable=false opengl=false hidraw=1
+            declare {gs_cmd,prefix,proton,mh_cmd}=""
+            declare gs_args='${gsCfg.extraArgs}' hidraw=1
             declare width=${builtins.toString gsCfg.width}
             declare height=${builtins.toString gsCfg.height}
             declare ref_rate=${builtins.toString gsCfg.refreshRate}
@@ -205,7 +204,7 @@ in {
                   shift 2
                   ;;
                 -m|--mangohud)
-                  mangohud="${getExe' pkgs.mangohud "mangohud"}"
+                  mangohud=true
                   shift
                   ;;
                 -o|--opengl)
@@ -228,13 +227,19 @@ in {
             done
 
             if [[ -z "$1" ]]; then
-              ${getExe' pkgs.coreutils "echo"} "''${0##*/}: missing game-dir argument
-            Please specify the absolute path to the game's root directory." >&2
+            ${getExe' pkgs.coreutils "cat"} >&2 << EOF
+            ''${0##*/}: missing game-dir argument
+            Please specify the absolute path to the game's root directory.
+
+            EOF
               show_help >&2
               exit 1
             elif [[ -z "$2" ]]; then
-              ${getExe' pkgs.coreutils "echo"} "''${0##*/}: missing exe-path argument
-            Please specify the relative path to the game's exe from game-dir." >&2
+            ${getExe' pkgs.coreutils "cat"} >&2 << EOF
+            ''${0##*/}: missing exe-path argument
+            Please specify the relative path to the game's exe from game-dir.
+
+            EOF
               show_help >&2
               exit 1
             fi
@@ -248,11 +253,11 @@ in {
             # Vars and Functions
             # ------------------
 
-            if [[ "$gs_enable" == true ]]; then
+            if [[ -n ''${gs_enable+x} ]]; then
               gs_cmd="$(printf "%s %s %s" \
-                "gamescope -W $((width)) -H $((height)) -r $((ref_rate))" \
-                "--framerate-limit $((fps_limit)) -o 60 $gs_args --" \
-                "${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice --")"
+                "gamescope -W $((width)) -H $((height)) -r $((ref_rate)) -o 60" \
+                "--framerate-limit $((fps_limit)) ''${mangohud+--mangoapp} $gs_args" \
+                "-- ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice --")"
             fi
 
             steam_root="$HOME/.local/share/Steam"
@@ -294,11 +299,15 @@ in {
               ${getExe' pkgs.coreutils "echo"} "" > "$log_file"
             fi
 
-            # OpenGL Specific
-            # ---------------
+            # Mangohud
+            # --------
 
-            if [[ "$opengl" == true && -n "$mangohud" ]]; then
-              mangohud+=" --dlsym"
+            if [[ -n ''${mangohud+x} && -z ''${gs_enable+x} ]]; then
+              mh_cmd="${getExe' pkgs.mangohud "mangohud"}"
+
+              if [[ -n ''${opengl+x} ]]; then
+                mh_cmd+=" --dlsym"
+              fi
             fi
 
             # HidRaw and XInput Emulation
@@ -333,7 +342,7 @@ in {
 
             cd "$game_dir" || exit 2
             PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 \
-              $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} $mangohud \
+              $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} $mh_cmd \
               ${getExe pkgs.umu-launcher} "$exe_path" "$@" &>> "$log_file" &
             disown $!
 
