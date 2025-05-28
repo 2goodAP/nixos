@@ -42,6 +42,7 @@
             "shell"
             "sql"
             "typescript"
+            "xml"
           ];
 
           lsp = {

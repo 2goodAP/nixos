@@ -43,6 +43,7 @@
         "${cfg.runtimepath}/ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
         "${cfg.runtimepath}/ftplugin/typescript.lua".text = "vim.bo.tabstop = 2";
         "${cfg.runtimepath}/ftplugin/typescriptreact.lua".text = "vim.bo.tabstop = 2";
+        "${cfg.runtimepath}/ftplugin/xml.lua".text = "vim.bo.tabstop = 2";
         "${cfg.runtimepath}/ftplugin/yuck.lua".text = "vim.bo.tabstop = 2";
       };
 

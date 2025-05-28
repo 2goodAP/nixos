@@ -18,6 +18,7 @@
     ./shell.nix
     ./sql.nix
     ./typescript.nix
+    ./xml.nix
   ];
 
   options.tgap.home.programs.neovim.langtools = let
@@ -30,8 +31,8 @@
       default = [];
       description = ''
         The extra language servers to be installed. Supported languages are
-        "cpp", "go", "haskell", "hypr", "lisp", "lua", "markdown",
-        "nix", "python", "r", "rust", "shell, "sql", "typescript".
+        "cpp", "go", "haskell", "hypr", "lisp", "lua", "markdown", "nix"
+        "python", "r", "rust", "shell, "sql", "typescript", "xml".
       '';
     };
 
@@ -234,7 +235,6 @@
                     plaintex = {"chktex"},
                     rst = {{"rstcheck", "vale"}},
                     tex = {{"chktex", "vale"}},
-                    xml = {"vale"},
                     yaml = {"yamllint"},
                   }
 
