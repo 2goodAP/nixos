@@ -170,6 +170,11 @@
           };
         };
 
+        gpg = {
+          enable = true;
+          settings.default-new-key-algo = "ed25519/cert";
+        };
+
         lazygit = let
           configJSON = pkgs.runCommand "lazygit-config.json" {
             nativeBuildInputs = [pkgs.yq-go];
