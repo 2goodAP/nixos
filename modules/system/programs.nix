@@ -71,10 +71,7 @@
         programs = {
           gnupg.agent = {
             enable = true;
-            settings = {
-              default-new-key-algo = "ed25519/cert";
-              no-allow-external-cache = "";
-            };
+            settings.no-allow-external-cache = "";
           };
 
           bash = {

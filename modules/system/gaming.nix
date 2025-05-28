@@ -304,21 +304,29 @@ in {
             # HidRaw and XInput Emulation
             # ---------------------------
 
-            active_proton="$steam_root/compatibilitytools.d"
+            # First, determine the active Proton directory
+            wine_exe="$steam_root/compatibilitytools.d"
             if [[ "$PROTONPATH" == "GE-Proton" ]]; then
-              active_proton+="/$(find_latest_proton "$active_proton" 'GE-Proton')"
-            elif [[ -x "$active_proton/$PROTONPATH/files/bin/wine" ]]; then
-              active_proton+="/$PROTONPATH"
-            elif [[ -x "$PROTONPATH/files/bin/wine" ]]; then
-              active_proton="$PROTONPATH"
+              wine_exe+="/$(find_latest_proton "$wine_exe" 'GE-Proton')"
+            elif [[ -x "$wine_exe/$PROTONPATH/files/bin/wine" ]]; then
+              wine_exe+="/$PROTONPATH"
+            elif [[ -x "$PROTONPATH/files/bin/wine" \
+                    || -x "$PROTONPATH/dist/bin/wine" ]]; then
+              wine_exe="$PROTONPATH"
             else
-              active_proton+="/$(find_latest_proton "$active_proton" 'UMU-Proton')"
+              wine_exe+="/$(find_latest_proton "$wine_exe" 'UMU-Proton')"
             fi
 
-            steam-run "$active_proton/files/bin/wine" reg add \
+            # Then, set the wine executable path within
+            if [[ -x "$wine_exe/dist/bin/wine" ]]; then
+                wine_exe+="/dist/bin/wine"
+            else
+                wine_exe+="/files/bin/wine"
+            fi
+
+            steam-run "$wine_exe" reg add \
               "HKLM\System\CurrentControlSet\Services\winebus" \
               /t REG_DWORD /v DisableHidraw /d $((! hidraw)) /f &>> "$log_file"
-
 
             # Launch the game
             # ---------------

@@ -45,19 +45,6 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      hades = {
-        categories = ["Game"];
-        comment = "Supergiant: Action Roguelike, Hack and Slash";
-        exec =
-          "${getExe' pkgs.coreutils "env"} GAMEID=1145360 umu-launch -em"
-          + " ${wineDir}/Games/Hades x64/Hades.exe";
-        genericName = "Game";
-        icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
-        name = "Hades";
-        prefersNonDefaultGPU = true;
-        settings = {DBusActivatable = "false";};
-      };
-
       into-the-breach = {
         categories = ["Game"];
         comment = "Subset Games: Turn-Based Strategy, Mechs";
@@ -71,15 +58,29 @@ in {
         settings = {DBusActivatable = "false";};
       };
 
-      returnal = {
+      red-dead-redemption-2 = {
         categories = ["Game"];
-        comment = "Housemarque: Bullet Hell, Roguelike";
+        comment = "Rockstar: Open World, Story Rich, Western";
         exec =
-          "${getExe' pkgs.coreutils "env"} GAMEID=1649240 umu-launch -em"
-          + " ${wineDir}/Games/Returnal Returnal.exe";
+          "${getExe' pkgs.coreutils "env"} PROTON_ENABLE_NVAPI=1 "
+          + ''WINEDLLOVERRIDES="dinput8=n,b" GAMEID=1174180''
+          + " umu-launch -m ${wineDir}/Games/Red_Dead_Redemption_2 Launcher.exe";
         genericName = "Game";
-        icon = "${wineDir}/Misc/Returnal/Returnal_Icon.png";
-        name = "Returnal";
+        icon = "${wineDir}/Misc/RDR2/RDR2_Icon.png";
+        name = "Red Dead Redemption 2";
+        prefersNonDefaultGPU = true;
+        settings = {DBusActivatable = "false";};
+      };
+
+      roboquest = {
+        categories = ["Game"];
+        comment = "RyseUp Studios: FPS, Action Roguelike";
+        exec =
+          "${getExe' pkgs.coreutils "env"} GAMEID=692890 umu-launch -em"
+          + ''t "Proton 6.3" ${wineDir}/Games/Roboquest RoboQuest.exe'';
+        genericName = "Game";
+        icon = "${wineDir}/Misc/Roboquest/Roboquest_Icon.png";
+        name = "Roboquest";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
@@ -93,6 +94,19 @@ in {
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Dead_Cells/DC_Icon.png";
       #   name = "Dead Cells";
+      #   prefersNonDefaultGPU = true;
+      #   settings = {DBusActivatable = "false";};
+      # };
+
+      # hades = {
+      #   categories = ["Game"];
+      #   comment = "Supergiant: Action Roguelike, Hack and Slash";
+      #   exec =
+      #     "${getExe' pkgs.coreutils "env"} GAMEID=1145360 umu-launch -em"
+      #     + " ${wineDir}/Games/Hades x64/Hades.exe";
+      #   genericName = "Game";
+      #   icon = "${wineDir}/Misc/Hades/Hades_Icon.png";
+      #   name = "Hades";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
@@ -120,20 +134,6 @@ in {
       #   genericName = "Game";
       #   icon = "${wineDir}/Misc/Ori/WotW_Icon.png";
       #   name = "Ori and the Will of the Wisps";
-      #   prefersNonDefaultGPU = true;
-      #   settings = {DBusActivatable = "false";};
-      # };
-
-      # red-dead-redemption-2 = {
-      #   categories = ["Game"];
-      #   comment = "Rockstar: Open World, Story Rich, Western";
-      #   exec =
-      #     "${getExe' pkgs.coreutils "env"} PROTON_ENABLE_NVAPI=1 "
-      #     + ''WINEDLLOVERRIDES="dinput8,version=n,b" GAMEID=1174180''
-      #     + " umu-launch -em ${wineDir}/Games/Red_Dead_Redemption_2 Launcher.exe";
-      #   genericName = "Game";
-      #   icon = "${wineDir}/Misc/RDR2/RDR2_Icon.png";
-      #   name = "Red Dead Redemption 2";
       #   prefersNonDefaultGPU = true;
       #   settings = {DBusActivatable = "false";};
       # };
