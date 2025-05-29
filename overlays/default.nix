@@ -144,24 +144,17 @@ in
         };
       });
 
-      wuimg = prev.stdenv.mkDerivation {
+      wuimg = prev.stdenv.mkDerivation (finalAttrs: {
         pname = "wuimg";
-        version = "unstable-2025-05-04";
+        version = "1.0";
 
         src = prev.fetchFromGitea {
           domain = "codeberg.org";
           owner = "kaleido";
           repo = "wuimg";
-          rev = "ccfb85ded2b9f375b3a97f289239a10a06082719";
-          hash = "sha256-3pWKqQGFwAuQNGACrsgoa8CB4f2X/lukfq5NYNVPEf4=";
+          rev = "v${finalAttrs.version}";
+          hash = "sha256-dPcfgp1RZ6TlyaO+qjcFM7fZlX1bUJcYhb2Nn05tASQ=";
         };
-
-        patches = [./fix_icu_uc_dependency.patch];
-        postPatch = ''
-          substituteInPlace src/meson.build \
-            --replace-fail "/usr/share/wayland-protocols" \
-            "${final.wayland-protocols}/share/wayland-protocols"
-        '';
 
         mesonFlags = ["-Dwindow_glfw=disabled"];
 
@@ -212,8 +205,11 @@ in
           librsvg
           libtiff
           libwebp
+
+          # Additional deps for wufuzz
+          aflplusplus
         ];
-      };
+      });
 
       meta = {
         description = "Minimalistic but not barebones image viewer";
