@@ -20,7 +20,7 @@ in
     };
 
     services = {
-      kanshi.enable = true;
+      shikane.enable = true;
 
       swayidle = {
         enable = true;

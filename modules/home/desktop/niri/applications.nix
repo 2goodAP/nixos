@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   osConfig,
   pkgs,
@@ -8,6 +7,9 @@
 }: let
   osCfg = osConfig.tgap.system.desktop;
   inherit (lib) getExe mkIf;
+
+  fontSpec = "Jetbrains Mono Nerd Font:size=12:fontfeatures=calt,cv04,cv16,ss02,ss19";
+  icon-theme = "Papirus";
 in
   mkIf (osCfg.enable && osCfg.manager == "niri") {
     home.packages = with pkgs; [
@@ -19,24 +21,36 @@ in
       xwayland-satellite
     ];
 
-    programs = {
-      fuzzel.enable = true;
-
-      eww = {
-        enable = true;
-        enableBashIntegration = true;
-        configDir = ./eww;
+    programs.fuzzel = {
+      enable = true;
+      settings.main = {
+        font = fontSpec;
+        use-bold = true;
+        inherit icon-theme;
       };
     };
 
     services = {
       blueman-applet.enable = true;
       clipse.enable = true;
-      fnott.enable = true;
       hyprpaper.enable = true;
       network-manager-applet.enable = true;
       playerctld.enable = true;
       swayosd.enable = true;
+
+      fnott = {
+        enable = true;
+        settings = {
+          main = {
+            default-timeout = 30;
+            border-radius = 10;
+            body-font = fontSpec;
+            summary-font = fontSpec;
+            title-font = fontSpec + ":weight=bold";
+            inherit icon-theme;
+          };
+        };
+      };
 
       udiskie = {
         enable = true;

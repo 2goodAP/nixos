@@ -17,6 +17,29 @@
     osHyCfg = osConfig.programs.hyprland;
     osCfg = osConfig.tgap.system;
     inherit (lib) getExe getExe' mapAttrsToList mkIf optionals;
+
+    configTemplates = {
+      "%XKB_LAYOUT%" = osConfig.services.xserver.xkb.layout;
+      "%XKB_VARIANT%" = osConfig.services.xserver.xkb.variant;
+      "%XKB_OPTIONS%" =
+        builtins.replaceStrings
+        ["grp:menu_toggle"] ["grp:ctrls_toggle"]
+        osConfig.services.xserver.xkb.options;
+
+      "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
+      "%SNKVOLPIPE%" = "snkvolpipe";
+      "%SRCVOLPIPE%" = "srcvolpipe";
+
+      "%CLIPSE%" = getExe config.services.clipse.package;
+      "%EWW%" = getExe config.programs.eww.package;
+      "%FUZZEL%" = getExe config.programs.fuzzel.package;
+      "%HYPRLOCK%" = getExe config.programs.hyprlock.package;
+      "%SWAPPY%" = getExe pkgs.swappy;
+      "%WEZTERM%" = getExe config.programs.wezterm.package;
+      "%WLOGOUT%" = getExe pkgs.wlogout;
+      "%WLPASTE%" = getExe' pkgs.wl-clipboard "wl-paste";
+      "%WPCTL%" = getExe' osConfig.services.pipewire.wireplumber.package "wpctl";
+    };
   in
     mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {
       home.activation.activateQtctConfig = let
@@ -62,36 +85,6 @@
           EOF
         '';
 
-      xdg.configFile = {
-        "qt5ct/style-colors.conf".source = ./qtct/qt5-style-colors.conf;
-        "qt6ct/style-colors.conf".source = ./qtct/qt6-style-colors.conf;
-
-        "niri/config.kdl".text = let
-          niriTemplates = {
-            "@XKB_LAYOUT@" = osConfig.services.xserver.xkb.layout;
-            "@XKB_VARIANT@" = osConfig.services.xserver.xkb.variant;
-            "@XKB_OPTIONS@" =
-              builtins.replaceStrings
-              ["grp:menu_toggle"] ["grp:ctrls_toggle"]
-              osConfig.services.xserver.xkb.options;
-
-            "@CLIPSE@" = getExe config.services.clipse.package;
-            "@EWW@" = getExe config.programs.eww.package;
-            "@FUZZEL@" = getExe config.programs.fuzzel.package;
-            "@HYPRLOCK@" = getExe config.programs.hyprlock.package;
-            "@SWAPPY@" = getExe pkgs.swappy;
-            "@WEZTERM@" = getExe config.programs.wezterm.package;
-            "@WLOGOUT@" = getExe pkgs.wlogout;
-            "@WLPASTE@" = getExe' pkgs.wl-clipboard "wl-paste";
-            "@WPCTL@" = getExe' osConfig.services.pipewire.wireplumber.package "wpctl";
-          };
-        in
-          builtins.replaceStrings
-          (mapAttrsToList (name: _: name) niriTemplates)
-          (mapAttrsToList (_: value: value) niriTemplates)
-          (builtins.readFile ./niri-config.kdl);
-      };
-
       gtk = {
         enable = true;
 
@@ -123,6 +116,25 @@
           package = pkgs.bibata-cursors;
           size = 24;
         };
+      };
+
+      programs.eww = let
+        configDir = pkgs.runCommand "eww-config-dir" {} ''
+          mkdir $out
+
+          # eww.scss
+          echo '${builtins.replaceStrings ["'"] ["'\"'\"'"]
+            (builtins.readFile ./eww/eww.scss)}' > $out/eww.scss
+
+          # eww.yuck
+          echo '${builtins.replaceStrings
+            (["'"] ++ (mapAttrsToList (name: _: name) configTemplates))
+            (["'\"'\"'"] ++ (mapAttrsToList (_: value: value) configTemplates))
+            (builtins.readFile ./eww/eww.yuck)}' > $out/eww.yuck
+        '';
+      in {
+        enable = true;
+        inherit configDir;
       };
 
       qt = {
@@ -390,6 +402,17 @@
             "float, class:^(.*udiskie.*)$"
           ];
         };
+      };
+
+      xdg.configFile = {
+        "qt5ct/style-colors.conf".source = ./qtct/qt5-style-colors.conf;
+        "qt6ct/style-colors.conf".source = ./qtct/qt6-style-colors.conf;
+
+        "niri/config.kdl".text =
+          builtins.replaceStrings
+          (mapAttrsToList (name: _: name) configTemplates)
+          (mapAttrsToList (_: value: value) configTemplates)
+          (builtins.readFile ./niri-config.kdl);
       };
     };
 }

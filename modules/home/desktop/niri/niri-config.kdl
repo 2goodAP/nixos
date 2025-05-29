@@ -39,9 +39,9 @@ input {
             // You can set rules, model, layout, variant and options.
             // For more information, see xkeyboard-config(7).
 
-            layout "@XKB_LAYOUT@"
-            variant "@XKB_VARIANT@"
-            options "@XKB_OPTIONS@"
+            layout "%XKB_LAYOUT%"
+            variant "%XKB_VARIANT%"
+            options "%XKB_OPTIONS%"
         }
     }
 
@@ -271,7 +271,8 @@ layout {
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
-spawn-at-startup "@EWW@" "open" "main-bar"
+spawn-at-startup "bash" "-c" "if [[ -d \"%NIRI_TMP%\" ]]; then rm -r \"%NIRI_TMP%\"; fi && mkdir -p \"%NIRI_TMP%\" && mkfifo \"%NIRI_TMP%/%SNKVOLPIPE%\" && mkfifo \"%NIRI_TMP%/%SRCVOLPIPE%\""
+spawn-at-startup "%EWW%" "open" "main-bar"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -444,10 +445,10 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+Return { spawn "@WEZTERM@" "start" "--cwd" "."; }
-    Mod+D { spawn "@FUZZEL@"; }
-    Mod+C { spawn "@WEZTERM@" "start" "--cwd" "." "--class" "clipse" "--" "@CLIPSE@"; }
-    Mod+X { spawn "@HYPRLOCK@"; }
+    Mod+Return { spawn "%WEZTERM%" "start" "--cwd" "."; }
+    Mod+D { spawn "%FUZZEL%"; }
+    Mod+C { spawn "%WEZTERM%" "start" "--cwd" "." "--class" "clipse" "--" "%CLIPSE%"; }
+    Mod+X { spawn "%HYPRLOCK%"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -455,10 +456,14 @@ binds {
 
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "@WPCTL@" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "@WPCTL@" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn "@WPCTL@" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn "@WPCTL@" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "%WPCTL% set-volume @DEFAULT_AUDIO_SINK@ 5%+ && %WPCTL% get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SNKVOLPIPE%\""; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "%WPCTL% set-volume @DEFAULT_AUDIO_SINK@ 5%- && %WPCTL% get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SNKVOLPIPE%\""; }
+    XF86AudioMute allow-when-locked=true { spawn "%WPCTL%" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+
+    Mod+XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "%WPCTL% set-volume @DEFAULT_AUDIO_SOURCE@ 5%+ && %WPCTL% get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SRCVOLPIPE%\""; }
+    Mod+XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "%WPCTL% set-volume @DEFAULT_AUDIO_SOURCE@ 5%- && %WPCTL% get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SRCVOLPIPE%\""; }
+    Mod+XF86AudioMute allow-when-locked=true { spawn "%WPCTL%" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "%WPCTL%" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
 
     Mod+Shift+Q { close-window; }
 
@@ -677,13 +682,13 @@ binds {
     // Mod+Shift+Space { switch-layout "prev"; }
 
     Print {
-        spawn "bash" "-c" "niri msg action screenshot && @WLPASTE@ | @SWAPPY@ -f -"
+        spawn "bash" "-c" "niri msg action screenshot && %WLPASTE% | %SWAPPY% -f -"
     }
     Ctrl+Print {
-        spawn "bash" "-c" "niri msg action screenshot-screen -d false && @WLPASTE@ | @SWAPPY@ -f -"
+        spawn "bash" "-c" "niri msg action screenshot-screen -d false && %WLPASTE% | %SWAPPY% -f -"
     }
     Alt+Print {
-        spawn "bash" "-c" "niri msg action screenshot-window -d false && @WLPASTE@ | @SWAPPY@ -f -"
+        spawn "bash" "-c" "niri msg action screenshot-window -d false && %WLPASTE% | %SWAPPY% -f -"
     }
 
 
@@ -698,8 +703,8 @@ binds {
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
     // The quit action will show a confirmation dialog to avoid accidental exits.
-    Mod+Shift+E { spawn "@WLOGOUT@"; }
-    Ctrl+Alt+Delete { spawn "@WLOGOUT@"; }
+    Mod+Shift+E { spawn "%WLOGOUT%"; }
+    Ctrl+Alt+Delete { spawn "%WLOGOUT%"; }
 
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.

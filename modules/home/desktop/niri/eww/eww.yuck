@@ -1,57 +1,15 @@
-(defvar time-visible true)
-
 (defpoll time
   :interval "1s"
   :initial-value "YYYY-MM-DD hh:mm:ss"
   :run-while time-visible
   `date "+%Y-%m-%d %H:%M:%S"`)
 
-(defpoll sink-volume
-  :interval "2s"
-  :initial-value 0
-  `wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 || echo 0`)
-
-(defpoll source-volume
-  :interval "2s"
-  :initial-value 0
-  `wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 || echo 0`)
-
-(defwidget greeter [?text name]
-  (box
-    :orientation "vertical"
-    :halign "center"
-    text
-    (button
-      :onclick "notify-send 'Hello' 'Hello, ${name}'"
-      "Greet")))
-
-(defwidget labeled-container [name]
-  (box
-    :class "label"
-    :orientation "vertical"
-    :halign "center"
-    name
-    (children)))
-
-(defwindow example
-  :geometry (geometry
-             :x "0%"
-             :y "20px"
-             :width "30px"
-             :height "100%"
-             :anchor "center left")
-  :monitor '["DP-1", 0]'
-  :stacking "fg"
-  :reserve (struts :distance "40px" :side "top")
-  :exclusive true
-  (box
-    :orientation "vertical"
-    :halign "center"
-    (button
-      :onclick `${EWW_CMD} update time-visible=${time-visible ? false : true} && notify-send 'Time' 'Its ${time-visible ? "hiding" : "show"} time'`
-      "${time-visible ? "Hide": "Show"} time")
-    (labeled-container :name "Time" time)
-    (greeter :text "John" :name "Xina")))
+(deflisten sink-volume
+  :initial 0
+  `%WPCTL% get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 && tail -f "%NIRI_TMP%/%SNKVOLPIPE%"`)
+(deflisten source-volume
+  :initial 0
+  `%WPCTL% get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 && tail -f "%NIRI_TMP%/%SRCVOLPIPE%"`)
 
 (defwindow main-bar
   :geometry (geometry
