@@ -34,19 +34,6 @@
     inherit (lib) mkIf;
   in
     mkIf cfg.enable {
-      home.file = {
-        "${cfg.runtimepath}/ftplugin/javascript.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/javascriptreact.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/json.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/jsonc.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/lua.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/nix.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/typescript.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/typescriptreact.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/xml.lua".text = "vim.bo.tabstop = 2";
-        "${cfg.runtimepath}/ftplugin/yuck.lua".text = "vim.bo.tabstop = 2";
-      };
-
       programs.neovim = {
         enable = true;
         defaultEditor = true;

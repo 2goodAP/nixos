@@ -4,15 +4,20 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf;
 in
-  mkIf (builtins.elem "nix" cfg.languages && cfg.lsp.enable) {
+  mkIf (
+    cfg.enable
+    && builtins.elem "nix" cfg.langtools.languages
+    && cfg.langtools.lsp.enable
+  ) {
     programs.neovim = {
       extraPackages = with pkgs; [alejandra deadnix nixd];
 
       extraLuaConfig = ''
-        require("lspconfig").nixd.setup({
+        vim.lsp.enable("nixd")
+        vim.lsp.config("nixd", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)

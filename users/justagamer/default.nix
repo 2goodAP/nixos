@@ -1,5 +1,5 @@
 let
-  uname = builtins.baseNameOf ./.;
+  uname = baseNameOf ./.;
 in {
   users.users."${uname}" = {
     isNormalUser = true;

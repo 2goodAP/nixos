@@ -4,15 +4,20 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf;
 in
-  mkIf (builtins.elem "sql" cfg.languages && cfg.lsp.enable) {
+  mkIf (
+    cfg.enable
+    && builtins.elem "sql" cfg.langtools.languages
+    && cfg.langtools.lsp.enable
+  ) {
     programs.neovim = {
       extraPackages = with pkgs; [sqls sqlfluff];
 
       extraLuaConfig = ''
-        require("lspconfig").sqls.setup({
+        vim.lsp.enable("sqls")
+        vim.lsp.config("sqls", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)

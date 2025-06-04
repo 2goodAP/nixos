@@ -104,7 +104,7 @@
 
           wait-online = {
             anyInterface = true;
-            extraArgs = builtins.map (iface: "--interface=${iface}") cfg.interfaces;
+            extraArgs = map (iface: "--interface=${iface}") cfg.interfaces;
           };
         };
       })

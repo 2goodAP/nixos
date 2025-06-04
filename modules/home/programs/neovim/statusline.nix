@@ -16,7 +16,7 @@
     inherit (lib) mkIf mkMerge;
     inherit (lib.strings) hasInfix optionalString;
   in
-    mkMerge [
+    mkIf cfg.enable (mkMerge [
       (mkIf cfg.statusline.enable {
         programs.neovim.plugins = [
           {
@@ -70,5 +70,5 @@
           }
         ];
       })
-    ];
+    ]);
 }

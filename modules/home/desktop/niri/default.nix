@@ -16,30 +16,46 @@
     hyCfg = config.wayland.windowManager.hyprland;
     osHyCfg = osConfig.programs.hyprland;
     osCfg = osConfig.tgap.system;
-    inherit (lib) getExe getExe' mapAttrsToList mkIf optionals;
+    inherit (lib) getExe getExe' mapAttrsToList mkIf optionals optionalAttrs;
 
-    configTemplates = {
-      "%XKB_LAYOUT%" = osConfig.services.xserver.xkb.layout;
-      "%XKB_VARIANT%" = osConfig.services.xserver.xkb.variant;
-      "%XKB_OPTIONS%" =
-        builtins.replaceStrings
-        ["grp:menu_toggle"] ["grp:ctrls_toggle"]
-        osConfig.services.xserver.xkb.options;
+    configTemplates =
+      {
+        "%XKB_LAYOUT%" = osConfig.services.xserver.xkb.layout;
+        "%XKB_VARIANT%" = osConfig.services.xserver.xkb.variant;
+        "%XKB_OPTIONS%" =
+          builtins.replaceStrings
+          ["grp:menu_toggle"] ["grp:ctrls_toggle"]
+          osConfig.services.xserver.xkb.options;
 
-      "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
-      "%SNKVOLPIPE%" = "snkvolpipe";
-      "%SRCVOLPIPE%" = "srcvolpipe";
+        "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
+        "%SNKVOLPIPE%" = "snkvolpipe";
+        "%SRCVOLPIPE%" = "srcvolpipe";
 
-      "%CLIPSE%" = getExe config.services.clipse.package;
-      "%EWW%" = getExe config.programs.eww.package;
-      "%FUZZEL%" = getExe config.programs.fuzzel.package;
-      "%HYPRLOCK%" = getExe config.programs.hyprlock.package;
-      "%SWAPPY%" = getExe pkgs.swappy;
-      "%WEZTERM%" = getExe config.programs.wezterm.package;
-      "%WLOGOUT%" = getExe pkgs.wlogout;
-      "%WLPASTE%" = getExe' pkgs.wl-clipboard "wl-paste";
-      "%WPCTL%" = getExe' osConfig.services.pipewire.wireplumber.package "wpctl";
-    };
+        "%EWW%" = getExe config.programs.eww.package;
+        "%FUZZEL%" = getExe config.programs.fuzzel.package;
+        "%HYPRLOCK%" = getExe config.programs.hyprlock.package;
+        "%SWAPPY%" = getExe pkgs.swappy;
+        "%WLOGOUT%" = getExe pkgs.wlogout;
+        "%WLPASTE%" = getExe' pkgs.wl-clipboard "wl-paste";
+        "%WPCTL%" = getExe' osConfig.services.pipewire.wireplumber.package "wpctl";
+      }
+      // optionalAttrs (cfg.terminal.name == "ghostty") {
+        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "${getExe
+            config.programs.ghostty.package}"; }'';
+        "%LAUNCH_CLIPSE%" = ''Mod+C { spawn "${
+            getExe config.programs.ghostty.package
+          }" "--class=org.clipse" "-e" "${getExe
+            config.services.clipse.package}"; }'';
+      }
+      // optionalAttrs (cfg.terminal.name == "wezterm") {
+        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "${
+            getExe config.programs.wezterm.package
+          }" "start" "--cwd" "."; }'';
+        "%LAUNCH_CLIPSE%" = ''Mod+C { spawn "${
+            getExe config.programs.wezterm.package
+          }" "start" "--cwd" "." "--class" "clipse" "--" "${getExe
+            config.services.clipse.package}"; }'';
+      };
   in
     mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {
       home.activation.activateQtctConfig = let
@@ -50,8 +66,8 @@
       in
         lib.hm.dag.entryAfter ["linkGeneration"] ''
           # Ensure that qt5ct.conf and qt6ct.conf exist
-          mkdir -p ${builtins.dirOf qt5ctConfFile}
-          mkdir -p ${builtins.dirOf qt6ctConfFile}
+          mkdir -p ${dirOf qt5ctConfFile}
+          mkdir -p ${dirOf qt6ctConfFile}
           touch ${qt5ctConfFile}
           touch ${qt6ctConfFile}
 
@@ -66,7 +82,7 @@
           }" {found = 1; next} !found' ${qt5ctConfFile}
           cat >> ${qt5ctConfFile} << EOF
           ${builtins.replaceStrings ["@configDir@"]
-            [(builtins.dirOf qt5ctConfFile)]
+            [(dirOf qt5ctConfFile)]
             qt5ctConf}
           EOF
 
@@ -80,7 +96,7 @@
           }" {found = 1; next} !found' ${qt6ctConfFile}
           cat >> ${qt6ctConfFile} << EOF
           ${builtins.replaceStrings ["@configDir@"]
-            [(builtins.dirOf qt6ctConfFile)]
+            [(dirOf qt6ctConfFile)]
             qt6ctConf}
           EOF
         '';
@@ -307,7 +323,7 @@
             "XDG_SESSION_DESKTOP,Hyprland"
             "XDG_SESSION_TYPE,wayland"
 
-            # NVIDIA
+            # Nvidia
             "GBM_BACKEND,nvidia"
             "LIBVA_DRIVER_NAME,nvidia"
             "NVD_BACKEND,direct"
@@ -332,9 +348,6 @@
 
             # Firefox
             "MOZ_ENABLE_WAYLAND,1"
-
-            # Cursor
-            ("XCURSOR_SIZE," + builtins.toString config.home.pointerCursor.size)
           ];
 
           exec-once = [
@@ -344,7 +357,7 @@
             "[silent] ${getExe pkgs.nextcloud-client}"
             ("${getExe' hyCfg.package "hyprctl"} setcursor"
               + " ${config.home.pointerCursor.name} "
-              + builtins.toString config.home.pointerCursor.size)
+              + toString config.home.pointerCursor.size)
           ];
 
           general = {

@@ -7,7 +7,7 @@
   cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 in
-  mkIf (builtins.elem "rust" cfg.langtools.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "rust" cfg.langtools.languages) (mkMerge [
     {
       programs.neovim = {
         plugins = optionals cfg.langtools.lsp.enable [pkgs.vimPlugins.rustaceanvim];

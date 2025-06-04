@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 
   vscode-js-debug = let
@@ -22,20 +22,23 @@
       }}/*;
     '';
 in
-  mkIf (builtins.elem "typescript" cfg.languages) (mkMerge [
+  mkIf (
+    cfg.enable && builtins.elem "typescript" cfg.langtools.languages
+  ) (mkMerge [
     {
       programs.neovim.extraPackages =
-        optionals cfg.lsp.enable (with pkgs; [
+        optionals cfg.langtools.lsp.enable (with pkgs; [
           biome
           nodejs
           typescript-language-server
         ])
-        ++ optionals cfg.dap.enable [vscode-js-debug];
+        ++ optionals cfg.langtools.dap.enable [vscode-js-debug];
     }
 
-    (mkIf cfg.lsp.enable {
+    (mkIf cfg.langtools.lsp.enable {
       programs.neovim.extraLuaConfig = ''
-        require("lspconfig").ts_ls.setup({
+        vim.lsp.enable("ts_ls")
+        vim.lsp.config("ts_ls", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
@@ -52,7 +55,7 @@ in
                 "--write",
                 "--stdin-file-path",
                 "$FILENAME",
-				      },
+              },
             },
           },
           formatters_by_ft = {
@@ -76,7 +79,7 @@ in
       '';
     })
 
-    (mkIf cfg.dap.enable {
+    (mkIf cfg.langtools.dap.enable {
       programs.neovim.extraLuaConfig = ''
         require("dap").adapters["pwa-node"] = {
           type = "server",

@@ -7,7 +7,11 @@
   cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf;
 in
-  mkIf (builtins.elem "lua" cfg.langtools.languages && cfg.langtools.lsp.enable) {
+  mkIf (
+    cfg.enable
+    && builtins.elem "lua" cfg.langtools.languages
+    && cfg.langtools.lsp.enable
+  ) {
     programs.neovim = {
       extraPackages = with pkgs; [
         lua-language-server
@@ -16,7 +20,8 @@ in
       ];
 
       extraLuaConfig = ''
-        require("lspconfig").lua_ls.setup({
+        vim.lsp.enable("lua_ls")
+        vim.lsp.config("lua_ls", {
           settings = {
             Lua = {
               runtime = {
@@ -52,7 +57,16 @@ in
           },
         })
 
-        require('lint').linters_by_ft.lua = {"selene"}
+        require("conform").formatters.stylua = {
+          prepend_args = {
+            "--column-width", "88",
+            "--indent-type", "Spaces",
+            "--indent-width", "2",
+            "--sort-requires",
+          },
+        }
+
+        require("lint").linters_by_ft.lua = {"selene"}
       '';
     };
   }

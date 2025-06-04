@@ -15,7 +15,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf optionals;
   in
-    mkIf cfg.treesitter.enable {
+    mkIf (cfg.enable && cfg.treesitter.enable) {
       programs.neovim = {
         extraPackages = [pkgs.tree-sitter];
 
@@ -112,6 +112,7 @@
                     xml
                     yaml
                     yuck
+                    zig
 
                     tree-sitter-norg
                     tree-sitter-norg-meta

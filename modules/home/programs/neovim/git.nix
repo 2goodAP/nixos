@@ -10,21 +10,21 @@
     mkEnableOption "git-related plugins";
 
   config = let
-    cfg = config.tgap.home.programs.neovim.git;
+    cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf;
   in
-    mkIf cfg.enable {
+    mkIf (cfg.enable && cfg.git.enable) {
       programs.neovim = {
         plugins = with pkgs.vimPlugins; [
           plenary-nvim
           {
             plugin = neogit;
-						type = "lua";
+            type = "lua";
             config = "require('neogit').setup()";
           }
           {
             plugin = gitsigns-nvim;
-						type = "lua";
+            type = "lua";
             config = "require('gitsigns').setup()";
           }
         ];

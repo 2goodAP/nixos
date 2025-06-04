@@ -40,6 +40,11 @@ vim.opt.splitbelow = true
 -- Map <leader> to <space>.
 vim.g.mapleader = " "
 
+-- Enable blinking cursor
+vim.opt.guicursor = {
+  "i-ci:ver25-blinkwait700-blinkon250-blinkoff400",
+}
+
 -- ----------------------------------------- --
 -- Vim tab and split navigation keybindings. --
 -- ----------------------------------------- --

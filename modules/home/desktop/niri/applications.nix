@@ -6,6 +6,7 @@
   ...
 }: let
   osCfg = osConfig.tgap.system.desktop;
+  cfg = config.tgap.home.desktop;
   inherit (lib) getExe mkIf;
 
   fontSpec = "Jetbrains Mono Nerd Font:size=12:fontfeatures=calt,cv04,cv16,ss02,ss19";
@@ -32,11 +33,48 @@ in
 
     services = {
       blueman-applet.enable = true;
-      clipse.enable = true;
       hyprpaper.enable = true;
       network-manager-applet.enable = true;
       playerctld.enable = true;
       swayosd.enable = true;
+
+      clipse = {
+        enable = true;
+        systemdTarget = config.wayland.systemd.target;
+        imageDisplay.type =
+          if (builtins.elem cfg.terminal.name ["ghostty" "wezterm"])
+          then "kitty"
+          else "sixel";
+
+        theme = {
+          useCustomTheme = true;
+          TitleFore = "#575279";
+          TitleBack = "#f2e9e1";
+          TitleInfo = "#56949f";
+          NormalTitle = "#575279";
+          NormalDesc = "#9893a5";
+          SelectedTitle = "#d7827e";
+          DimmedTitle = "#cecacd";
+          DimmedDesc = "#cecacd";
+          SelectedDesc = "#ea9d34";
+          StatusMsg = "#56949f";
+          PinIndicatorColor = "#286983";
+          SelectedBorder = "#286983";
+          SelectedDescBorder = "#286983";
+          FilteredMatch = "#907aa9";
+          FilterPrompt = "#b4637a";
+          FilterInfo = "#907aa9";
+          FilterText = "#575279";
+          FilterCursor = "#907aa9";
+          HelpKey = "#797593";
+          HelpDesc = "#9893a5";
+          PageActiveDot = "#286983";
+          PageInactiveDot = "#9893a5";
+          DividerDot = "#286983";
+          PreviewedText = "#575279";
+          PreviewBorder = "#286983";
+        };
+      };
 
       fnott = {
         enable = true;

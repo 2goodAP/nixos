@@ -8,30 +8,62 @@
   cfg = config.tgap.system.desktop;
   gsCfg = cfg.gaming.gamescope;
   enableGaming = cfg.enable && cfg.gaming.enable;
-  inherit (lib) optionalAttrs optionals;
+  inherit (lib) getExe optionalAttrs optionals;
 in
   [
+    inputs.ghostty.overlays.default
+
     (final: prev:
       {
         wezterm = inputs.wezterm.packages.${system}.default;
 
-        soundfont-generaluser = prev.soundfont-generaluser.overrideAttrs (oldAttrs: {
-          version = "2.0.2";
+        soundfont-upright-kw = final.stdenv.mkDerivation {
+          pname = "upright-kw";
+          version = "unstable-2022-02-21";
 
-          src = prev.fetchzip {
-            url = "https://drive.usercontent.google.com/download?id=1UJ1mrY2l_C_YbKeyywNUymBz7OTVzQLU&export=download&confirm=t&uuid=1f4f2f5d-584d-4a1f-b123-7567cca1bdcf";
-            extension = "zip";
-            stripRoot = true;
-            sha256 = "sha256-Jp1VMym8rItw7ELlpCGGvuc0zn1fBYzpYP5GhdcrXuA=";
+          src = prev.fetchurl {
+            url = "https://freepats.zenvoid.org/Piano/UprightPianoKW/UprightPianoKW-SF2-20220221.7z";
+            sha256 = "sha256-F8CExuQgUjPcSbNOS8RKmy18eiwCsEcp7Np3B5sHyCY=";
           };
 
-          installPhase =
-            oldAttrs.installPhase
-            + ''
-              mkdir -p $out/share/doc/soundfont-generaluser
-              install -Dm644 documentation/* $out/share/doc/soundfont-generaluser
-            '';
-        });
+          unpackPhase = ''
+            ${getExe final.p7zip} e $src
+          '';
+
+          installPhase = ''
+            install -Dm644 UprightPianoKW-*.sf2 \
+              $out/share/soundfonts/UprightPianoKW.sf2
+          '';
+
+          meta = with lib; {
+            description = "Kawai upright piano soundfont";
+            homepage = "https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html";
+            license = licenses.cc-by-30;
+            platforms = platforms.all;
+          };
+        };
+
+        soundfont-salamander-grand = final.stdenv.mkDerivation {
+          pname = "salamander-grand";
+          version = "3-unstable-2020-06-02";
+
+          src = prev.fetchurl {
+            url = "https://freepats.zenvoid.org/Piano/SalamanderGrandPiano/SalamanderGrandPiano-SF2-V3+20200602.tar.xz";
+            sha256 = "sha256-Fe2wYde6YNWDMvctuo+M5AmIBIzHA/k15jIPN9ZQ4hM=";
+          };
+
+          installPhase = ''
+            install -Dm644 SalamanderGrandPiano-*.sf2 \
+              $out/share/soundfonts/SalamanderGrandPiano.sf2
+          '';
+
+          meta = with lib; {
+            description = "Yamaha C5 grand piano soundfont";
+            homepage = "https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html";
+            license = licenses.cc-by-30;
+            platforms = platforms.all;
+          };
+        };
 
         qmk = prev.qmk.overrideAttrs (oldAttrs: {
           propagatedBuildInputs =
@@ -85,7 +117,7 @@ in
     inputs.nixpkgs-wayland.overlay
 
     (final: prev: {
-      flif = prev.stdenv.mkDerivation (finalAttrs: {
+      flif = final.stdenv.mkDerivation (finalAttrs: {
         pname = "flif";
         version = "0.4";
 
@@ -144,7 +176,7 @@ in
         };
       });
 
-      wuimg = prev.stdenv.mkDerivation (finalAttrs: {
+      wuimg = final.stdenv.mkDerivation (finalAttrs: {
         pname = "wuimg";
         version = "1.0";
 

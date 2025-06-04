@@ -7,7 +7,7 @@
   cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 in
-  mkIf (builtins.elem "python" cfg.langtools.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "python" cfg.langtools.languages) (mkMerge [
     {
       programs.neovim = {
         extraPackages = optionals cfg.langtools.lsp.enable (with pkgs; [
@@ -30,7 +30,8 @@ in
     (mkIf cfg.langtools.lsp.enable {
       programs.neovim.extraLuaConfig = ''
         -- Pylsp configuration
-        require("lspconfig").pylsp.setup({
+        vim.lsp.enable("pylsp")
+        vim.lsp.config("pylsp", {
           settings = {
             pylsp = {
               plugins = {

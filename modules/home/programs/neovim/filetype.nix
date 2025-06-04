@@ -16,7 +16,26 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf mkMerge optionalString;
   in
-    mkMerge [
+    mkIf cfg.enable (mkMerge [
+      {
+        home.file = builtins.listToAttrs (map (lang: {
+            name = "${cfg.runtimepath}/ftplugin/${lang}.lua";
+            value = {text = "vim.bo.tabstop = 2";};
+          }) [
+            "cpp"
+            "javascript"
+            "javascriptreact"
+            "json"
+            "jsonc"
+            "lua"
+            "nix"
+            "typescript"
+            "typescriptreact"
+            "xml"
+            "yuck"
+          ]);
+      }
+
       (mkIf cfg.filetype.glow.enable {
         programs.neovim = {
           extraPackages = [pkgs.glow];
@@ -71,7 +90,7 @@
               {
                 optional = true;
                 plugin = pkgs.vimPlugins.neorg;
-							  type = "lua";
+                type = "lua";
                 config = ''
                   vim.api.nvim_create_augroup("NeorgGroup", {clear = true})
                   vim.api.nvim_create_autocmd(
@@ -98,5 +117,5 @@
             ];
         };
       })
-    ];
+    ]);
 }

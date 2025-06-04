@@ -19,6 +19,7 @@
     ./sql.nix
     ./typescript.nix
     ./xml.nix
+    ./zig.nix
   ];
 
   options.tgap.home.programs.neovim.langtools = let
@@ -32,7 +33,7 @@
       description = ''
         The extra language servers to be installed. Supported languages are
         "cpp", "go", "haskell", "hypr", "lisp", "lua", "markdown", "nix"
-        "python", "r", "rust", "shell, "sql", "typescript", "xml".
+        "python", "r", "rust", "shell, "sql", "typescript", "xml", "zig".
       '';
     };
 
@@ -48,7 +49,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf mkMerge optionals optionalString;
   in
-    mkMerge [
+    mkIf cfg.enable (mkMerge [
       (mkIf cfg.langtools.dap.enable {
         programs.neovim.plugins = [pkgs.vimPlugins.nvim-dap];
       })
@@ -313,5 +314,5 @@
           '';
         };
       })
-    ];
+    ]);
 }

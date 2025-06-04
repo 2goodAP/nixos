@@ -19,7 +19,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf mkMerge;
   in
-    mkMerge [
+    mkIf cfg.enable (mkMerge [
       (mkIf (cfg.colorscheme == "tokyonight") {
         programs.neovim.plugins = with pkgs.vimPlugins; [
           {
@@ -46,5 +46,5 @@
           }
         ];
       })
-    ];
+    ]);
 }

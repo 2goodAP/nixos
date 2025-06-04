@@ -16,7 +16,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) getExe mkIf optionals optionalString;
   in
-    mkIf cfg.autocompletion.enable {
+    mkIf (cfg.enable && cfg.autocompletion.enable) {
       programs.neovim = {
         extraLuaPackages = luaPkgs: [luaPkgs.jsregexp];
 

@@ -7,7 +7,7 @@
   cfg = config.tgap.home.programs.neovim;
   inherit (lib) getExe' mkIf mkMerge;
 in
-  mkIf (builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "cpp" cfg.langtools.languages) (mkMerge [
     (mkIf cfg.langtools.lsp.enable {
       programs.neovim = {
         plugins = [pkgs.vimPlugins.clangd_extensions-nvim];
@@ -19,7 +19,8 @@ in
         ];
 
         extraLuaConfig = ''
-          require("lspconfig").clangd.setup({
+          vim.lsp.enable("clangd")
+          vim.lsp.config("clangd", {
             capabilities = require("tgap.lsp-utils").capabilities,
             on_attach = function(client, bufnr)
               require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
@@ -33,9 +34,26 @@ in
             },
           })
 
+          require("conform").formatters = {
+            ["clang-format"] = {
+              prepend_args = {
+                  "--sort-includes",
+                  "--style=google",
+              }
+            }
+          }
+
           require("lint").linter_by_ft = {
             c = {"clangtidy"},
             cpp = {"clangtidy", "flawfinder"},
+          }
+
+          require("lint").linters.clangtidy.args = {
+            "--checks=boost-*,bugprone-*,clang-analyzer-*,concurrency-*",
+            "--checks=cppcoreguidelines-*,google-*,modernize-*,misc-*,mpi-*",
+            "--checks=openmp-*,performance-*,portability-*,readibility-*",
+            "--format-style=google",
+            "--quiet",
           }
         '';
       };

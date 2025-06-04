@@ -45,11 +45,10 @@ in {
       finalArgs = mkOption {
         type = types.str;
         default =
-          "-W ${builtins.toString gsCfg.width}"
-          + " -H ${builtins.toString gsCfg.height}"
-          + " -r ${builtins.toString gsCfg.refreshRate}"
-          + " --framerate-limit ${builtins.toString gsCfg.refreshRate}"
-          + " -o 60 ${gsCfg.extraArgs}";
+          "-W ${toString gsCfg.width} -H ${toString gsCfg.height}"
+          + " -r ${toString gsCfg.refreshRate} -o 60"
+          + " --framerate-limit ${toString gsCfg.refreshRate}"
+          + " ${gsCfg.extraArgs}";
         description = "Compiled/final args for the steam gamescope command.";
         readOnly = true;
       };
@@ -152,10 +151,10 @@ in {
 
             declare {gs_cmd,prefix,proton,mh_cmd}=""
             declare gs_args='${gsCfg.extraArgs}' hidraw=1
-            declare width=${builtins.toString gsCfg.width}
-            declare height=${builtins.toString gsCfg.height}
-            declare ref_rate=${builtins.toString gsCfg.refreshRate}
-            declare fps_limit=${builtins.toString gsCfg.refreshRate}
+            declare width=${toString gsCfg.width}
+            declare height=${toString gsCfg.height}
+            declare ref_rate=${toString gsCfg.refreshRate}
+            declare fps_limit=${toString gsCfg.refreshRate}
 
             if ! opts="$( \
               ${getExe' pkgs.util-linux "getopt"} --name "''${0##*/}" \

@@ -17,7 +17,7 @@
   config = let
     cfg = config.tgap.home.programs.applications;
     osCfg = osConfig.tgap.system.network;
-    inherit (lib) concatStringsSep getExe mkIf mkMerge optionalString;
+    inherit (lib) concatStringsSep mkIf mkMerge optionalString;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -96,12 +96,7 @@
             (symlinkJoin {
               name = "fluidsynth";
               buildInputs = [makeWrapper];
-              paths = [
-                fluidsynth-with-soundfont
-                fluidsynth.dev
-                fluidsynth.man
-                soundfont-generaluser
-              ];
+              paths = [fluidsynth-with-soundfont];
               postBuild = ''
                 wrapProgram $out/bin/fluidsynth --add-flags \
                   "-a pulseaudio ${concatStringsSep " "
@@ -112,10 +107,24 @@
             transmission_4
           ];
 
-        xdg.configFile.musikcube-settings = {
-          source = ./musikcube;
-          target = "musikcube";
-          recursive = true;
+        xdg = {
+          dataFile = {
+            "soundfonts/GeneralUser-GS.sf2".source =
+              "${pkgs.soundfont-generaluser}/share"
+              + "/soundfonts/GeneralUser-GS.sf2";
+            "soundfonts/SalamanderGrandPiano.sf2".source =
+              "${pkgs.soundfont-salamander-grand}/share"
+              + "/soundfonts/SalamanderGrandPiano.sf2";
+            "soundfonts/UprightPianoKW.sf2".source =
+              "${pkgs.soundfont-upright-kw}/share"
+              + "/soundfonts/UprightPianoKW.sf2";
+          };
+
+          configFile.musikcube-settings = {
+            source = ./musikcube;
+            target = "musikcube";
+            recursive = true;
+          };
         };
       }
 

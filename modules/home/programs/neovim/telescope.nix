@@ -13,7 +13,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf optionals;
   in
-    mkIf cfg.telescope.enable {
+    mkIf (cfg.enable && cfg.telescope.enable) {
       programs.neovim.plugins =
         (with pkgs.vimPlugins; [
           plenary-nvim

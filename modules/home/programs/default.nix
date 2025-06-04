@@ -20,7 +20,6 @@
   config = let
     cfg = config.tgap.home.programs;
     deskCfg = config.tgap.home.desktop;
-    nushellDefault = osConfig.tgap.system.programs.defaultShell == "nushell";
     inherit (lib) getExe mkIf recursiveUpdate optionalString;
   in
     mkIf cfg.enable {
@@ -88,6 +87,19 @@
           initExtra = ''
             set -o vi
             bind '"\C-l": clear-screen'
+
+            # ble.sh
+            # ------
+            ## Set ESC timeout
+            stty time 0
+            bind 'set keyseq-timeout ${toString config.programs.tmux.escapeTime}'
+
+            ## Set vi-mode cursor style
+            ble-bind -m vi_nmap --cursor 2  # block
+            ble-bind -m vi_imap --cursor 5  # blinking-bar
+            ble-bind -m vi_omap --cursor 4  # underline
+            ble-bind -m vi_xmap --cursor 2  # block
+            ble-bind -m vi_cmap --cursor 0  # default
 
             # batpipe init
             eval "$(${getExe pkgs.bat-extras.batpipe})"
@@ -210,7 +222,7 @@
           enable = true;
           clock24 = true;
           customPaneNavigationAndResize = true;
-          escapeTime = 10;
+          escapeTime = 1;
           keyMode = "vi";
           mouse = true;
           newSession = true;

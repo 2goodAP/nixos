@@ -7,7 +7,7 @@
   cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 in
-  mkIf (builtins.elem "haskell" cfg.langtools.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "haskell" cfg.langtools.languages) (mkMerge [
     {
       programs.neovim = {
         plugins =

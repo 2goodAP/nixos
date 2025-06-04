@@ -16,7 +16,7 @@
     cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf optionals optionalString;
   in
-    mkIf cfg.motion.enable {
+    mkIf (cfg.enable && cfg.motion.enable) {
       programs.neovim.plugins =
         (with pkgs.vimPlugins; [
           {

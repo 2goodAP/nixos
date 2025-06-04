@@ -5,14 +5,14 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs;
+  cfg = config.tgap.home.programs.neovim;
   osCfg = osConfig.tgap.system.programs;
   inherit (lib) getExe getExe' mkIf mkMerge optionals optionalString;
 in
-  mkIf (builtins.elem "shell" cfg.neovim.langtools.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "shell" cfg.langtools.languages) (mkMerge [
     {
       programs.neovim.extraPackages =
-        optionals cfg.neovim.langtools.lsp.enable (with pkgs; [
+        optionals cfg.langtools.lsp.enable (with pkgs; [
           dotenv-linter
           nodejs
           nodePackages.bash-language-server
@@ -21,10 +21,10 @@ in
           shfmt
           vale
         ])
-        ++ optionals cfg.neovim.langtools.dap.enable (with pkgs; [bashdb nodejs]);
+        ++ optionals cfg.langtools.dap.enable (with pkgs; [bashdb nodejs]);
     }
 
-    (mkIf cfg.neovim.langtools.lsp.enable {
+    (mkIf cfg.langtools.lsp.enable {
       programs.neovim.extraLuaConfig = ''
         vim.filetype.add({
           -- Detect and apply filetypes based on the entire filename
@@ -39,7 +39,8 @@ in
           },
         })
 
-        require("lspconfig").bashls.setup({
+        vim.lsp.enable("bashls")
+        vim.lsp.config("bashls", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
@@ -68,7 +69,7 @@ in
       '';
     })
 
-    (mkIf cfg.neovim.langtools.dap.enable {
+    (mkIf cfg.langtools.dap.enable {
       programs.neovim.extraLuaConfig = ''
         require("dap").adapters.bashdb = {
           type = "executable",

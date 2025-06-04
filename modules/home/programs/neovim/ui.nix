@@ -10,25 +10,25 @@
     mkEnableOption "fancy ui for neovim";
 
   config = let
-    cfg = config.tgap.home.programs.neovim.ui;
+    cfg = config.tgap.home.programs.neovim;
     inherit (lib) mkIf;
   in
-    mkIf cfg.enable {
+    mkIf (cfg.enable && cfg.ui.enable) {
       programs.neovim = {
         plugins = with pkgs.vimPlugins; [
           {
             plugin = dressing-nvim;
-						type = "lua";
+            type = "lua";
             config = "require('dressing').setup({})";
           }
           {
             plugin = indent-blankline-nvim;
-						type = "lua";
+            type = "lua";
             config = "require('ibl').setup()";
           }
           {
             plugin = nvim-notify;
-						type = "lua";
+            type = "lua";
             config = "vim.notify = require('notify')";
           }
         ];

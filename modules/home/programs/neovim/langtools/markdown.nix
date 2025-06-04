@@ -4,10 +4,14 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf;
 in
-  mkIf (builtins.elem "markdown" cfg.languages && cfg.lsp.enable) {
+  mkIf (
+    cfg.enable
+    && builtins.elem "markdown" cfg.langtools.languages
+    && cfg.langtools.lsp.enable
+  ) {
     programs.neovim = {
       extraPackages = with pkgs; [
         markdown-oxide
@@ -15,7 +19,8 @@ in
       ];
 
       extraLuaConfig = ''
-        require("lspconfig").markdown_oxide.setup({
+        vim.lsp.enable("markdown_oxide")
+        vim.lsp.config("markdown_oxide", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)

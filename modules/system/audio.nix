@@ -73,8 +73,8 @@
               };
 
               pipewire-pulse."92-low-latency" = let
-                squant = builtins.toString quant;
-                srate = builtins.toString rate;
+                squant = toString quant;
+                srate = toString rate;
               in {
                 context.modules = [
                   {

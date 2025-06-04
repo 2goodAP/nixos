@@ -4,28 +4,37 @@
   pkgs,
   ...
 }: let
-  cfg = config.tgap.home.programs.neovim.langtools;
+  cfg = config.tgap.home.programs.neovim;
   inherit (lib) mkIf mkMerge optionals;
 in
-  mkIf (builtins.elem "go" cfg.languages) (mkMerge [
+  mkIf (cfg.enable && builtins.elem "go" cfg.langtools.languages) (mkMerge [
     {
       programs.neovim = {
-        plugins = optionals cfg.dap.enable [pkgs.vimPlugins.nvim-dap-go];
+        plugins = optionals cfg.langtools.dap.enable [pkgs.vimPlugins.nvim-dap-go];
 
         extraPackages =
-          optionals cfg.lsp.enable (with pkgs; [
+          optionals cfg.langtools.lsp.enable (with pkgs; [
             gofumpt
             goimports-reviser
             golangci-lint
             gopls
           ])
-          ++ optionals cfg.dap.enable [pkgs.delve];
+          ++ optionals cfg.langtools.dap.enable [pkgs.delve];
       };
     }
 
-    (mkIf cfg.lsp.enable {
+    (mkIf cfg.langtools.lsp.enable {
       programs.neovim.extraLuaConfig = ''
-        require("lspconfig").sqls.setup({
+        vim.lsp.enable("gopls")
+        vim.lsp.config("gopls", {
+          capabilities = require("tgap.lsp-utils").capabilities,
+          on_attach = function(client, bufnr)
+            require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
+          end,
+        })
+
+        vim.lsp.enable("golangci-lint-langserver")
+        vim.lsp.config("golangci-lint-langserver", {
           capabilities = require("tgap.lsp-utils").capabilities,
           on_attach = function(client, bufnr)
             require("tgap.lsp-utils").set_lsp_keymaps(bufnr)
@@ -42,7 +51,7 @@ in
       '';
     })
 
-    (mkIf cfg.dap.enable {
+    (mkIf cfg.langtools.dap.enable {
       programs.neovim.extraLuaConfig = ''
         require("dap").adapters.delve = {
           type = "server",
