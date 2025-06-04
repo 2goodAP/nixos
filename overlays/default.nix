@@ -152,7 +152,7 @@ in
           domain = "codeberg.org";
           owner = "kaleido";
           repo = "wuimg";
-          rev = "v${finalAttrs.version}";
+          tag = "v${finalAttrs.version}";
           hash = "sha256-dPcfgp1RZ6TlyaO+qjcFM7fZlX1bUJcYhb2Nn05tASQ=";
         };
 
@@ -205,22 +205,33 @@ in
           librsvg
           libtiff
           libwebp
-
-          # Additional deps for wufuzz
-          aflplusplus
         ];
-      });
 
-      meta = {
-        description = "Minimalistic but not barebones image viewer";
-        homepage = "https://codeberg.org/kaleido/wuimg";
-        platforms = lib.platforms.linux;
-        mainProgram = "wu";
-        longDescription = ''
-          wu is a minimalistic but not barebones image viewer. It aims for comfort,
-          speed, accurate color rendering, and format documentation/preservation.
-          wu is meant as a terminal companion, so launching from one is recommended.
+        buildPhase = ''
+          runHook preBuild
+
+          meson compile
+          meson compile wuconv
+
+          runHook postBuild
         '';
-      };
+
+        postInstall = ''
+          install -Dm755 src/wuconv $out/bin
+        '';
+
+        meta = with lib; {
+          description = "Minimalistic but not barebones image viewer";
+          homepage = "https://codeberg.org/kaleido/wuimg";
+          license = licenses.bsd0;
+          platforms = platforms.linux;
+          mainProgram = "wu";
+          longDescription = ''
+            wu is a minimalistic but not barebones image viewer. It aims for comfort,
+            speed, accurate color rendering, and format documentation/preservation.
+            wu is meant as a terminal companion, so launching from one is recommended.
+          '';
+        };
+      });
     })
   ]
