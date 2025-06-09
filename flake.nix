@@ -80,16 +80,6 @@
   }:
     flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}: {
       systems = ["x86_64-linux"];
-      imports = [flake-parts.flakeModules.easyOverlay];
-
-      perSystem = {
-        config,
-        pkgs,
-        ...
-      }: {
-        overlayAttrs = {inherit (config.packages) neovim;};
-        packages.neovim = pkgs.callPackage ./pkgs/neovim/package.nix {};
-      };
 
       flake.nixosConfigurations = let
         systemModules = [

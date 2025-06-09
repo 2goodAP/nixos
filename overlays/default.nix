@@ -13,7 +13,6 @@ in
   [
     inputs.ghostty.overlays.default
     inputs.neovim-nightly-overlay.overlays.default
-    inputs.self.overlays.default
 
     (final: prev:
       {
