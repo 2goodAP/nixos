@@ -30,31 +30,18 @@
         "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
         "%SNKVOLPIPE%" = "snkvolpipe";
         "%SRCVOLPIPE%" = "srcvolpipe";
-
-        "%EWW%" = getExe config.programs.eww.package;
-        "%FUZZEL%" = getExe config.programs.fuzzel.package;
-        "%HYPRLOCK%" = getExe config.programs.hyprlock.package;
-        "%SWAPPY%" = getExe pkgs.swappy;
-        "%WLOGOUT%" = getExe pkgs.wlogout;
-        "%WLPASTE%" = getExe' pkgs.wl-clipboard "wl-paste";
-        "%WPCTL%" = getExe' osConfig.services.pipewire.wireplumber.package "wpctl";
       }
       // optionalAttrs (cfg.terminal.name == "ghostty") {
-        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "${getExe
-            config.programs.ghostty.package}"; }'';
-        "%LAUNCH_CLIPSE%" = ''Mod+C { spawn "${
-            getExe config.programs.ghostty.package
-          }" "--class=org.clipse" "-e" "${getExe
-            config.services.clipse.package}"; }'';
+        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "ghostty"; }'';
+        "%LAUNCH_CLIPSE%" =
+          ''Mod+C { spawn "ghostty" ''
+          + ''"--class=org.clipse" "-e" "clipse"; }'';
       }
       // optionalAttrs (cfg.terminal.name == "wezterm") {
-        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "${
-            getExe config.programs.wezterm.package
-          }" "start" "--cwd" "."; }'';
-        "%LAUNCH_CLIPSE%" = ''Mod+C { spawn "${
-            getExe config.programs.wezterm.package
-          }" "start" "--cwd" "." "--class" "clipse" "--" "${getExe
-            config.services.clipse.package}"; }'';
+        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "wezterm" "start" "--cwd" "."; }'';
+        "%LAUNCH_CLIPSE%" =
+          ''Mod+C { spawn "wezterm" "start" "--cwd" "." ''
+          + ''"--class" "clipse" "--" "clipse"; }'';
       };
   in
     mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {

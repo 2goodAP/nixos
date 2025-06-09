@@ -44,13 +44,6 @@
           sha256 = "sha256-0u3pjxMn0Vzr97VudM+aY7ouXD8dRucsnhigaiCNGME=";
           sparseCheckout = ["dist/themes"];
         };
-        tokyonight = pkgs.fetchFromGitHub {
-          owner = "folke";
-          repo = "tokyonight.nvim";
-          rev = "e58f652cccd0baf337f23d2de0d6cd221c3b685b";
-          sha256 = "sha256-DkEKB/FQVEYC6MWc1ZxOFIWgHWcGByiFfHamZFVEyVY=";
-          sparseCheckout = ["extras/lazygit" "extras/tmux" "extras/yazi"];
-        };
       in {
         atuin.enable = true;
         fd.enable = true;
@@ -190,7 +183,7 @@
         lazygit = let
           configJSON = pkgs.runCommand "lazygit-config.json" {
             nativeBuildInputs = [pkgs.yq-go];
-          } "yq -o json '.' ${tokyonight}/extras/lazygit/tokyonight_day.yml > $out";
+          } "yq -o json '.' ${./lazygit/rose-pine-dawn.yml} > $out";
         in {
           enable = true;
           settings = lib.importJSON configJSON;
@@ -236,9 +229,9 @@
 
         yazi = {
           enable = true;
-          theme = recursiveUpdate (
-            lib.importTOML "${tokyonight}/extras/yazi/tokyonight_day.toml"
-          ) {manager.highlight = "${tokyonight}/extras/yazi/tokyonight_day.tmTheme";};
+          theme = recursiveUpdate (lib.importTOML ./yazi/rose-pine-dawn.toml) {
+            mgr.highlight = "${rose-pine-tm-theme}/dist/themes/rose-pine-dawn.tmTheme";
+          };
         };
       };
     };

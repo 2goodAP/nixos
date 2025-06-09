@@ -39,8 +39,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -70,36 +70,34 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     flake-parts,
     home-manager,
     lanzaboote,
     nixpkgs,
     nur,
     ...
-  } @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} ({withSystem, ...}: {
       systems = ["x86_64-linux"];
 
       flake.nixosConfigurations = let
-        inherit (nixpkgs) lib;
-        system = "x86_64-linux";
-
         systemModules = [
           # nixos settings
           ({
             config,
+            inputs',
             lib,
             ...
           }: {
             nixpkgs = {
               config.allowUnfree = true;
-              overlays = import ./overlays {inherit config inputs lib system;};
+              overlays = import ./overlays {inherit config inputs inputs' lib;};
             };
 
             home-manager = {
               backupFileExtension = "hm.bak";
-              extraSpecialArgs = {inherit inputs system;};
+              extraSpecialArgs = {inherit inputs';};
               useGlobalPkgs = true;
               useUserPackages = true;
               users.root = import ./users/common/programs.nix;
@@ -119,6 +117,7 @@
                 "https://cuda-maintainers.cachix.org"
                 "https://ghostty.cachix.org"
                 "https://hyprland.cachix.org"
+                "https://nix-community.cachix.org"
                 "https://nixpkgs-wayland.cachix.org"
               ];
               trusted-public-keys = [
@@ -126,6 +125,7 @@
                 "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
                 "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
                 "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+                "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
                 "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
               ];
             };
@@ -150,41 +150,32 @@
         justagamer = import ./users/justagamer;
         twogoodap = import ./users/twogoodap;
         workerap = import ./users/workerap;
+      in
+        builtins.mapAttrs (sysName: userModules:
+          withSystem "x86_64-linux" ({
+            inputs',
+            system,
+            ...
+          }:
+            nixpkgs.lib.nixosSystem {
+              specialArgs = {inherit inputs';};
 
-        # common `nixosSystem` args
-        systemArgs = {
-          inherit system;
-          specialArgs = {inherit inputs;};
+              modules =
+                systemModules
+                ++ [
+                  # Added to fix the build error:
+                  # 'nixpkgs.hostPlatform or nixpkgs.system not set'
+                  {nixpkgs.hostPlatform = {inherit system;};}
+
+                  # system-specific configurations
+                  (import ./machines/workstation {hostName = "${sysName}-nix";})
+                ]
+                ++
+                # user-specific configurations
+                userModules;
+            })) {
+          nitro5 = [twogoodap workerap];
+          workstation = [twogoodap workerap justagamer];
         };
-      in {
-        nitro5 = lib.nixosSystem (systemArgs
-          // {
-            modules =
-              systemModules
-              ++ [
-                # system-specific configuraitons
-                (import ./machines/nitro5 {hostName = "nitro5-nix";})
-
-                # user-specific configurations
-                twogoodap
-                workerap
-              ];
-          });
-
-        workstation = lib.nixosSystem (systemArgs
-          // {
-            modules =
-              systemModules
-              ++ [
-                # system-specific configuraitons
-                (import ./machines/workstation {hostName = "workstation-nix";})
-
-                # user-specific configurations
-                justagamer
-                twogoodap
-                workerap
-              ];
-          });
-      };
-    };
+    });
 }

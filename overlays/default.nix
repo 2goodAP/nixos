@@ -1,8 +1,8 @@
 {
   config,
   inputs,
+  inputs',
   lib,
-  system,
   ...
 }: let
   cfg = config.tgap.system.desktop;
@@ -12,10 +12,11 @@
 in
   [
     inputs.ghostty.overlays.default
+    inputs.neovim-nightly-overlay.overlays.default
 
     (final: prev:
       {
-        wezterm = inputs.wezterm.packages.${system}.default;
+        wezterm = inputs'.wezterm.packages.default;
 
         soundfont-upright-kw = final.stdenv.mkDerivation {
           pname = "upright-kw";
