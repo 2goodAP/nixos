@@ -43,12 +43,15 @@ in {
       };
 
       finalArgs = mkOption {
-        type = types.str;
-        default =
-          "-W ${toString gsCfg.width} -H ${toString gsCfg.height}"
-          + " -r ${toString gsCfg.refreshRate} -o 60"
-          + " --framerate-limit ${toString gsCfg.refreshRate}"
-          + " ${gsCfg.extraArgs}";
+        type = types.listOf types.str;
+        default = [
+          "-W ${toString gsCfg.width}"
+          "-H ${toString gsCfg.height}"
+          "-r ${toString gsCfg.refreshRate}"
+          "--framerate-limit ${toString gsCfg.refreshRate}"
+          "-o 60"
+          gsCfg.extraArgs
+        ];
         description = "Compiled/final args for the steam gamescope command.";
         readOnly = true;
       };
@@ -70,7 +73,7 @@ in {
   config = let
     dtCfg = config.tgap.system.desktop;
     cfg = dtCfg.gaming;
-    inherit (lib) getExe getExe' mkIf mkMerge optionalAttrs optionals;
+    inherit (lib) mkIf mkMerge optionalAttrs optionals;
 
     steam =
       (
@@ -120,233 +123,245 @@ in {
         };
 
         environment.systemPackages = let
-          umu-launch = pkgs.writeShellScriptBin "umu-launch" ''
-            # Command-line parsing
-            # --------------------
+          umu-launch = pkgs.writeShellApplication {
+            name = "umu-launch";
+            runtimeInputs =
+              [steam.run]
+              ++ (with pkgs; [
+                coreutils
+                findutils
+                mangohud
+                umu-launcher
+                util-linux
+              ]);
+            text = ''
+              # Command-line parsing
+              # --------------------
 
-            function show_help() {
-            ${getExe' pkgs.coreutils "cat"} << EOF
-            Usage:
-              ''${0##*/} [options] <game-dir> <exe-path> [-- game-opts]
+              function show_help() {
+              cat << EOF
+              Usage:
+                ''${0##*/} [options] <game-dir> <exe-path> [-- game-opts]
 
-            A command-line game launcher to launch games with added bells-and-whistles.
+              A command-line game launcher to launch games with added bells-and-whistles.
 
-            Options:
-              -e, --gamescope              enable gamescope nested composition
-              -w, --width <width>          output-width passed to gamescope
-              -h, --height <height>        output-height passed to gamescope
-              -r, --ref-rate <ref-rate>    nested-refresh-rate passed to gamescope
-              -l, --fps-limit <fps-limit>  framerate-limit passed to gamescope
-              -g, --gs-args <gs-args>      extra args passed to gamescope
-              -p, --prefix <prefix>        name of the proton prefix to use from
-                                           $HOME/Wine/Prefixes
-              -t, --proton <proton>        name of the proton build to use
-              -m, --mangohud               enable mangohud overlay
-              -o, --opengl                 enable OpenGL specific tweaks
-              -x, --no-hidraw              disable HID raw and emulate xinput
-                                           for controller compatibility
-                  --help                   display this help
-            EOF
-            }
+              Options:
+                -e, --gamescope              enable gamescope nested composition
+                -w, --width <width>          output-width passed to gamescope
+                -h, --height <height>        output-height passed to gamescope
+                -r, --ref-rate <ref-rate>    nested-refresh-rate passed to gamescope
+                -l, --fps-limit <fps-limit>  framerate-limit passed to gamescope
+                -g, --gs-args <gs-args>      extra args passed to gamescope
+                -p, --prefix <prefix>        name of the proton prefix to use from
+                                             $HOME/Wine/Prefixes
+                -t, --proton <proton>        name of the proton build to use
+                -m, --mangohud               enable mangohud overlay
+                -o, --opengl                 enable OpenGL specific tweaks
+                -x, --no-hidraw              disable HID raw and emulate xinput
+                                             for controller compatibility
+                    --help                   display this help
+              EOF
+              }
 
-            declare {gs_cmd,prefix,proton,mh_cmd}=""
-            declare gs_args='${gsCfg.extraArgs}' hidraw=1
-            declare width=${toString gsCfg.width}
-            declare height=${toString gsCfg.height}
-            declare ref_rate=${toString gsCfg.refreshRate}
-            declare fps_limit=${toString gsCfg.refreshRate}
+              declare {gs_cmd,prefix,proton,mh_cmd}=""
+              declare gs_args='${gsCfg.extraArgs}' hidraw=1
+              declare width=${toString gsCfg.width}
+              declare height=${toString gsCfg.height}
+              declare ref_rate=${toString gsCfg.refreshRate}
+              declare fps_limit=${toString gsCfg.refreshRate}
 
-            if ! opts="$( \
-              ${getExe' pkgs.util-linux "getopt"} --name "''${0##*/}" \
-              --options 'ew:h:r:l:g:p:t:mox' --longoptions 'help,gamescope' \
-              --longoptions 'width:,height:,ref-rate:,fps-limit:,gs-args:' \
-              --longoptions 'prefix:,proton:,mangohud,opengl,no-hidraw' \
-              -- "$@" \
-            )"; then
-              show_help >&2
-              exit 1
-            fi
-
-            eval set -- "$opts"
-            while true; do
-              case "$1" in
-                -e|--gamescope)
-                  gs_enable=true
-                  shift
-                  ;;
-                -w|--width)
-                  width="$2"
-                  shift 2
-                  ;;
-                -h|--height)
-                  height="$2"
-                  shift 2
-                  ;;
-                -r|--ref-rate)
-                  ref_rate="$2"
-                  shift 2
-                  ;;
-                -l|--fps-limit)
-                  fps_limit="$2"
-                  shift 2
-                  ;;
-                -g|--gs-args)
-                  gs_args="$2"
-                  shift 2
-                  ;;
-                -p|--prefix)
-                  prefix="$2"
-                  shift 2
-                  ;;
-                -t|--proton)
-                  proton="$2"
-                  shift 2
-                  ;;
-                -m|--mangohud)
-                  mangohud=true
-                  shift
-                  ;;
-                -o|--opengl)
-                  opengl=true
-                  shift
-                  ;;
-                -x|--no-hidraw)
-                  hidraw=0
-                  shift
-                  ;;
-                --help)
-                  show_help
-                  exit 0
-                  ;;
-                --)
-                  shift
-                  break
-                  ;;
-              esac
-            done
-
-            if [[ -z "$1" ]]; then
-            ${getExe' pkgs.coreutils "cat"} >&2 << EOF
-            ''${0##*/}: missing game-dir argument
-            Please specify the absolute path to the game's root directory.
-
-            EOF
-              show_help >&2
-              exit 1
-            elif [[ -z "$2" ]]; then
-            ${getExe' pkgs.coreutils "cat"} >&2 << EOF
-            ''${0##*/}: missing exe-path argument
-            Please specify the relative path to the game's exe from game-dir.
-
-            EOF
-              show_help >&2
-              exit 1
-            fi
-
-            game_dir="$1"
-            exe_path="$2"
-            shift 2
-
-            set -e
-
-            # Vars and Functions
-            # ------------------
-
-            if [[ -n ''${gs_enable+x} ]]; then
-              gs_cmd="$(printf "%s %s %s" \
-                "gamescope -W $((width)) -H $((height)) -r $((ref_rate)) -o 60" \
-                "--framerate-limit $((fps_limit)) ''${mangohud+--mangoapp} $gs_args" \
-                "-- ${getExe' pkgs.util-linux "setpriv"} --inh-caps -sys_nice --")"
-            fi
-
-            steam_root="$HOME/.local/share/Steam"
-            prefix_root="$HOME/Wine/Prefixes"
-
-            function find_latest_proton() {
-              ${getExe' pkgs.coreutils "basename"} "$( \
-                ${getExe' pkgs.coreutils "ls"} -drv \
-                  "$1/$2"* \
-                | head -n 1 \
-              )"
-            }
-
-            # Proton
-            # ------
-
-            steam_proton='^Proton [-. [:alnum:]]+$'
-            if [[ -z "$proton" ]]; then
-              PROTONPATH="GE-Proton"
-            elif [[ "$proton" =~ $steam_proton ]]; then
-              PROTONPATH="$steam_root/steamapps/common/$proton"
-            else
-              PROTONPATH="$proton"
-            fi
-            export PROTONPATH
-
-            # Prefix
-            # ------
-
-            if [[ -z "$prefix" ]]; then
-              prefix="$(${getExe' pkgs.coreutils "basename"} "$game_dir")"
-            fi
-            export WINEPREFIX="$prefix_root/''${prefix// /_}"
-
-            log_file="/tmp/$prefix.log"
-            if [[ ! -x "$WINEPREFIX/pfx.lock" ]]; then
-              ${getExe' pkgs.umu "umu-launcher"} "" &> "$log_file" || true
-            else
-              ${getExe' pkgs.coreutils "echo"} "" > "$log_file"
-            fi
-
-            # Mangohud
-            # --------
-
-            if [[ -n ''${mangohud+x} && -z ''${gs_enable+x} ]]; then
-              mh_cmd="${getExe' pkgs.mangohud "mangohud"}"
-
-              if [[ -n ''${opengl+x} ]]; then
-                mh_cmd+=" --dlsym"
+              if ! opts="$( \
+                getopt --name "''${0##*/}" \
+                --options 'ew:h:r:l:g:p:t:mox' --longoptions 'help,gamescope' \
+                --longoptions 'width:,height:,ref-rate:,fps-limit:,gs-args:' \
+                --longoptions 'prefix:,proton:,mangohud,opengl,no-hidraw' \
+                -- "$@" \
+              )"; then
+                show_help >&2
+                exit 1
               fi
-            fi
 
-            # HidRaw and XInput Emulation
-            # ---------------------------
+              eval set -- "$opts"
+              while true; do
+                case "$1" in
+                  -e|--gamescope)
+                    gs_enable=true
+                    shift
+                    ;;
+                  -w|--width)
+                    width="$2"
+                    shift 2
+                    ;;
+                  -h|--height)
+                    height="$2"
+                    shift 2
+                    ;;
+                  -r|--ref-rate)
+                    ref_rate="$2"
+                    shift 2
+                    ;;
+                  -l|--fps-limit)
+                    fps_limit="$2"
+                    shift 2
+                    ;;
+                  -g|--gs-args)
+                    gs_args="$2"
+                    shift 2
+                    ;;
+                  -p|--prefix)
+                    prefix="$2"
+                    shift 2
+                    ;;
+                  -t|--proton)
+                    proton="$2"
+                    shift 2
+                    ;;
+                  -m|--mangohud)
+                    mangohud=true
+                    shift
+                    ;;
+                  -o|--opengl)
+                    opengl=true
+                    shift
+                    ;;
+                  -x|--no-hidraw)
+                    hidraw=0
+                    shift
+                    ;;
+                  --help)
+                    show_help
+                    exit 0
+                    ;;
+                  --)
+                    shift
+                    break
+                    ;;
+                esac
+              done
 
-            # First, determine the active Proton directory
-            wine_exe="$steam_root/compatibilitytools.d"
-            if [[ "$PROTONPATH" == "GE-Proton" ]]; then
-              wine_exe+="/$(find_latest_proton "$wine_exe" 'GE-Proton')"
-            elif [[ -x "$wine_exe/$PROTONPATH/files/bin/wine" ]]; then
-              wine_exe+="/$PROTONPATH"
-            elif [[ -x "$PROTONPATH/files/bin/wine" \
-                    || -x "$PROTONPATH/dist/bin/wine" ]]; then
-              wine_exe="$PROTONPATH"
-            else
-              wine_exe+="/$(find_latest_proton "$wine_exe" 'UMU-Proton')"
-            fi
+              if [[ -z "$1" ]]; then
+              cat >&2 << EOF
+              ''${0##*/}: missing game-dir argument
+              Please specify the absolute path to the game's root directory.
 
-            # Then, set the wine executable path within
-            if [[ -x "$wine_exe/dist/bin/wine" ]]; then
-                wine_exe+="/dist/bin/wine"
-            else
-                wine_exe+="/files/bin/wine"
-            fi
+              EOF
+                show_help >&2
+                exit 1
+              elif [[ -z "$2" ]]; then
+              cat >&2 << EOF
+              ''${0##*/}: missing exe-path argument
+              Please specify the relative path to the game's exe from game-dir.
 
-            steam-run "$wine_exe" reg add \
-              "HKLM\System\CurrentControlSet\Services\winebus" \
-              /t REG_DWORD /v DisableHidraw /d $((! hidraw)) /f &>> "$log_file"
+              EOF
+                show_help >&2
+                exit 1
+              fi
 
-            # Launch the game
-            # ---------------
+              game_dir="$1"
+              exe_path="$2"
+              shift 2
 
-            cd "$game_dir" || exit 2
-            PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 \
-              $gs_cmd ${getExe' pkgs.gamemode "gamemoderun"} $mh_cmd \
-              ${getExe pkgs.umu-launcher} "$exe_path" "$@" &>> "$log_file" &
-            disown $!
+              set -e
 
-            set +e
-          '';
+              # Vars and Functions
+              # ------------------
+
+              if [[ -n ''${gs_enable+x} ]]; then
+                gs_cmd="$(printf "%s %s %s" "gamescope -W $((width)) -H $((height))" \
+                  "-o 60 -r $((ref_rate)) --framerate-limit $((fps_limit))" \
+                  "''${mangohud+--mangoapp} $gs_args --")"
+              fi
+
+              steam_root="$HOME/.local/share/Steam"
+              prefix_root="$HOME/Wine/Prefixes"
+
+              function find_latest_proton() {
+                basename "$(find "$1/$2"* -maxdepth 0 | sort -V | head -n 1)"
+              }
+
+              # Proton
+              # ------
+
+              steam_proton='^Proton [-. [:alnum:]]+$'
+              if [[ -z "$proton" ]]; then
+                PROTONPATH="GE-Proton"
+              elif [[ "$proton" =~ $steam_proton ]]; then
+                PROTONPATH="$steam_root/steamapps/common/$proton"
+              else
+                PROTONPATH="$proton"
+              fi
+              export PROTONPATH
+
+              # Prefix
+              # ------
+
+              if [[ "$prefix" == /* ]] && pathchk -pP -- "$prefix" &> /dev/null; then
+                WINEPREFIX="$prefix"
+              else
+                if [[ -z "$prefix" ]]; then
+                  prefix="$(basename "$game_dir")"
+                fi
+                WINEPREFIX="$prefix_root/''${prefix// /_}"
+              fi
+              export WINEPREFIX
+
+              log_file="/tmp/$(basename "$WINEPREFIX").log"
+              if [[ ! -x "$WINEPREFIX/pfx.lock" ]]; then
+                umu-run "" &> "$log_file" || true
+              else
+                echo "" > "$log_file"
+              fi
+
+              # Mangohud
+              # --------
+
+              if [[ -n ''${mangohud+x} && -z ''${gs_enable+x} ]]; then
+                mh_cmd="mangohud"
+
+                if [[ -n ''${opengl+x} ]]; then
+                  mh_cmd+=" --dlsym"
+                fi
+              fi
+
+              # HidRaw and XInput Emulation
+              # ---------------------------
+
+              # First, determine the active Proton directory
+              wine_exe="$steam_root/compatibilitytools.d"
+              if [[ "$PROTONPATH" == "GE-Proton" ]]; then
+                wine_exe+="/$(find_latest_proton "$wine_exe" 'GE-Proton')"
+              elif [[ -x "$wine_exe/$PROTONPATH/files/bin/wine" ]]; then
+                wine_exe+="/$PROTONPATH"
+              elif [[ -x "$PROTONPATH/files/bin/wine" \
+                      || -x "$PROTONPATH/dist/bin/wine" ]]; then
+                wine_exe="$PROTONPATH"
+              else wine_exe+="/$(find_latest_proton "$wine_exe" 'UMU-Proton')"
+              fi
+
+              # Then, set the wine executable path within
+              if [[ -x "$wine_exe/dist/bin/wine" ]]; then
+                  wine_exe+="/dist/bin/wine"
+              else
+                  wine_exe+="/files/bin/wine"
+              fi
+
+              steam-run "$wine_exe" reg add \
+                "HKLM\System\CurrentControlSet\Services\winebus" \
+                /t REG_DWORD /v DisableHidraw /d $((! hidraw)) /f &>> "$log_file"
+
+              # Launch the game
+              # ---------------
+
+              cd "$game_dir" || exit 2
+              # shellcheck disable=SC2086 # $gs_cmd and $mh_cmd are intentionally left unquoted
+              PROTON_VERB="waitforexitandrun" PROTON_HEAP_DELAY_FREE=1 $gs_cmd \
+                gamemoderun setpriv --inh-caps -sys_nice -- $mh_cmd \
+                umu-run "$exe_path" "$@" &>> "$log_file" &
+              disown $!
+
+              set +e
+            '';
+          };
         in [
           steam.run
           pkgs.umu-launcher
@@ -379,8 +394,11 @@ in {
       (mkIf cfg.steam.enable {
         programs.steam = {
           enable = true;
-          gamescopeSession = {inherit (config.programs.gamescope) args enable env;};
           package = steam;
+          gamescopeSession = {
+            inherit (config.programs.gamescope) enable;
+            args = gsCfg.finalArgs;
+          };
         };
       })
     ]);

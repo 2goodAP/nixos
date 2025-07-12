@@ -3,6 +3,8 @@
   pkgs,
   ...
 }: {
+  nix.settings.cores = 6;
+
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     kernelModules = ["kvm-intel"];
@@ -29,7 +31,7 @@
       open = false;
       modesetting.enable = true;
       nvidiaPersistenced = true;
-      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
       powerManagement.enable = true;
 
       prime = {

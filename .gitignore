@@ -1,2 +1,5 @@
 # The output directory
 result/
+
+# Some extra program configs
+.vale.ini

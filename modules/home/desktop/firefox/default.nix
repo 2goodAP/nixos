@@ -6,12 +6,13 @@
   ...
 }: let
   cfg = config.tgap.home.desktop;
-  osCfg = osConfig.tgap.system.desktop;
-  inherit (lib) mkIf;
+  osCfg = osConfig.tgap.system;
+  inherit (lib) mkIf optionalString;
 in
-  mkIf (osCfg.enable && cfg.applications.enable) {
+  mkIf (osCfg.desktop.enable && cfg.applications.enable) {
     programs.firefox = {
       enable = true;
+      package = pkgs.firefox-beta;
 
       profiles = {
         default = let
@@ -122,6 +123,23 @@ in
                 ];
               };
 
+              Noogle = {
+                definedAliases = ["@no" "@ng"];
+                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+
+                urls = [
+                  {
+                    template = "https://noogle.dev/q";
+                    params = [
+                      {
+                        name = "term";
+                        value = "{searchTerms}";
+                      }
+                    ];
+                  }
+                ];
+              };
+
               "${defaultEngine}" = {
                 definedAliases = ["@searx" "@sx"];
                 icon =
@@ -170,10 +188,41 @@ in
             };
           };
 
-          extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-            skip-redirect
-            ublock-origin
-          ];
+          extensions.packages = let
+            port-authority = pkgs.nur.repos.rycee.firefox-addons.buildFirefoxXpiAddon {
+              pname = "port-authority";
+              version = "2.1.0";
+              addonId = "{6c00218c-707a-4977-84cf-36df1cef310f}";
+              url = "https://addons.mozilla.org/firefox/downloads/file/4481055/port_authority-2.1.0.xpi";
+              sha256 = "sha256-tui5a6c9Q5ZXsNSe5cJywnlaqtOsGcrLT5vFElE7Y7I=";
+
+              meta = with lib; {
+                homepage = "https://github.com/ACK-J/Port_Authority";
+                description =
+                  "Blocks websites from using javascript"
+                  + " to port scan your computer/network";
+                license = licenses.gpl2;
+                mozPermissions = [
+                  "webRequest"
+                  "webRequestBlocking"
+                  "storage"
+                  "tabs"
+                  "notifications"
+                  "dns"
+                  "<all_urls>"
+                ];
+                platforms = platforms.all;
+              };
+            };
+          in
+            with pkgs.nur.repos.rycee.firefox-addons; [
+              port-authority
+              search-by-image
+              sidebery
+              skip-redirect
+              ublock-origin
+              vimium
+            ];
 
           settings = {
             "browser.ctrlTab.sortByRecentlyUsed" = true;
@@ -197,6 +246,7 @@ in
               + ''"downloads-button",''
               + ''"fxa-toolbar-menu-button",''
               + ''"unified-extensions-button",''
+              + ''"_3c078156-979c-498b-8990-85f7987dd929_-browser-action",''
               + ''"ublock0_raymondhill_net-browser-action"''
               + ''],''
               + ''"toolbar-menubar":["menubar-items"],''
@@ -207,7 +257,13 @@ in
               + ''"alltabs-button"''
               + ''],''
               + ''"PersonalToolbar":["personal-bookmarks"],''
-              + ''"unified-extensions-area":["skipredirect_sblask-browser-action"]''
+              + ''"unified-extensions-area":[''
+              + ''"_2e5ff8c8-32fe-46d0-9fc8-6b8986621f3c_-browser-action",''
+              + ''"_a4c4eda4-fb84-4a84-b4a1-f7c1cbf2a1ad_-browser-action",''
+              + ''"skipredirect_sblask-browser-action",''
+              + ''"_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action",''
+              + ''"_6c00218c-707a-4977-84cf-36df1cef310f_-browser-action"''
+              + '']''
               + ''},''
               + ''"seen":[''
               + ''"skipredirect_sblask-browser-action",''
@@ -256,12 +312,14 @@ in
             "signon.generation.enabled" = false;
             "signon.management.page.breach-alerts.enabled" = false;
             "signon.rememberSignons" = false;
+
+            "widget.use-xdg-desktop-portal.file-picker" = 1;
           };
 
           extraConfig = let
             betterfox = builtins.fetchTarball {
-              url = "https://github.com/yokoffing/Betterfox/archive/refs/tags/133.0.tar.gz";
-              sha256 = "sha256:108slz69gpdki9y0z1vnxh1n48bfdadvdyck4366n67qvvkdmvsj";
+              url = "https://github.com/yokoffing/Betterfox/archive/refs/tags/138.0.tar.gz";
+              sha256 = "sha256:0fr91rk62nhiid9403rcqv7q99imgblwnkrvf0xxgn9ji3h60bvj";
             };
           in ''
             ${builtins.readFile "${betterfox}/user.js"}
@@ -272,10 +330,6 @@ in
             // visit https://github.com/yokoffing/Betterfox/wiki/Common-Overrides
             // visit https://github.com/yokoffing/Betterfox/wiki/Optional-Hardening
             // Enter your personal overrides below this line:
-
-            // WORKAROUND: switch to 'Standard' tracking protection
-            // to avoid issues related to 'Strict' ETP
-            user_pref("browser.contentblocking.category", "standard");
 
             // PREF: disable Firefox Sync
             user_pref("identity.fxaccounts.enabled", false);
@@ -299,6 +353,14 @@ in
             // in both Normal and Private Browsing windows.
             user_pref("dom.security.https_only_mode", true);
             user_pref("dom.security.https_only_mode_error_page_user_suggestions", true);
+
+            ${optionalString (!osCfg.laptop.enable) ''
+              // PREF: disable captive portal detection
+              // [WARNING] Do NOT use for mobile devices!
+              user_pref("captivedetect.canonicalURL", "");
+              user_pref("network.captive-portal-service.enabled", false);
+              user_pref("network.connectivity-service.enabled", false);
+            ''}
 
             // PREF: enforce DNS-over-HTTPS (DoH)
             user_pref("network.trr.mode", 3);

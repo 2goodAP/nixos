@@ -10,7 +10,7 @@
   in {
     nushell.plugins = mkOption {
       type = types.listOf types.package;
-      default = with pkgs.nushellPlugins; [formats gstat net polars query skim units];
+      default = with pkgs.nushellPlugins; [formats gstat polars query semver skim];
       description = "The nushell plugins to install alongside nushell.";
     };
   };
@@ -109,7 +109,7 @@
           less = "less -FRi";
           ll = "ls -l";
           lla = "ls -adl";
-          sed = "sed -E";
+          se = "sed -E";
         };
       };
     };

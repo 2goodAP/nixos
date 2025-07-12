@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    haskell-tools-nvim = {
+      url = "github:mrcjkb/haskell-tools.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +36,11 @@
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    lz-n = {
+      url = "github:nvim-neorocks/lz.n";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -110,7 +120,6 @@
 
             nix.settings = {
               experimental-features = ["nix-command" "flakes"];
-              max-jobs = 12;
 
               substituters = [
                 "https://cache.nixos.org"

@@ -6,53 +6,129 @@
   ...
 }: {
   imports = [
+    ./firefox
     ./keepassxc
-    ./speedcrunch
     ./niri
     ./applications.nix
-    ./firefox.nix
   ];
 
-  options.tgap.home.desktop.terminal = let
+  options.tgap.home.desktop.terminal.name = let
     inherit (lib) mkOption types;
-  in {
-    name = mkOption {
-      type = types.nullOr (types.enum ["ghostty" "wezterm"]);
-      default = "ghostty";
+  in
+    mkOption {
+      type = types.nullOr (types.enum ["foot" "ghostty" "wezterm"]);
+      default = "foot";
       description = "The terminal emulator program to install.";
     };
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.${config.tgap.home.desktop.terminal.name};
-      description = "The terminal emulator package.";
-      readOnly = true;
-    };
-  };
-
   config = let
-    cfg = config.tgap.home.desktop;
+    cfg = config.tgap.home;
     osCfg = osConfig.tgap.system;
+    nushellDefault = osCfg.programs.defaultShell == "nushell";
+    nushellPkg = config.programs.nushell.package;
     inherit (lib) mkIf mkMerge getExe optionalAttrs optionalString;
   in
     mkIf osCfg.desktop.enable (mkMerge [
-      (mkIf (cfg.terminal.name == "ghostty") {
+      (mkIf (cfg.desktop.terminal.name == "foot") {
+        programs.foot = {
+          enable = true;
+          settings = {
+            cursor.blink = "yes";
+            mouse.hide-when-typing = "yes";
+
+            main = {
+              shell =
+                if osCfg.programs.enable
+                then "${getExe config.programs.zellij.package} -l welcome"
+                else if nushellDefault
+                then "${getExe nushellPkg} -li"
+                else "$SHELL";
+              font = "IosevkaSpecial Nerd Font:size=12, JetbrainsMono Nerd Font:size=11.5";
+              underline-offset = 1;
+              dpi-aware = "yes";
+              pad = "2x2 center";
+              workers = osConfig.nix.settings.cores;
+              utmp-helper = "${pkgs.libutempter}/lib/utempter/utempter";
+            };
+
+            colors = rec {
+              background = "faf4ed";
+              foreground = "575279";
+
+              cursor = "${background} ${foreground}";
+              selection-background = "dfdad9"; # gray (Highlight Med)
+
+              regular0 = foreground; # black (Text)
+              regular1 = "b4637a"; # red (Love)
+              regular2 = "56949f"; # green (Foam)
+              regular3 = "ea9d34"; # yellow (Gold)
+              regular4 = "286983"; # blue (Pine)
+              regular5 = "907aa9"; # magenta (Iris)
+              regular6 = "d7827e"; # cyan (Rose)
+              regular7 = "f2e9e1"; # white (Overlay)
+
+              bright0 = "7c76a0"; # bright black (Lighter Text)
+              bright1 = "df8aa0"; # bright red (Lighter Love)
+              bright2 = "7ebcc7"; # bright green (Lighter Foam)
+              bright3 = "ffc55c"; # bright yellow (Lighter Gold)
+              bright4 = "538faa"; # bright blue (Lighter Pine)
+              bright5 = "b8a1d2"; # bright magenta (Lighter Iris)
+              bright6 = "ffaaa5"; # bright cyan (Lighter Rose)
+              bright7 = "fffdf5"; # bright white (Lighter Overlay)
+
+              flash = regular3;
+              jump-labels = "${regular0} ${regular6}";
+              search-box-match = "${foreground} ${regular0}";
+              search-box-no-match = "${regular0} ${regular1}";
+              urls = regular4;
+            };
+
+            key-bindings = {
+              scrollback-up-page = "Control+Shift+b";
+              scrollback-up-half-page = "Control+Shift+u";
+              scrollback-down-page = "Control+Shift+f";
+              scrollback-down-half-page = "Control+Shift+d";
+              scrollback-home = "Control+Shift+m";
+              scrollback-end = "Control+Shift+n";
+              search-start = "Control+Shift+r";
+              spawn-terminal = "Control+Shift+t";
+              pipe-scrollback =
+                ''[bash -c "f=$(mktemp) && cat - > $f && ''
+                + ''foot $EDITOR $f; rm $f"] Control+Shift+s'';
+              show-urls-launch = "Control+Shift+o";
+              show-urls-copy = "Control+Shift+y";
+              show-urls-persistent = "Control+Shift+e";
+              unicode-input = "Control+Shift+i";
+            };
+
+            search-bindings = {
+              unicode-input = "Control+Shift+i";
+              scrollback-up-page = "Control+Shift+b";
+              scrollback-up-half-page = "Control+Shift+u";
+              scrollback-down-page = "Control+Shift+f";
+              scrollback-down-half-page = "Control+Shift+d";
+              scrollback-home = "Control+Shift+m";
+              scrollback-end = "Control+Shift+n";
+            };
+          };
+        };
+      })
+
+      (mkIf (cfg.desktop.terminal.name == "ghostty") {
         programs.ghostty = {
           enable = true;
           clearDefaultKeybinds = true;
           installBatSyntax = true;
 
           settings =
-            optionalAttrs
-            (osCfg.programs.defaultShell == "nushell")
-            {command = "${getExe config.programs.nushell.package} -li";}
+            optionalAttrs nushellDefault {command = "${getExe nushellPkg} -li";}
             // {
               font-size = 12;
               font-family = ["MonaspiceAr Nerd Font" "JetBrainsMono Nerd Font"];
               font-family-bold = ["MonaspiceAr Nerd Font" "JetBrainsMono Nerd Font"];
               font-family-italic = ["MonaspiceRn Nerd Font" "Cascadia Code"];
               font-family-bold-italic = ["MonaspiceRn Nerd Font" "Cascadia Code"];
-              font-feature = "calt,cv04,cv16,liga,ss01,ss02,ss03,ss04,ss05,ss06,ss07,ss08,ss09,ss19";
+              font-feature = "calt,cv04,cv16,liga,ss01,ss02,ss03,ss19,ss20";
               alpha-blending = "linear-corrected";
               adjust-cursor-thickness = "1";
               freetype-load-flags = "no-force-autohint";
@@ -64,6 +140,10 @@
               window-padding-balance = true;
               window-inherit-working-directory = true;
               window-inherit-font-size = true;
+              window-decoration =
+                if (osCfg.desktop.manager == "niri")
+                then "none"
+                else "server";
               window-theme = "ghostty";
               clipboard-trim-trailing-spaces = true;
               clipboard-paste-protection = true;
@@ -77,30 +157,31 @@
                 "ctrl+alt+h=resize_split:left,10"
                 "ctrl+alt+l=resize_split:right,10"
                 "ctrl+alt+k=resize_split:up,10"
+                "ctrl+alt+e=equalize_splits"
                 "ctrl+shift+u=write_screen_file:open"
+                "ctrl+shift+n=new_split:down"
+                "ctrl+shift+e=new_split:right"
                 "ctrl+shift+,=goto_split:previous"
                 "ctrl+shift+.=goto_split:next"
                 "ctrl+shift+j=goto_split:down"
                 "ctrl+shift+h=goto_split:left"
                 "ctrl+shift+l=goto_split:right"
                 "ctrl+shift+k=goto_split:up"
+                "ctrl+shift+z=toggle_split_zoom"
                 "ctrl+shift+bracket_right=reload_config"
                 "ctrl+right_bracket=open_config"
-                "ctrl+shift+z=toggle_split_zoom"
                 "alt+enter=toggle_fullscreen"
                 "ctrl+shift+tab=previous_tab"
                 "ctrl+tab=next_tab"
                 "ctrl+shift+arrow_down=jump_to_prompt:1"
                 "ctrl+shift+arrow_up=jump_to_prompt:-1"
+                "ctrl+shift+o=new_window"
 
                 # Default
                 "ctrl+shift+a=select_all"
                 "ctrl+shift+c=copy_to_clipboard"
-                "ctrl+shift+e=new_split:down"
                 "ctrl+shift+i=inspector:toggle"
                 "ctrl+shift+y=write_screen_file:paste"
-                "ctrl+shift+n=new_window"
-                "ctrl+shift+o=new_split:right"
                 "ctrl+shift+p=toggle_command_palette"
                 "ctrl+shift+q=quit"
                 "ctrl+shift+t=new_tab"
@@ -137,15 +218,14 @@
         };
       })
 
-      (mkIf (cfg.terminal.name == "wezterm") {
+      (mkIf (cfg.desktop.terminal.name == "wezterm") {
         programs.wezterm = {
           enable = true;
 
           extraConfig = let
             defaultProg =
-              optionalString
-              (osCfg.programs.defaultShell == "nushell")
-              "default_prog = {'${getExe config.programs.nushell.package}', '-li'},";
+              optionalString nushellDefault
+              "default_prog = {'${getExe nushellPkg}', '-li'},";
           in ''
             local config = wezterm.config_builder()
 

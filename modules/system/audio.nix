@@ -42,7 +42,7 @@
         services = {
           pipewire = {
             extraConfig = let
-              quant = 128;
+              quant = 512;
               rate = 48000;
             in {
               pipewire = {
@@ -66,31 +66,31 @@
                   "context.properties" = {
                     "default.clock.rate" = rate;
                     "default.clock.quantum" = quant;
-                    "default.clock.min-quantum" = 32;
+                    "default.clock.min-quantum" = quant;
                     "default.clock.max-quantum" = quant;
                   };
                 };
               };
 
               pipewire-pulse."92-low-latency" = let
-                squant = toString quant;
-                srate = toString rate;
+                sQuant = toString quant;
+                sRate = toString rate;
               in {
                 context.modules = [
                   {
                     name = "libpipewire-module-protocol-pulse";
                     args = {
-                      pulse.min.req = "32/${srate}";
-                      pulse.default.req = "${squant}/${srate}";
-                      pulse.max.req = "${squant}/${srate}";
-                      pulse.min.quantum = "32/${srate}";
-                      pulse.max.quantum = "${squant}/${srate}";
+                      pulse.min.req = "${sQuant}/${sRate}";
+                      pulse.default.req = "${sQuant}/${sRate}";
+                      pulse.max.req = "${sQuant}/${sRate}";
+                      pulse.min.quantum = "${sQuant}/${sRate}";
+                      pulse.max.quantum = "${sQuant}/${sRate}";
                     };
                   }
                 ];
 
                 stream.properties = {
-                  node.latency = "${squant}/${srate}";
+                  node.latency = "${sQuant}/${sRate}";
                   resample.quality = 1;
                 };
               };

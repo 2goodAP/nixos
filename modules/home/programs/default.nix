@@ -1,13 +1,13 @@
 {
   config,
   lib,
-  osConfig,
   pkgs,
   ...
 }: {
   imports = [
     ./neovim
     ./nushell
+    ./zellij
     ./applications.nix
   ];
 
@@ -123,13 +123,13 @@
             brl = "broot -dsp";
             brs = "broot -s";
             diff = "diff --color";
-            egrep = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
-            grep = "grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+            egre = "egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
+            gre = "grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}";
             la = "ls -a";
             less = "less -FRi";
             ll = "ls -lFh";
             lla = "ls -laFh";
-            sed = "sed -E";
+            se = "sed -E";
           };
 
           sessionVariables = {
@@ -189,6 +189,29 @@
           settings = lib.importJSON configJSON;
         };
 
+        skim = {
+          enable = true;
+          defaultCommand =
+            getExe config.programs.ripgrep.package
+            + " --pretty --engine=auto '{}'";
+          changeDirWidgetCommand =
+            getExe config.programs.fd.package
+            + " --type=d --color=always";
+          fileWidgetCommand =
+            getExe config.programs.fd.package
+            + " --type=f --color=always";
+
+          defaultOptions = [
+            "--ansi"
+            ("--color=matched:#faf4ed,matched_bg:#56949f,current:#575279,"
+              + "current_bg:#dfdad9,current_match:#faf4ed,current_match_bg:#ea9d34,"
+              + "spinner:#286983,info:#d7827e,prompt:#907aa9,cursor:#286983,"
+              + "selected:#cecacd,header:#b4637a,border:#797593")
+          ];
+          changeDirWidgetOptions = ["--preview '${getExe pkgs.tree} -C {} | head -200'"];
+          fileWidgetOptions = ["--preview '${getExe config.programs.bat.package} {}'"];
+        };
+
         starship = let
           presets = ["plain-text-symbols" "no-empty-icons"];
           presetsTOML =
@@ -222,6 +245,7 @@
           terminal = "screen-256color";
           extraConfig = ''
             set-option -g focus-events on
+            set -g allow-passthrough on
             set -g @plugin 'rose-pine/tmux'
             set -g @rose_pine_variant 'dawn'
           '';

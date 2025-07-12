@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   options.tgap.system.network = let
@@ -68,7 +69,7 @@
 
           networkmanager = {
             enable = true;
-            enableStrongSwan = true;
+            plugins = [pkgs.networkmanager-strongswan];
             wifi.scanRandMacAddress = cfg.wifiRandMacAddress;
           };
 

@@ -28,6 +28,7 @@ environment {
 
     // Firefox
     MOZ_ENABLE_WAYLAND "1"
+    MOZ_USE_XINPUT2 "1"
 }
 
 // Input device configuration.
@@ -346,9 +347,12 @@ window-rule {
     open-focused false
 }
 
-// Enable on-demand VRR when mpv displays on the output.
+// Enable on-demand VRR and fullscreen for mpv and games.
 window-rule {
     match app-id="^mpv$"
+    match app-id="Ryujinx"
+    match app-id="^steam_app"
+    open-fullscreen true
     variable-refresh-rate true
 }
 
@@ -358,6 +362,7 @@ window-rule {
     match app-id=r#"^org\.keepassxc\.KeePassXC$"# title=r#"[Aa]ccess\s+[Rr]equest$"#
     match app-id="nextcloud"
     match app-id="pavucontrol"
+    match app-id="^qalculate"
     match app-id="soffice" title=r#"^[Oo]pen$"#
     match app-id="udiskie"
 

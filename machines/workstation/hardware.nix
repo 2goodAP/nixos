@@ -3,6 +3,8 @@
   pkgs,
   ...
 }: {
+  nix.settings.cores = 14;
+
   boot = {
     kernelModules = ["kvm-intel"];
     kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
@@ -30,7 +32,7 @@
       open = true;
       modesetting.enable = true;
       nvidiaPersistenced = true;
-      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
 
       powerManagement = {
         enable = true;

@@ -239,6 +239,7 @@
             libreoffice-fresh
             localsend
             musescore
+            qalculate-gtk
             tor-browser-bundle-bin
             wev
           ])

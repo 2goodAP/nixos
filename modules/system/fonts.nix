@@ -223,6 +223,7 @@
         corefonts
         garamond-libre
         libertine
+        iosevka-special
         nerd-fonts.jetbrains-mono
         nerd-fonts.monaspace
         noto-fonts

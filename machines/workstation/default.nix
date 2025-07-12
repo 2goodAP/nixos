@@ -23,6 +23,7 @@
 
     desktop.gaming = {
       enable = true;
+      steam.enable = true;
       controllers = {
         dualsense.enable = true;
         xbone.enable = true;

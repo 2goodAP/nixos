@@ -1,0 +1,39 @@
+{
+  "timeStamp": 1750642596377,
+  "version": "1.64.0",
+  "userSettings": {
+    "advancedUserEnabled": true,
+    "externalLists": "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt",
+    "importedLists": [
+      "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt"
+    ],
+    "popupPanelSections": 31
+  },
+  "selectedFilterLists": [
+    "user-filters",
+    "ublock-filters",
+    "ublock-badware",
+    "ublock-privacy",
+    "ublock-quick-fixes",
+    "ublock-unbreak",
+    "easylist",
+    "easyprivacy",
+    "adguard-spyware-url",
+    "urlhaus-1",
+    "plowe-0",
+    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt"
+  ],
+  "hiddenSettings": {},
+  "whitelist": [
+    "1524.usercdn.com",
+    "chrome-extension-scheme",
+    "download.megaup.net",
+    "moz-extension-scheme",
+    "portal.ustraveldocs.com",
+    "software.download.prss.microsoft.com"
+  ],
+  "dynamicFilteringString": "behind-the-scene * * noop\nbehind-the-scene * inline-script noop\nbehind-the-scene * 1p-script noop\nbehind-the-scene * 3p-script noop\nbehind-the-scene * 3p-frame noop\nbehind-the-scene * image noop\nbehind-the-scene * 3p noop\n* * 3p-script block\n* * 3p-frame block\ndrive.google.com drive.google.com * noop\ndrive.google.com gstatic.com * noop\ndrive.google.com content.googleapis.com * noop\ngithub.com githubassets.com * noop\nwww.reddit.com redditstatic.com * noop\nwww.reddit.com reddit.map.fastly.net * noop\nstore.steampowered.com steamstatic.com * noop\ndodi-repacks.site cloudflare.com * noop\nddownload.com hcaptcha.com * noop\nsteamcommunity.com steamstatic.com * noop\nsteamdb.info cloudflare.com * noop\nfilecrypt.cc cutcaptcha.net * noop\ndoodrive.com cloudflare.com * noop\nfiles.ztorrents.net cloudflare.com * noop\nigg-games.com cloudflare.com * noop\ntranslate.google.com * 3p-script noop\nmipmip.github.io * 3p-script noop\nmipmip.github.io * 3p-frame noop\nwww.msi.com * 3p-script noop\nusers.nexusmods.com cloudflare.com * noop\nwww.nexusmods.com cloudflare.com * noop\nwww.razedmods.com squarespace.com * noop\nwww.razedmods.com squarespace.map.fastly.net * noop\nnsw2u.com cloudflare.com * noop\nnsw2u.com wp.com * noop\nwww.gog.com gog-statics.com * noop\nwww.gog.com b.akamai.net * noop\nwww.gog.com deltacdn.net * noop\nwww.gog.com youtube.com * noop\ngithub.com github.com * noop\nwww.keyofw.com squarespace.com * noop\nwww.keyofw.com squarespace.map.fastly.net * noop\nwww.keyofw.com typekit.net * noop\nhome-manager-options.extranix.com ajax.googleapis.com * noop\nhome-manager-options.extranix.com bootstrapcdn.com * noop\nhome-manager-options.extranix.com pimsnel.com * noop\nhome-manager-options.extranix.com unpkg.com * noop\nwww.reddit.com google.com * noop\nwww.reddit.com gstatic.com * noop\nwww.gog.com fastly.net * noop\nepicgamesdb.info jsdelivr.net * noop\nepicgamesdb.info jsdelivr.map.fastly.net * noop\ngdl.freegogpcgames.xyz * 3p-script noop\nwww.youtube.com google.com * noop\nwww.youtube.com gstatic.com * noop\nstore.steampowered.com b.akamai.net * noop\njqlang.github.io jsdelivr.net * noop\njqlang.github.io jsdelivr.map.fastly.net * noop\ngitlab.freedesktop.org * 3p-script noop\ngitlab.freedesktop.org * 3p-frame noop\ngitlab.com cloudflare.com * noop\nstore.steampowered.com fastly.net * noop\nflameshot.org jsdelivr.net * noop\nflameshot.org net.cdn.cloudflare.net * noop\nwww.reddit.com cdn-apple.com * noop\nwww.reddit.com e9.akamaiedge.net * noop\nshaunlebron.github.io mathjax.org * noop\nshaunlebron.github.io cloudflare.com * noop\njqlang.org jsdelivr.net * noop\njqlang.org net.cdn.cloudflare.net * noop\nsteamcommunity.com fastly.net * noop\ndocs.google.com gstatic.com * noop\ndocs.google.com googleusercontent.com * noop",
+  "urlFilteringString": "",
+  "hostnameSwitchesString": "no-large-media: behind-the-scene false\nno-csp-reports: * true",
+  "userFilters": ""
+}
