@@ -203,8 +203,8 @@
 
           defaultOptions = [
             "--ansi"
-            ("--color=matched:#faf4ed,matched_bg:#56949f,current:#575279,"
-              + "current_bg:#dfdad9,current_match:#faf4ed,current_match_bg:#ea9d34,"
+            ("--color=current:#575279,current_bg:#dfdad9,current_match:#faf4ed,"
+              + "current_match_bg:#ea9d34,matched:#575279,matched_bg:#f7e3c8,"
               + "spinner:#286983,info:#d7827e,prompt:#907aa9,cursor:#286983,"
               + "selected:#cecacd,header:#b4637a,border:#797593")
           ];

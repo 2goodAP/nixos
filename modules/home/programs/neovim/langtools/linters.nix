@@ -16,6 +16,7 @@ in
       mdEnabled = builtins.elem "markdown" cfg.langtools.languages;
       nixEnabled = builtins.elem "nix" cfg.langtools.languages;
       pyEnabled = builtins.elem "python" cfg.langtools.languages;
+      rustEnabled = builtins.elem "rust" cfg.langtools.languages;
       shEnabled = builtins.elem "shell" cfg.langtools.languages;
       sqlEnabled = builtins.elem "sql" cfg.langtools.languages;
       tsEnabled = builtins.elem "typescript" cfg.langtools.languages;
@@ -50,6 +51,9 @@ in
         ]
         ++ optionals nixEnabled [
           deadnix
+        ]
+        ++ optionals rustEnabled [
+          clippy
         ]
         ++ optionals shEnabled [
           dotenv-linter
@@ -159,6 +163,11 @@ in
             ${
               optionalString pyEnabled ''
                 python = {"ruff", "mypy", "vulture", "bandit"},
+              ''
+            }
+            ${
+              optionalString rustEnabled ''
+                rust = {"clippy"},
               ''
             }
             ${
