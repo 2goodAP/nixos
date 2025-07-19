@@ -13,13 +13,19 @@ in {
     ];
   };
 
-  home-manager.users."${uname}" = {
+  home-manager.users."${uname}" = {inputs', ...}: {
     imports = [
       ../common/programs.nix
       ../common/applications.nix
     ];
 
     tgap.home.desktop.gaming.enable = true;
+
+    home.packages = [
+      (inputs'.mint.packages.default.overrideAttrs (oldAttrs: {
+        patches = oldAttrs.patches ++ [./mint_fix_git_version_panic.patch];
+      }))
+    ];
 
     xdg.desktopEntries = let
       wineDir = "/home/${uname}/Wine";

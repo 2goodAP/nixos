@@ -1,0 +1,39 @@
+diff --git a/mint_lib/src/lib.rs b/mint_lib/src/lib.rs
+index 1e30b97..9e4daa1 100644
+--- a/mint_lib/src/lib.rs
++++ b/mint_lib/src/lib.rs
+@@ -16,7 +16,7 @@ pub mod built_info {
+     include!(concat!(env!("OUT_DIR"), "/built.rs"));
+ 
+     pub fn version() -> &'static str {
+-        GIT_VERSION.unwrap()
++        GIT_VERSION.unwrap_or("git master")
+     }
+ }
+ 
+diff --git a/src/gui/mod.rs b/src/gui/mod.rs
+index 22b4859..f88758d 100644
+--- a/src/gui/mod.rs
++++ b/src/gui/mod.rs
+@@ -62,7 +62,7 @@ pub fn gui(dirs: Dirs, args: Option<Vec<String>>) -> Result<(), MintError> {
+         ..Default::default()
+     };
+     eframe::run_native(
+-        &format!("mint {}", mint_lib::built_info::GIT_VERSION.unwrap()),
++        &format!("mint {}", mint_lib::built_info::GIT_VERSION.unwrap_or("git master")),
+         options,
+         Box::new(|cc| Ok(Box::new(App::new(cc, dirs, args)?))),
+     )
+diff --git a/src/main.rs b/src/main.rs
+index f87990e..71d0b0f 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -84,7 +84,7 @@ enum Action {
+ }
+ 
+ #[derive(Parser, Debug)]
+-#[command(author, version=mint_lib::built_info::GIT_VERSION.unwrap())]
++#[command(author, version=mint_lib::built_info::GIT_VERSION.unwrap_or("git master"))]
+ struct Args {
+     #[command(subcommand)]
+     action: Option<Action>,

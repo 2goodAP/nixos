@@ -44,6 +44,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    mint = {
+      url = "github:trumank/mint";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     niri = {
       url = "github:YaLTer/niri";
       inputs.nixpkgs.follows = "nixpkgs";
