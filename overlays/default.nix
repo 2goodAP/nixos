@@ -177,15 +177,33 @@ in
 
             nativeBuildInputs =
               oldAttrs.nativeBuildInputs
-              ++ [final.nerd-font-patcher];
+              ++ (with final; [
+                nerd-font-patcher
+                ps
+                ripgrep
+              ]);
 
             postBuild = ''
+              declare -i NCORES=${toString (
+                if config.nix.settings.cores == 0
+                then 8
+                else config.nix.settings.cores
+              )}
+              declare -a pids
               distdir="dist/$pname"
-              for font in $(ls "$distdir/TTF"); do
-                nerd-font-patcher "$distdir/TTF/$font" \
-                  --careful --makegroups 4 \
-                  -out "$distdir/NerdFonts" \
-                  --complete --no-progressbars
+
+              for font in "$distdir/TTF"/*.ttf; do
+                until [ $(($(ps -e | rg 'nerd-font' | wc -l))) -lt $((NCORES)) ]; do
+                  : # busy-wait
+                done
+
+                nerd-font-patcher "$font" --careful --makegroups 4 \
+                  -out "$distdir/NerdFonts" --complete --no-progressbars &
+                pids+=($!)
+              done
+
+              for pid in "''${pids[@]}"; do
+                wait "$pid"
               done
             '';
 
