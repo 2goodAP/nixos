@@ -7,10 +7,17 @@
     };
 
     network = {
-      allowedPorts.aria2 = 55000;
-      allowedPortRanges.localsend = {
-        from = 53316;
-        to = 53318;
+      allowedPorts.aria2 = 6800;
+
+      allowedPortRanges = {
+        aria2 = {
+          from = 6881;
+          to = 6999;
+        };
+        localsend = {
+          from = 53316;
+          to = 53318;
+        };
       };
     };
 

@@ -24,11 +24,18 @@
         programs = {
           aria2 = {
             enable = true;
-            settings = {
-              enable-dht = true;
+            settings = let
+              ports = osCfg.allowedPortRanges.aria2;
+            in rec {
+              max-connection-per-server = 8;
+              proxy-method = "tunnel";
+              retry-wait = 10;
+              split = max-connection-per-server;
               enable-dht6 = true;
-              listen-port = osCfg.allowedPorts.aria2;
-              dht-listen-port = osCfg.allowedPorts.aria2;
+              dht-listen-port = toString ports.from + "-" + toString ports.to;
+              listen-port = dht-listen-port;
+              max-upload-limit = "100K";
+              rpc-listen-port = osCfg.allowedPorts.aria2;
             };
           };
 
@@ -93,6 +100,10 @@
           });
         in
           with pkgs; [
+            ariang-allinone
+            musikcube
+            transmission_4
+
             (symlinkJoin {
               name = "fluidsynth";
               buildInputs = [makeWrapper];
@@ -103,8 +114,6 @@
                   config.services.fluidsynth.extraOptions}"
               '';
             })
-            musikcube
-            transmission_4
           ];
 
         xdg = {

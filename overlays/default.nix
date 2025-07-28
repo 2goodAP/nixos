@@ -17,6 +17,67 @@ in
       {
         wezterm = inputs'.wezterm.packages.default;
 
+        ariang-allinone = let
+          ariang-aio = prev.ariang.overrideAttrs {
+            pname = "ariang-aio";
+
+            buildPhase = ''
+              runHook preBuild
+
+              ./node_modules/gulp/bin/gulp.js clean build-bundle
+
+              runHook postBuild
+            '';
+          };
+        in
+          prev.symlinkJoin {
+            name = "AriaNg-AllInOne";
+            paths = [
+              ariang-aio
+
+              (prev.writeShellApplication {
+                name = "ariang";
+                runtimeInputs = with final; [
+                  aria2
+                  xdg-utils
+                ];
+                text = ''
+                  function show_help() {
+                  cat <<EOF
+                  Usage:
+                    ''${0##*/} [-h|--help] <secret-token>
+                  EOF
+                  }
+
+                  if [ -z "''${1:+x}" ]; then
+                    printf "%s\n" "''${0##*/}: missing secret token" >&2
+                    show_help >&2
+                    exit 1
+                  elif  [[ "$1" = "-h" || "$1" == "--help" ]]; then
+                    show_help
+                    exit 0
+                  fi
+
+                  # Start aria2 RPC server in the background
+                  aria2c --enable-rpc=true --rpc-allow-origin-all=true --rpc-secret="$1" &
+
+                  aria_pid=$!
+                  base64_secret="$(base64 <(printf "%s" "$1"))"
+                  unset "$1"
+
+                  # Wait for the server to start
+                  sleep 2
+
+                  # Open the ariang WebUI
+                  xdg-open "file://${ariang-aio}/share/ariang/index.html#!/settings/rpc/set?protocol=http&host=localhost&port=6800&interface=jsonrpc&secret=''${base64_secret%%=*}"
+
+                  # Wait for the aria2 RPC server to stop
+                  wait "$aria_pid"
+                '';
+              })
+            ];
+          };
+
         iosevka-special =
           (prev.iosevka.override rec {
             set = "Special";

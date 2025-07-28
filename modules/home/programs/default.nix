@@ -193,7 +193,7 @@
           enable = true;
           defaultCommand =
             getExe config.programs.ripgrep.package
-            + " --pretty --engine=auto '{}'";
+            + " --smart-case --pretty --engine=auto '{}'";
           changeDirWidgetCommand =
             getExe config.programs.fd.package
             + " --type=d --color=always";

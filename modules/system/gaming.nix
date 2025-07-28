@@ -139,7 +139,7 @@ in {
               # --------------------
 
               function show_help() {
-              cat << EOF
+              cat <<EOF
               Usage:
                 ''${0##*/} [options] <game-dir> <exe-path> [-- game-opts]
 
@@ -240,7 +240,7 @@ in {
               done
 
               if [[ -z "$1" ]]; then
-              cat >&2 << EOF
+              cat >&2 <<EOF
               ''${0##*/}: missing game-dir argument
               Please specify the absolute path to the game's root directory.
 
@@ -248,7 +248,7 @@ in {
                 show_help >&2
                 exit 1
               elif [[ -z "$2" ]]; then
-              cat >&2 << EOF
+              cat >&2 <<EOF
               ''${0##*/}: missing exe-path argument
               Please specify the relative path to the game's exe from game-dir.
 
