@@ -305,7 +305,7 @@ in {
               fi
               export WINEPREFIX
 
-              log_file="/tmp/$(basename "$WINEPREFIX").log"
+              log_file="/run/user/$(id -u)/$(basename "$WINEPREFIX").log"
               if [[ ! -x "$WINEPREFIX/pfx.lock" ]]; then
                 umu-run "" &> "$log_file" || true
               else

@@ -49,7 +49,7 @@ in {
         categories = ["Game"];
         comment = "Subset Games: Turn-Based Strategy, Mechs";
         exec =
-          "env GAMEID=590380 umu-launch -emx"
+          "env GAMEID=590380 umu-launch -mx"
           + " ${wineDir}/Games/Into_the_Breach Breach.exe";
         genericName = "Game";
         icon = "${wineDir}/Misc/Breach/Breach_Icon.png";
