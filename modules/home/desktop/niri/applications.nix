@@ -14,20 +14,33 @@
 in
   mkIf (osCfg.enable && osCfg.manager == "niri") {
     home.packages = with pkgs; [
+      glib
+      inotify-tools
       libnotify
       pavucontrol
+      swappy
       wallust
       wl-clipboard
       wuimg
       xwayland-satellite
     ];
 
-    programs.fuzzel = {
-      enable = true;
-      settings.main = {
-        font = fontSpec;
-        use-bold = true;
-        inherit icon-theme;
+    programs = {
+      fuzzel = {
+        enable = true;
+        settings.main = {
+          font = fontSpec;
+          use-bold = true;
+          inherit icon-theme;
+        };
+      };
+
+      niriswitcher = {
+        enable = true;
+        settings = {
+          current_output_only = true;
+          appearance.system_theme = "auto";
+        };
       };
     };
 
@@ -165,4 +178,10 @@ in
         };
       };
     };
+
+    xdg.configFile."swappy/config".text = ''
+      [Default]
+      save_dir=$HOME/Pictures/Screenshots
+      save_filename_format=Screenshot-%Y%m%d-%H%M%S.png
+    '';
   }

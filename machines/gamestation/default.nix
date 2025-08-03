@@ -14,10 +14,16 @@
       secureBoot.enable = true;
       encrypted-btrfs = {
         enable = true;
-        root = {
-          partlabel = "LinuxPriDataPart";
-          extraPartlabels = ["LinuxSecDataPart"];
-        };
+        root.partlabel = "GameDataPart";
+      };
+    };
+
+    desktop.gaming = {
+      enable = true;
+      steam.enable = true;
+      controllers = {
+        dualsense.enable = true;
+        xbone.enable = true;
       };
     };
 

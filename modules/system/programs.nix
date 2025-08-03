@@ -12,7 +12,7 @@
     cms.enable = mkEnableOption "Whether to enable color management systems.";
     iosTools.enable = mkEnableOption "iOS helper packages";
     qmk.enable = mkEnableOption "qmk and related udev packages";
-    virtualisation.enable = mkEnableOption "Docker and VirtualBox";
+    virtualization.enable = mkEnableOption "Docker and VirtualBox";
 
     defaultShell = mkOption {
       type = types.enum ["bash" "nushell"];
@@ -24,7 +24,7 @@
   config = let
     cfg = config.tgap.system.programs;
     hasNvidia = builtins.elem "nvidia" config.services.xserver.videoDrivers;
-    inherit (lib) getExe mkIf mkMerge optionals;
+    inherit (lib) mkIf mkMerge optionals;
   in
     mkIf cfg.enable (mkMerge [
       {
@@ -96,7 +96,7 @@
         services.usbmuxd.enable = true;
       })
 
-      (mkIf cfg.virtualisation.enable {
+      (mkIf cfg.virtualization.enable {
         hardware.nvidia-container-toolkit.enable = hasNvidia;
 
         virtualisation = {

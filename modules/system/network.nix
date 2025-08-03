@@ -73,7 +73,7 @@
             wifi.scanRandMacAddress = cfg.wifiRandMacAddress;
           };
 
-          # Configure the firewall.
+          # Configure the firewall
           firewall = let
             allowedPorts = mapAttrsToList (_: value: value) cfg.allowedPorts;
             allowedPortRanges = mapAttrsToList (_: value: value) cfg.allowedPortRanges;
@@ -86,7 +86,7 @@
           };
         };
 
-        # Enable NTP.
+        # Enable NTP
         services = {
           ntp.enable = true;
           timesyncd.enable = true;
@@ -99,7 +99,7 @@
           };
         };
 
-        # Enable systemd-networkd.
+        # Enable systemd-networkd
         systemd.network = {
           enable = true;
 

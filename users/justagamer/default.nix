@@ -14,16 +14,13 @@ in {
   };
 
   home-manager.users."${uname}" = {inputs', ...}: {
-    imports = [
-      ../common/programs.nix
-      ../common/applications.nix
-    ];
+    imports = [../common];
 
     tgap.home.desktop.gaming.enable = true;
 
     home.packages = [
       (inputs'.mint.packages.default.overrideAttrs (oldAttrs: {
-        patches = oldAttrs.patches ++ [./mint_fix_git_version_panic.patch];
+        patches = oldAttrs.patches ++ [./patches/mint_fix_git_version_panic.patch];
       }))
     ];
 

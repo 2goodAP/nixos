@@ -28,24 +28,19 @@
         "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
         "%SNKVOLPIPE%" = "snkvolpipe";
         "%SRCVOLPIPE%" = "srcvolpipe";
+        "%SCRSHTPNG%" = "${config.xdg.cacheHome}/niri/screenshot.png";
       }
       // optionalAttrs (cfg.terminal.name == "foot") {
-        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "foot"; }'';
-        "%LAUNCH_CLIPSE%" = ''
-          Mod+C { spawn "foot" "--app-id=clipse" "--" "clipse"; }
-        '';
+        "%TERMINAL%" = ''"foot"'';
+        "%CLIPSE%" = ''"foot" "--app-id=clipse" "--" "clipse"'';
       }
       // optionalAttrs (cfg.terminal.name == "ghostty") {
-        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "ghostty"; }'';
-        "%LAUNCH_CLIPSE%" = ''
-          Mod+C { spawn "ghostty" "--class=org.clipse" "-e" "clipse"; }
-        '';
+        "%TERMINAL%" = ''"ghostty"'';
+        "%CLIPSE%" = ''"ghostty" "--class=org.clipse" "-e" "clipse"'';
       }
       // optionalAttrs (cfg.terminal.name == "wezterm") {
-        "%LAUNCH_TERMINAL%" = ''Mod+Return { spawn "wezterm" "start" "--cwd" "."; }'';
-        "%LAUNCH_CLIPSE%" = ''
-          Mod+C { spawn "wezterm" "start" "--class" "clipse" "--" "clipse"; }
-        '';
+        "%TERMINAL%" = ''"wezterm" "start" "--cwd" "."'';
+        "%CLIPSE%" = ''"wezterm" "start" "--class" "clipse" "--" "clipse"'';
       };
   in
     mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {
@@ -94,6 +89,13 @@
 
       gtk = {
         enable = true;
+        gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+
+        font = {
+          name = "Noto Sans";
+          package = pkgs.noto-fonts;
+          size = 10;
+        };
 
         iconTheme = {
           name = "Papirus";
@@ -101,8 +103,8 @@
         };
 
         theme = {
-          name = "Breeze";
-          package = pkgs.kdePackages.breeze-gtk;
+          name = "Adwaita";
+          package = pkgs.gnome-themes-extra;
         };
       };
 

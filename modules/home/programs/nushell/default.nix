@@ -18,7 +18,7 @@
   config = let
     cfg = config.tgap.home.programs;
     nushellDefault = osConfig.tgap.system.programs.defaultShell == "nushell";
-    inherit (lib) getExe getExe' mkIf;
+    inherit (lib) getExe getExe' mkIf optionalAttrs;
   in
     mkIf (cfg.enable && nushellDefault) {
       home.shell.enableNushellIntegration = true;
@@ -34,16 +34,19 @@
 
         environmentVariables = let
           neovim = getExe config.programs.neovim.finalPackage;
-        in {
-          BATPIPE = "color";
-          EDITOR = neovim;
-          LESSOPEN =
-            "|"
-            + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
-            + " %s";
-          PAGER = config.programs.nushell.shellAliases.less;
-          VISUAL = neovim;
-        };
+        in
+          {
+            BATPIPE = "color";
+            LESSOPEN =
+              "|"
+              + getExe' pkgs.bat-extras.batpipe ".batpipe-wrapped"
+              + " %s";
+            PAGER = config.programs.nushell.shellAliases.less;
+          }
+          // optionalAttrs cfg.neovim.enable {
+            EDITOR = neovim;
+            VISUAL = neovim;
+          };
 
         extraConfig = ''
           # Theme

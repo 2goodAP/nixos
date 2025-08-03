@@ -50,7 +50,8 @@
             }
           ];
           description = ''
-            A list containing attrsets of mount points and their corresponding brtfs subvolumes.
+            A list containing attrsets of mount points and
+            their corresponding brtfs subvolumes.
           '';
         };
       };

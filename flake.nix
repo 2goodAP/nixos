@@ -115,7 +115,13 @@
               extraSpecialArgs = {inherit inputs';};
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.root = import ./users/common/programs.nix;
+
+              users.root = {
+                tgap.home.programs = {
+                  enable = true;
+                  neovim.enable = true;
+                };
+              };
 
               sharedModules = [
                 # custom home-manager modules
@@ -159,11 +165,6 @@
           # custom nixos modules
           (import ./modules/system)
         ];
-
-        # Create users and home-manager profiles.
-        justagamer = import ./users/justagamer;
-        twogoodap = import ./users/twogoodap;
-        workerap = import ./users/workerap;
       in
         builtins.mapAttrs (sysName: userModules:
           withSystem "x86_64-linux" ({
@@ -187,9 +188,13 @@
                 ++
                 # user-specific configurations
                 userModules;
-            })) {
-          nitro5 = [twogoodap workerap];
-          workstation = [twogoodap workerap justagamer];
+            })) rec {
+          nitro5 = [
+            (import ./users/twogoodap)
+            (import ./users/workerap)
+          ];
+          workstation = nitro5;
+          gamestation = [(import ./users/justagamer)];
         };
     });
 }

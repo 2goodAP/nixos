@@ -21,12 +21,21 @@ in {
     pkgs,
     ...
   }: {
-    imports = [
-      ../common/programs.nix
-      ../common/applications.nix
-    ];
+    imports = [../common];
 
-    tgap.home.programs.applications.jupyter.enable = true;
     home.packages = lib.optionals osConfig.tgap.system.programs.qmk.enable [pkgs.via];
+
+    tgap.home = {
+      desktop.applications.extras.enable = true;
+
+      programs = {
+        neovim.enable = true;
+
+        applications = {
+          extras.enable = true;
+          jupyter.enable = true;
+        };
+      };
+    };
   };
 }

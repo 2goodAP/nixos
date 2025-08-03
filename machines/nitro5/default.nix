@@ -22,7 +22,11 @@
       inherit hostName;
       enable = true;
       interfaces = ["enp7s0f1" "wlp0s20f3"];
-      wifiRandMacAddress = false;
+    };
+
+    programs = {
+      qmk.enable = true;
+      virtualization.enable = true;
     };
   };
 }

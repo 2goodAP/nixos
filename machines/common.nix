@@ -25,8 +25,6 @@
       enable = true;
       androidTools.enable = true;
       iosTools.enable = true;
-      qmk.enable = true;
-      virtualisation.enable = true;
     };
   };
 }

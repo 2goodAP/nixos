@@ -7,8 +7,7 @@
 
   boot = {
     kernelModules = ["kvm-intel"];
-    kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
-    kernelParams = ["split_lock_detect=off"];
+    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
 
     initrd = {
       kernelModules = ["dm-snapshot"];

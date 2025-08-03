@@ -9,7 +9,9 @@
     inherit (lib) mkEnableOption;
   in {
     applications = {
-      enable = mkEnableOption "extra CLI applications";
+      enable = mkEnableOption "other useful CLI applications";
+      extras.enable =
+        mkEnableOption "non-essential but nice-to-have CLI applications";
       jupyter.enable = mkEnableOption "jupyter user-settings";
     };
   };
@@ -21,24 +23,41 @@
   in
     mkIf cfg.enable (mkMerge [
       {
-        programs = {
-          aria2 = {
-            enable = true;
-            settings = let
-              ports = osCfg.allowedPortRanges.aria2;
-            in rec {
-              max-connection-per-server = 8;
-              proxy-method = "tunnel";
-              retry-wait = 10;
-              split = max-connection-per-server;
-              enable-dht6 = true;
-              dht-listen-port = toString ports.from + "-" + toString ports.to;
-              listen-port = dht-listen-port;
-              max-upload-limit = "100K";
-              rpc-listen-port = osCfg.allowedPorts.aria2;
-            };
-          };
+        xdg.configFile.musikcube-settings = {
+          source = ./musikcube;
+          target = "musikcube";
+          recursive = true;
+        };
 
+        home.packages = with pkgs; [
+          musikcube
+          transmission_4
+        ];
+
+        programs.aria2 = {
+          enable = true;
+          settings = let
+            ports = osCfg.allowedPortRanges.aria2;
+          in rec {
+            max-connection-per-server = 8;
+            proxy-method = "tunnel";
+            retry-wait = 10;
+            split = max-connection-per-server;
+            enable-dht6 = true;
+            dht-listen-port = toString ports.from + "-" + toString ports.to;
+            listen-port = dht-listen-port;
+            max-upload-limit = "100K";
+            rpc-listen-port = osCfg.allowedPorts.aria2;
+          };
+        };
+      }
+
+      (mkIf osConfig.hardware.bluetooth.enable {
+        services.mpris-proxy.enable = true;
+      })
+
+      (mkIf cfg.extras.enable {
+        programs = {
           beets = {
             enable = true;
             package = pkgs.beets-unstable;
@@ -101,8 +120,6 @@
         in
           with pkgs; [
             ariang-allinone
-            musikcube
-            transmission_4
 
             (symlinkJoin {
               name = "fluidsynth";
@@ -116,29 +133,17 @@
             })
           ];
 
-        xdg = {
-          dataFile = {
-            "soundfonts/GeneralUser-GS.sf2".source =
-              "${pkgs.soundfont-generaluser}/share"
-              + "/soundfonts/GeneralUser-GS.sf2";
-            "soundfonts/SalamanderGrandPiano.sf2".source =
-              "${pkgs.soundfont-salamander-grand}/share"
-              + "/soundfonts/SalamanderGrandPiano.sf2";
-            "soundfonts/UprightPianoKW.sf2".source =
-              "${pkgs.soundfont-upright-kw}/share"
-              + "/soundfonts/UprightPianoKW.sf2";
-          };
-
-          configFile.musikcube-settings = {
-            source = ./musikcube;
-            target = "musikcube";
-            recursive = true;
-          };
+        xdg.dataFile = {
+          "soundfonts/GeneralUser-GS.sf2".source =
+            "${pkgs.soundfont-generaluser}/share"
+            + "/soundfonts/GeneralUser-GS.sf2";
+          "soundfonts/SalamanderGrandPiano.sf2".source =
+            "${pkgs.soundfont-salamander-grand}/share"
+            + "/soundfonts/SalamanderGrandPiano.sf2";
+          "soundfonts/UprightPianoKW.sf2".source =
+            "${pkgs.soundfont-upright-kw}/share"
+            + "/soundfonts/UprightPianoKW.sf2";
         };
-      }
-
-      (mkIf osConfig.hardware.bluetooth.enable {
-        services.mpris-proxy.enable = true;
       })
 
       (mkIf cfg.jupyter.enable {

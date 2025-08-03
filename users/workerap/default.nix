@@ -16,16 +16,24 @@ in {
   };
 
   home-manager.users."${uname}" = {pkgs, ...}: {
-    imports = [
-      ../common/programs.nix
-      ../common/applications.nix
-    ];
-
-    tgap.home.programs.applications.jupyter.enable = true;
+    imports = [../common];
 
     home.packages = with pkgs; [
       insomnia
       openvpn
     ];
+
+    tgap.home = {
+      desktop.applications.extras.enable = true;
+
+      programs = {
+        neovim.enable = true;
+
+        applications = {
+          extras.enable = true;
+          jupyter.enable = true;
+        };
+      };
+    };
   };
 }

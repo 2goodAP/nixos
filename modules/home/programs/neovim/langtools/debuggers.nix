@@ -21,25 +21,8 @@ in
       bashDb = pkgs.bashdb;
       cppTools = pkgs.vscode-extensions.ms-vscode.cpptools;
       gDb = pkgs.gdb;
+      vscodeBashDebug = pkgs.vscode-bash-debug;
       vscodeJsDebug = pkgs.vscode-js-debug;
-      vscodeBashDebug = pkgs.vscode-utils.buildVscodeExtension (finalAttrs: {
-        pname = "vscode-bash-debug";
-        version = "0.3.9-unstable-2021-02-15";
-        vscodeExtPublisher = "rogalmic";
-        vscodeExtName = "vscode-bash-debug";
-        vscodeExtUniqueId =
-          "${finalAttrs.vscodeExtPublisher}"
-          + ".${finalAttrs.vscodeExtName}";
-
-        src = pkgs.fetchzip {
-          url = "https://github.com/rogalmic/vscode-bash-debug/releases/download/untagged-438733f35feb8659d939/bash-debug-0.3.9.vsix";
-          stripRoot = false;
-          extension = "zip";
-          sha256 = "sha256-CNwhxbnGm5H0Swkurw9LXW21dHR6OA3uw1GtmlMaLk0=";
-        };
-
-        sourceRoot = "${finalAttrs.src.name}/extension";
-      });
     in {
       extraLuaPackages = luaPkgs:
         optionals luaEnabled [

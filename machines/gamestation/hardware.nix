@@ -3,11 +3,12 @@
   pkgs,
   ...
 }: {
-  nix.settings.cores = 6;
+  nix.settings.cores = 14;
 
   boot = {
     kernelModules = ["kvm-intel"];
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    kernelPackages = pkgs.linuxKernel.packages.linux_xanmod_latest;
+    kernelParams = ["split_lock_detect=off"];
 
     initrd = {
       kernelModules = ["dm-snapshot"];
@@ -28,11 +29,15 @@
     cpu.intel.updateMicrocode = true;
 
     nvidia = {
-      open = false;
+      open = true;
       modesetting.enable = true;
       nvidiaPersistenced = true;
       package = config.boot.kernelPackages.nvidiaPackages.beta;
-      powerManagement.enable = true;
+
+      powerManagement = {
+        enable = true;
+        finegrained = true;
+      };
 
       prime = {
         intelBusId = "PCI:0:2:0";
@@ -47,13 +52,7 @@
   };
 
   services = {
+    hardware.bolt.enable = true;
     xserver.videoDrivers = ["nvidia"];
-
-    undervolt = {
-      enable = true;
-      temp = 95;
-      coreOffset = -150;
-      uncoreOffset = -150;
-    };
   };
 }

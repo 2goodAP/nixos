@@ -273,7 +273,10 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 spawn-at-startup "bash" "-c" "if [[ -d \"%NIRI_TMP%\" ]]; then rm -r \"%NIRI_TMP%\"; fi && mkdir -p \"%NIRI_TMP%\" && mkfifo \"%NIRI_TMP%/%SNKVOLPIPE%\" && mkfifo \"%NIRI_TMP%/%SRCVOLPIPE%\""
+
 spawn-at-startup "eww" "open" "main-bar"
+
+spawn-at-startup "niriswitcher"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -285,7 +288,7 @@ prefer-no-csd
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.
 // The path is formatted with strftime(3) to give you the screenshot date and time.
-screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+screenshot-path "%SCRSHTPNG%"
 
 // You can also set this to null to disable saving screenshots to disk.
 // screenshot-path null
@@ -450,10 +453,14 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    %LAUNCH_TERMINAL%
-    %LAUNCH_CLIPSE%
+    Mod+Return { spawn %TERMINAL%; }
+    Mod+C { spawn %CLIPSE%; }
     Mod+D { spawn "fuzzel"; }
     Mod+X { spawn "hyprlock"; }
+
+    // Suggested binds for niriswitcher
+    Alt+Tab repeat=false { spawn "gdbus" "call" "--session" "--dest" "io.github.isaksamsten.Niriswitcher" "--object-path" "/io/github/isaksamsten/Niriswitcher" "--method" "io.github.isaksamsten.Niriswitcher.application"; }
+    Alt+Shift+Tab repeat=false { spawn "gdbus" "call" "--session" "--dest" "io.github.isaksamsten.Niriswitcher" "--object-path" "/io/github/isaksamsten/Niriswitcher" "--method" "io.github.isaksamsten.Niriswitcher.application"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -687,15 +694,14 @@ binds {
     // Mod+Shift+Space { switch-layout "prev"; }
 
     Print {
-        spawn "bash" "-c" "niri msg action screenshot && wl-paste | swappy -f -"
-    }
-    Ctrl+Print {
-        spawn "bash" "-c" "niri msg action screenshot-screen -d false && wl-paste | swappy -f -"
+        spawn "bash" "-c" "niri msg action screenshot && inotifywait -e create -e modify -t 60 \"%SCRSHTPNG%\" && swappy -f \"%SCRSHTPNG%\""
     }
     Alt+Print {
-        spawn "bash" "-c" "niri msg action screenshot-window -d false && wl-paste | swappy -f -"
+        spawn "bash" "-c" "niri msg action screenshot-window && inotifywait -e create -e modify -t 60 \"%SCRSHTPNG%\" && swappy -f \"%SCRSHTPNG%\""
     }
-
+    Ctrl+Print {
+        spawn "bash" "-c" "niri msg action screenshot-screen && inotifywait -e create -e modify -t 60 \"%SCRSHTPNG%\" && swappy -f \"%SCRSHTPNG%\""
+    }
 
     // Applications such as remote-desktop clients and software KVM switches may
     // request that niri stops processing the keyboard shortcuts defined here

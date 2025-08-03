@@ -17,6 +17,46 @@ in
       {
         wezterm = inputs'.wezterm.packages.default;
 
+        bashdb = prev.stdenv.mkDerivation {
+          inherit (prev.bashdb) pname meta;
+          version = "${prev.bashdb.version}-unstable-2025-06-08";
+
+          src = prev.fetchFromGitHub {
+            owner = "Trepan-Debuggers";
+            repo = "bashdb";
+            rev = "7d0f9751e04fa54f48f0ab4be32ecb8030a4315d";
+            sha256 = "sha256-fwxmlFC66Lv+zD632s9a44I9IEQ/82caKnQ44pdVes4=";
+          };
+
+          env.NOCONFIGURE = 1;
+
+          nativeBuildInputs = with final; [
+            autoconf
+            automake
+            bashInteractive
+            fd
+            perl
+            texi2html
+            texinfo
+          ];
+
+          buildInputs = [
+            (final.python3.withPackages (ps: [ps.pygments]))
+          ];
+
+          patches = [./patches/bashdb_fix_nixos_builds_for_bash_5.3.patch];
+
+          preConfigure = "patchShebangs .";
+          configurePhase = ''
+            runHook preConfigure
+
+            ./autogen.sh
+            ./configure --prefix=$out
+
+            runHook postConfigure
+          '';
+        };
+
         ariang-allinone = let
           ariang-aio = prev.ariang.overrideAttrs {
             pname = "ariang-aio";
@@ -280,6 +320,31 @@ in
             '';
           });
 
+        qmk = prev.qmk.overrideAttrs (oldAttrs: {
+          propagatedBuildInputs =
+            oldAttrs.propagatedBuildInputs
+            ++ [final.python3.pkgs.appdirs];
+        });
+
+        rename = prev.rename.override (old: {
+          perlPackages =
+            old.perlPackages
+            // {
+              buildPerlPackage = args:
+                old.perlPackages.buildPerlPackage (args
+                  // rec {
+                    version = "1.16.3";
+
+                    src = prev.fetchFromGitHub {
+                      owner = "pstray";
+                      repo = "rename";
+                      rev = "v${version}";
+                      sha256 = "sha256-KQsBO94fsa4CbTHNyJxOD96AwUfKNLa9p44odlNgQao=";
+                    };
+                  });
+            };
+        });
+
         soundfont-upright-kw = final.stdenv.mkDerivation {
           pname = "upright-kw";
           version = "unstable-2022-02-21";
@@ -328,34 +393,52 @@ in
           };
         };
 
-        qmk = prev.qmk.overrideAttrs (oldAttrs: {
-          propagatedBuildInputs =
-            oldAttrs.propagatedBuildInputs
-            ++ [final.python3.pkgs.appdirs];
-        });
+        typescript-styled-plugin = prev.buildNpmPackage (finalAttrs: {
+          pname = "typescript-styled-plugin";
+          version = "1.0.1";
 
-        rename = prev.rename.override (old: {
-          perlPackages =
-            old.perlPackages
-            // {
-              buildPerlPackage = args:
-                old.perlPackages.buildPerlPackage (args
-                  // rec {
-                    version = "1.16.3";
+          src = prev.fetchFromGitHub {
+            owner = "styled-components";
+            repo = "typescript-styled-plugin";
+            rev = "v${finalAttrs.version}";
+            hash = "sha256-lTacDVY/E14EaTCmpk99wwjoWdTZh6A1goAnw3TEY/k=";
+          };
 
-                    src = prev.fetchFromGitHub {
-                      owner = "pstray";
-                      repo = "rename";
-                      rev = "v${version}";
-                      sha256 = "sha256-KQsBO94fsa4CbTHNyJxOD96AwUfKNLa9p44odlNgQao=";
-                    };
-                  });
-            };
+          npmDepsHash = "sha256-WhPxYS9lgycWSqdiVEdHv7oVSwCF+G65LMUibXIkJII=";
+          dontNpmBuild = true;
+          passthru.updateScript = prev.nix-update-script {};
+
+          meta = {
+            description =
+              "TypeScript server plugin that adds "
+              + "intellisense to styled component css strings";
+            homepage = "https://github.com/styled-components/typescript-styled-plugin";
+            license = lib.licenses.mit;
+          };
         });
 
         vimPlugins = prev.vimPlugins.extend (_vfinal: _vprev: {
           haskell-tools-nvim = inputs'.haskell-tools-nvim.packages.default;
           lz-n = inputs'.lz-n.packages.default;
+        });
+
+        vscode-bash-debug = prev.vscode-utils.buildVscodeExtension (finalAttrs: {
+          pname = "vscode-bash-debug";
+          version = "0.3.9-unstable-2021-02-15";
+          vscodeExtPublisher = "rogalmic";
+          vscodeExtName = "vscode-bash-debug";
+          vscodeExtUniqueId =
+            "${finalAttrs.vscodeExtPublisher}"
+            + ".${finalAttrs.vscodeExtName}";
+
+          src = prev.fetchzip {
+            url = "https://github.com/rogalmic/vscode-bash-debug/releases/download/untagged-438733f35feb8659d939/bash-debug-0.3.9.vsix";
+            stripRoot = false;
+            extension = "zip";
+            sha256 = "sha256-CNwhxbnGm5H0Swkurw9LXW21dHR6OA3uw1GtmlMaLk0=";
+          };
+
+          sourceRoot = "${finalAttrs.src.name}/extension";
         });
       }
       // optionalAttrs (cfg.programs.defaultShell == "nushell") {

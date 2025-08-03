@@ -1,18 +1,19 @@
 {
   imports = [
-    ../common/programs.nix
-    ../common/applications.nix
+    ../common
     ./programs.nix
   ];
 
   fonts.fontconfig.enable = true;
 
   tgap.home = {
-    desktop.nixosApplications.enable = false;
+    desktop.applications.extras.enable = true;
+
     programs = {
-      enable = true;
+      neovim.enable = true;
+
       applications = {
-        enable = true;
+        extras.enable = true;
         jupyter.enable = true;
       };
     };

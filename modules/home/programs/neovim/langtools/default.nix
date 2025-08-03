@@ -120,29 +120,7 @@
           ++ optionals tsEnabled [
             typescript
             vscode-json-languageserver
-            (pkgs.buildNpmPackage (finalAttrs: {
-              pname = "typescript-styled-plugin";
-              version = "1.0.1";
-
-              src = fetchFromGitHub {
-                owner = "styled-components";
-                repo = "typescript-styled-plugin";
-                rev = "v${finalAttrs.version}";
-                hash = "sha256-lTacDVY/E14EaTCmpk99wwjoWdTZh6A1goAnw3TEY/k=";
-              };
-
-              npmDepsHash = "sha256-WhPxYS9lgycWSqdiVEdHv7oVSwCF+G65LMUibXIkJII=";
-              dontNpmBuild = true;
-              passthru.updateScript = pkgs.nix-update-script {};
-
-              meta = {
-                description =
-                  "TypeScript server plugin that adds "
-                  + "intellisense to styled component css strings";
-                homepage = "https://github.com/styled-components/typescript-styled-plugin";
-                license = lib.licenses.mit;
-              };
-            }))
+            typescript-styled-plugin
           ]
           ++ optionals xmlEnabled [
             lemminx

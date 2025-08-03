@@ -1,9 +1,11 @@
 # Configurations shared across the various user profiles.
 {
   tgap.home = {
+    desktop.applications.enable = true;
+
     programs = {
       enable = true;
-      neovim.enable = true;
+      applications.enable = true;
     };
   };
 }

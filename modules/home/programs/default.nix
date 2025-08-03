@@ -37,11 +37,11 @@
       };
 
       programs = let
-        rose-pine-tm-theme = pkgs.fetchFromGitHub {
+        rose-pine-tmTheme = pkgs.fetchFromGitHub {
           owner = "rose-pine";
           repo = "tm-theme";
-          rev = "c4235f9a65fd180ac0f5e4396e3a86e21a0884ec";
-          sha256 = "sha256-0u3pjxMn0Vzr97VudM+aY7ouXD8dRucsnhigaiCNGME=";
+          rev = "c4cab0c431f55a3c4f9897407b7bdad363bbb862";
+          sha256 = "sha256-CMcEe45uulUb7vngg0MX09Isf9bIsC7Ag7m0Z8064FM=";
           sparseCheckout = ["dist/themes"];
         };
       in {
@@ -68,7 +68,7 @@
             batwatch
           ];
           themes.RosePineDawn = {
-            src = rose-pine-tm-theme;
+            src = rose-pine-tmTheme;
             file = "dist/themes/rose-pine-dawn.tmTheme";
           };
         };
@@ -107,16 +107,17 @@
 
           profileExtra = let
             neovim = getExe config.programs.neovim.finalPackage;
-          in ''
-            # Set preferred editor for local and remote sessions
-            if [[ -n "$SSH_CONNECTION" ]]; then
-              export EDITOR='vim'
-              export VISUAL='vim'
-            else
-              export EDITOR='${neovim}'
-              export VISUAL='${neovim}'
-            fi
-          '';
+          in
+            optionalString cfg.neovim.enable ''
+              # Set preferred editor for local and remote sessions
+              if [[ -n "$SSH_CONNECTION" ]]; then
+                export EDITOR='vim'
+                export VISUAL='vim'
+              else
+                export EDITOR='${neovim}'
+                export VISUAL='${neovim}'
+              fi
+            '';
 
           shellAliases = {
             br = "broot";
@@ -254,7 +255,7 @@
         yazi = {
           enable = true;
           theme = recursiveUpdate (lib.importTOML ./yazi/rose-pine-dawn.toml) {
-            mgr.highlight = "${rose-pine-tm-theme}/dist/themes/rose-pine-dawn.tmTheme";
+            mgr.highlight = "${rose-pine-tmTheme}/dist/themes/rose-pine-dawn.tmTheme";
           };
         };
       };
