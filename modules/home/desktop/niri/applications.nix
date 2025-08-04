@@ -117,7 +117,7 @@ in
     in {
       eww = let
         eww = config.programs.eww.package;
-      in {
+      in rec {
         Install.WantedBy = [
           systemdTarget
           "tray.target"
@@ -138,10 +138,7 @@ in
             + " which lets you create your own widgets.";
           Documentation = "https://elkowar.github.io/eww";
           After = [systemdTarget];
-          PartOf = [
-            systemdTarget
-            "tray.target"
-          ];
+          PartOf = Install.WantedBy;
         };
       };
 
@@ -156,7 +153,7 @@ in
                 ];
               });
         });
-      in {
+      in rec {
         Install.WantedBy = [systemdTarget];
 
         Service = {
@@ -169,12 +166,8 @@ in
 
         Unit = {
           Description = "KDE PolicyKit Authentication Agent";
-          PartOf = [systemdTarget];
-          After = [
-            (builtins.replaceStrings
-              [".target"] ["-pre.target"]
-              systemdTarget)
-          ];
+          PartOf = Install.WantedBy;
+          After = Install.WantedBy;
         };
       };
     };
