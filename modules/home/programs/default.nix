@@ -78,9 +78,6 @@
           historyControl = ["ignorespace"];
 
           initExtra = ''
-            set -o vi
-            bind '"\C-l": clear-screen'
-
             # ble.sh
             # ------
             ## Set ESC timeout
@@ -188,6 +185,12 @@
         in {
           enable = true;
           settings = lib.importJSON configJSON;
+        };
+
+        readline = {
+          enable = true;
+          bindings."\\C-l" = "clear-screen";
+          variables.editing-mode = "vi";
         };
 
         skim = {
