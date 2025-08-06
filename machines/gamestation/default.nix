@@ -1,4 +1,4 @@
-{hostName, ...}: {
+{sysName, ...}: {
   imports = [
     ./hardware.nix
     ../common.nix
@@ -28,14 +28,9 @@
     };
 
     network = {
-      inherit hostName;
       enable = true;
+      hostName = "${sysName}-nix";
       interfaces = ["enp4s0" "wlo1"];
-    };
-
-    programs = {
-      qmk.enable = true;
-      virtualization.enable = true;
     };
   };
 }

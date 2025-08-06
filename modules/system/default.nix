@@ -79,60 +79,21 @@
             fileSystems = ["/"];
           };
 
-          snapper = {
-            snapshotRootOnBoot = true;
-            configs =
-              {
-                home = {
-                  SUBVOLUME = "/home";
-                  ALLOW_GROUPS = ["users" "wheel"];
-                  SYNC_ACL = true;
-                  NUMBER_CLEANUP = true;
-                  NUMBER_LIMIT = 10;
-                  NUMBER_LIMIT_IMPORTANT = 5;
-                  TIMELINE_CREATE = true;
-                  TIMELINE_CLEANUP = true;
-                  TIMELINE_LIMIT_HOURLY = 12;
-                  TIMELINE_LIMIT_DAILY = 7;
-                  TIMELINE_LIMIT_WEEKLY = 2;
-                  TIMELINE_LIMIT_MONTHLY = 0;
-                  TIMELINE_LIMIT_YEARLY = 0;
-                  EMPTY_PRE_POST_CLEANUP = true;
-                };
-              }
-              // optionalAttrs (!cfg.desktop.gaming.enable) {
-                root = {
-                  SUBVOLUME = "/";
-                  ALLOW_GROUPS = ["wheel"];
-                  SYNC_ACL = true;
-                  NUMBER_CLEANUP = true;
-                  NUMBER_LIMIT = 20;
-                  TIMELINE_CREATE = true;
-                  TIMELINE_CLEANUP = true;
-                  TIMELINE_LIMIT_HOURLY = 12;
-                  TIMELINE_LIMIT_DAILY = 7;
-                  TIMELINE_LIMIT_WEEKLY = 2;
-                  TIMELINE_LIMIT_MONTHLY = 1;
-                  TIMELINE_LIMIT_YEARLY = 0;
-                  EMPTY_PRE_POST_CLEANUP = true;
-                };
-                nix = {
-                  SUBVOLUME = "/nix";
-                  ALLOW_GROUPS = ["nixbld" "wheel"];
-                  SYNC_ACL = true;
-                  NUMBER_CLEANUP = true;
-                  NUMBER_LIMIT = 4;
-                  NUMBER_LIMIT_IMPORTANT = 2;
-                  TIMELINE_CREATE = true;
-                  TIMELINE_CLEANUP = true;
-                  TIMELINE_LIMIT_HOURLY = 6;
-                  TIMELINE_LIMIT_DAILY = 4;
-                  TIMELINE_LIMIT_WEEKLY = 1;
-                  TIMELINE_LIMIT_MONTHLY = 1;
-                  TIMELINE_LIMIT_YEARLY = 0;
-                  EMPTY_PRE_POST_CLEANUP = true;
-                };
-              };
+          snapper.configs.home = {
+            SUBVOLUME = "/home";
+            ALLOW_GROUPS = ["users" "wheel"];
+            SYNC_ACL = true;
+            NUMBER_CLEANUP = true;
+            NUMBER_LIMIT = 10;
+            NUMBER_LIMIT_IMPORTANT = 5;
+            TIMELINE_CREATE = true;
+            TIMELINE_CLEANUP = true;
+            TIMELINE_LIMIT_HOURLY = 12;
+            TIMELINE_LIMIT_DAILY = 7;
+            TIMELINE_LIMIT_WEEKLY = 2;
+            TIMELINE_LIMIT_MONTHLY = 0;
+            TIMELINE_LIMIT_YEARLY = 0;
+            EMPTY_PRE_POST_CLEANUP = true;
           };
         };
       })

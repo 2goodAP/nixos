@@ -8,6 +8,7 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     secureBoot.enable = mkEnableOption "UEFI secure boot";
+    rescue.enable = mkEnableOption "settings and kernel params for rescue";
 
     encrypted-btrfs = {
       enable = mkEnableOption "encrypted btrfs partitions";
@@ -26,19 +27,11 @@
         };
 
         mountPoints = mkOption {
-          type = types.listOf types.attrs;
+          type = types.listOf (types.attrsOf types.str);
           default = [
             {
               name = "/";
               subvol = "@";
-            }
-            {
-              name = "/nix";
-              subvol = "@nix";
-            }
-            {
-              name = "/var";
-              subvol = "@var";
             }
             {
               name = "/home";
@@ -48,9 +41,13 @@
               name = "/tmp";
               subvol = "@tmp";
             }
+            {
+              name = "/var";
+              subvol = "@var";
+            }
           ];
           description = ''
-            A list containing attrsets of mount points and
+            A list containing root mount points and
             their corresponding brtfs subvolumes.
           '';
         };
@@ -70,13 +67,41 @@
         };
       };
 
+      nix = {
+        partlabel = mkOption {
+          type = types.str;
+          default = "LinuxNixPart";
+          description = "Partlabel for the Nix partition.";
+        };
+
+        mountPoint = mkOption {
+          type = types.str;
+          default = "/nix";
+          description = "Mount point of the Nix partition.";
+        };
+      };
+
+      snapshots.mountPoints = mkOption {
+        type = types.listOf (types.attrsOf types.str);
+        default = [
+          {
+            name = "/home/.snapshots";
+            subvol = "@snapshots/home";
+          }
+        ];
+        description = ''
+          A list containing snapshots mount points and
+          their corresponding brtfs subvolumes.
+        '';
+      };
+
       swap.partlabel = mkOption {
-        type = types.str;
-        default = "LinuxSwapPart";
+        type = types.nullOr types.str;
+        default = null;
         description = "Partlabel for the encrypted swap partition.";
       };
 
-      zram.writeBackDev.partlabel = mkOption {
+      zramWriteBack.partlabel = mkOption {
         type = types.str;
         default = "LinuxZramWritebackPart";
         description = "Partlabel for the encrypted zram writeback device.";
@@ -86,132 +111,174 @@
 
   config = let
     cfg = config.tgap.system.boot;
-    inherit (lib) mkForce mkIf mkMerge;
+    ebCfg = cfg.encrypted-btrfs;
+    swapPresent = !builtins.isNull ebCfg.swap.partlabel;
+    inherit (lib) mkIf mkMerge optionalAttrs optionals;
   in
-    mkIf cfg.encrypted-btrfs.enable (mkMerge [
+    mkIf ebCfg.enable (mkMerge [
       {
-        boot = {
-          consoleLogLevel = 3;
+        boot =
+          optionalAttrs (!cfg.rescue.enable) {consoleLogLevel = 3;}
+          // {
+            initrd = mkMerge [
+              {
+                systemd.enable = true;
 
-          initrd = mkMerge [
-            {
-              systemd.enable = true;
+                luks.devices =
+                  {
+                    ${ebCfg.root.partlabel} = {
+                      allowDiscards = true;
+                      device = "/dev/disk/by-partlabel/${ebCfg.root.partlabel}";
+                    };
 
-              luks.devices = mkMerge [
-                {
-                  "${cfg.encrypted-btrfs.root.partlabel}" = {
-                    allowDiscards = true;
-                    device = "/dev/disk/by-partlabel/${cfg.encrypted-btrfs.root.partlabel}";
-                  };
+                    ${ebCfg.nix.partlabel} = {
+                      allowDiscards = true;
+                      device = "/dev/disk/by-partlabel/${ebCfg.nix.partlabel}";
+                    };
 
-                  "${cfg.encrypted-btrfs.swap.partlabel}" = {
-                    allowDiscards = true;
-                    device = "/dev/disk/by-partlabel/${cfg.encrypted-btrfs.swap.partlabel}";
-                  };
-
-                  "${cfg.encrypted-btrfs.zram.writeBackDev.partlabel}" = {
-                    allowDiscards = true;
-                    device = "/dev/disk/by-partlabel/${cfg.encrypted-btrfs.zram.writeBackDev.partlabel}";
-                  };
-                }
-
-                (mkIf (builtins.length cfg.encrypted-btrfs.root.extraPartlabels > 0) (
-                  builtins.listToAttrs (map (pl: {
+                    ${ebCfg.zramWriteBack.partlabel} = {
+                      allowDiscards = true;
+                      device = "/dev/disk/by-partlabel/${ebCfg.zramWriteBack.partlabel}";
+                    };
+                  }
+                  // optionalAttrs swapPresent {
+                    ${ebCfg.swap.partlabel} = {
+                      allowDiscards = true;
+                      device = "/dev/disk/by-partlabel/${ebCfg.swap.partlabel}";
+                    };
+                  }
+                  // optionalAttrs
+                  (builtins.length ebCfg.root.extraPartlabels > 0)
+                  (builtins.listToAttrs (map (pl: {
                       name = pl;
                       value = {
                         allowDiscards = true;
                         device = "/dev/disk/by-partlabel/${pl}";
                       };
                     })
-                    cfg.encrypted-btrfs.root.extraPartlabels)
-                ))
-              ];
-            }
-          ];
+                    ebCfg.root.extraPartlabels));
+              }
+            ];
 
-          kernelParams = [
-            "quiet"
-            "udev.log_level=3"
-            "resume=/dev/mapper/${cfg.encrypted-btrfs.swap.partlabel}"
-          ];
+            kernelParams =
+              if cfg.rescue.enable
+              then [
+                "rescue"
+                "systemd.setenv=SYSTEMD_SULOGIN_FORCE=1"
+              ]
+              else
+                [
+                  "quiet"
+                  "udev.log_level=3"
+                ]
+                ++ optionals swapPresent [
+                  "resume=/dev/mapper/${ebCfg.swap.partlabel}"
+                ];
 
-          loader = {
-            timeout = 1;
+            loader = {
+              efi = {
+                canTouchEfiVariables = true;
+                efiSysMountPoint = ebCfg.esp.mountPoint;
+              };
 
-            efi = {
-              canTouchEfiVariables = true;
-              efiSysMountPoint = cfg.encrypted-btrfs.esp.mountPoint;
-            };
-
-            systemd-boot = {
-              enable = true;
-              editor = false;
-              extraFiles."efi/uefi-shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
-              memtest86.enable = true;
-
-              extraEntries = {
-                "uefi-shell.conf" = ''
-                  title UEFI-Shell
-                  efi /efi/uefi-shell/shell.efi
-                '';
+              systemd-boot = {
+                enable =
+                  if cfg.secureBoot.enable
+                  then false
+                  else true;
+                configurationLimit = 10;
+                editor =
+                  if cfg.rescue.enable
+                  then true
+                  else false;
+                edk2-uefi-shell.enable = true;
+                memtest86.enable = true;
               };
             };
+
+            plymouth = {
+              enable =
+                if cfg.rescue.enable
+                then false
+                else true;
+              theme = "breeze";
+            };
           };
 
-          plymouth = {
-            enable = true;
-            theme = "breeze";
-          };
-        };
-
-        fileSystems = mkMerge [
+        fileSystems =
           {
-            "${cfg.encrypted-btrfs.esp.mountPoint}" = {
-              device = "/dev/disk/by-partlabel/${cfg.encrypted-btrfs.esp.partlabel}";
+            ${ebCfg.esp.mountPoint} = {
+              device = "/dev/disk/by-partlabel/${ebCfg.esp.partlabel}";
               fsType = "vfat";
-              options = ["defaults" "noatime" "umask=0077"];
+              options = [
+                "defaults"
+                "relatime"
+                "umask=0077"
+              ];
+            };
+
+            ${ebCfg.nix.mountPoint} = {
+              device = "/dev/mapper/${ebCfg.nix.partlabel}";
+              fsType = "ext4";
+              neededForBoot = true;
+              options = [
+                "defaults"
+                "commit=60"
+                "data=writeback"
+                "errors=remount-ro"
+                "journal_async_commit"
+                "noatime"
+                "nodiscard"
+              ];
             };
           }
-
-          (builtins.listToAttrs (map (mp: {
-              inherit (mp) name;
-              value = {
-                device = "/dev/mapper/${cfg.encrypted-btrfs.root.partlabel}";
-                fsType = "btrfs";
-                options = [
-                  "defaults"
-                  "compress-force=zstd"
-                  "noatime"
-                  "nodiscard"
-                  "subvol=${mp.subvol}"
-                ];
-              };
+          // (builtins.listToAttrs (map ({
+              name,
+              subvol,
+            }: {
+              inherit name;
+              value =
+                {
+                  device = "/dev/mapper/${cfg.encrypted-btrfs.root.partlabel}";
+                  fsType = "btrfs";
+                  options = [
+                    "defaults"
+                    "clear_cache"
+                    "commit=60"
+                    "compress-force=zstd"
+                    "nodiscard"
+                    "relatime"
+                    "space_cache=v2"
+                    "subvol=${subvol}"
+                  ];
+                }
+                // optionalAttrs (builtins.elem name ["/" "/var"]) {
+                  neededForBoot = true;
+                };
             })
-            cfg.encrypted-btrfs.root.mountPoints))
-        ];
+            (ebCfg.root.mountPoints
+              ++ ebCfg.snapshots.mountPoints)));
 
-        swapDevices = [
+        swapDevices = optionals swapPresent [
           {
-            device = "/dev/mapper/${cfg.encrypted-btrfs.swap.partlabel}";
+            device = "/dev/mapper/${ebCfg.swap.partlabel}";
             priority = 0;
           }
         ];
+
         zramSwap = {
           enable = true;
           priority = 10;
-          writebackDevice = "/dev/mapper/${cfg.encrypted-btrfs.zram.writeBackDev.partlabel}";
+          writebackDevice = "/dev/mapper/${ebCfg.zramWriteBack.partlabel}";
         };
       }
 
-      (mkIf cfg.secureBoot.enable {
+      (mkIf (!cfg.rescue.enable && cfg.secureBoot.enable) {
         environment.systemPackages = [pkgs.sbctl];
 
-        boot = {
-          loader.systemd-boot.enable = mkForce false;
-          lanzaboote = {
-            enable = true;
-            pkiBundle = "/etc/secureboot";
-          };
+        boot.lanzaboote = {
+          enable = true;
+          pkiBundle = "/var/lib/sbctl";
         };
       })
     ]);

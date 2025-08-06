@@ -35,6 +35,8 @@
           [config.boot.kernelPackages.turbostat]
           ++ (with pkgs; [
             # Hardware
+            btrfs-progs
+            e2fsprogs
             exfatprogs
             gptfdisk
             ntfs3g

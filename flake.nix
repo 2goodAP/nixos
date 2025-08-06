@@ -35,7 +35,8 @@
     };
 
     lanzaboote = {
-      url = "github:nix-community/lanzaboote";
+      # url = "github:nix-community/lanzaboote";
+      url = "github:2goodAP/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -129,25 +130,29 @@
               ];
             };
 
-            nix.settings = {
-              experimental-features = ["nix-command" "flakes"];
+            nix = {
+              registry.type.flake = nixpkgs;
 
-              substituters = [
-                "https://cache.nixos.org"
-                "https://cuda-maintainers.cachix.org"
-                "https://ghostty.cachix.org"
-                "https://hyprland.cachix.org"
-                "https://nix-community.cachix.org"
-                "https://nixpkgs-wayland.cachix.org"
-              ];
-              trusted-public-keys = [
-                "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-                "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-                "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
-                "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-                "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-              ];
+              settings = {
+                experimental-features = ["nix-command" "flakes"];
+
+                substituters = [
+                  "https://cache.nixos.org"
+                  "https://cuda-maintainers.cachix.org"
+                  "https://ghostty.cachix.org"
+                  "https://hyprland.cachix.org"
+                  "https://nix-community.cachix.org"
+                  "https://nixpkgs-wayland.cachix.org"
+                ];
+                trusted-public-keys = [
+                  "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+                  "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+                  "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
+                  "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+                  "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+                  "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+                ];
+              };
             };
 
             users.users.root = {
@@ -183,7 +188,7 @@
                   {nixpkgs.hostPlatform = {inherit system;};}
 
                   # system-specific configurations
-                  (import ./machines/workstation {hostName = "${sysName}-nix";})
+                  (import ./machines/${sysName} {inherit sysName;})
                 ]
                 ++
                 # user-specific configurations
