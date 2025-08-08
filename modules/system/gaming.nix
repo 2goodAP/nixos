@@ -42,6 +42,15 @@ in {
         description = "Extra args for the gamescope command.";
       };
 
+      vkDevice = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = ''
+          Vulkan device preferred by gamescope for compositing.
+          The selected device/GPU must be connected to a display.
+        '';
+      };
+
       finalArgs = mkOption {
         type = types.listOf types.str;
         default = [
@@ -54,18 +63,6 @@ in {
         ];
         description = "Compiled/final args for the steam gamescope command.";
         readOnly = true;
-      };
-
-      vkDeviceID = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "The vulkan deviceID of the preferred GPU to use with gamescope.";
-      };
-
-      vkVendorID = mkOption {
-        type = types.enum ["1002" "13B5" "8086" "10DE"];
-        default = "10DE";
-        description = "The vulkan vendorID of the preferred GPU to use with gamescope.";
       };
     };
   };
@@ -109,8 +106,8 @@ in {
                 "--adaptive-sync"
                 "--force-grab-cursor"
               ]
-              ++ optionals (gsCfg.vkDeviceID != null) [
-                "--prefer-vk-device ${gsCfg.vkVendorID}:${gsCfg.vkDeviceID}"
+              ++ optionals (!builtins.isNull gsCfg.vkDevice) [
+                "--prefer-vk-device ${gsCfg.vkDevice}"
               ];
 
             env = optionalAttrs config.hardware.nvidia.prime.offload.enable {

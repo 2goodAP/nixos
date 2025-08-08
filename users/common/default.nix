@@ -6,6 +6,7 @@
     programs = {
       enable = true;
       applications.enable = true;
+      neovim.enable = true;
     };
   };
 }

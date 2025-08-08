@@ -23,7 +23,7 @@
 
   config = let
     cfg = config.tgap.system;
-    inherit (lib) mkDefault mkIf mkMerge optionalAttrs;
+    inherit (lib) mkDefault mkIf mkMerge;
   in
     mkMerge [
       {
@@ -99,8 +99,6 @@
       })
 
       (mkIf cfg.apparmor.enable {
-        boot.kernelParams = ["lsm=landlock,lockdown,yama,apparmor,bpf"];
-
         security.apparmor = {
           enable = true;
           killUnconfinedConfinables = true;

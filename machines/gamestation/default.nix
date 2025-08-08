@@ -20,6 +20,7 @@
 
     desktop.gaming = {
       enable = true;
+      gamescope.vkDevice = "8086:a780";
       steam.enable = true;
       controllers = {
         dualsense.enable = true;

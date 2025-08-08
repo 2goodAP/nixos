@@ -28,13 +28,9 @@ in {
     tgap.home = {
       desktop.applications.extras.enable = true;
 
-      programs = {
-        neovim.enable = true;
-
-        applications = {
-          extras.enable = true;
-          jupyter.enable = true;
-        };
+      programs.applications = {
+        extras.enable = true;
+        jupyter.enable = true;
       };
     };
   };
