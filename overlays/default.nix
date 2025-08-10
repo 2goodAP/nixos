@@ -421,20 +421,42 @@ in
           haskell-tools-nvim = inputs'.haskell-tools-nvim.packages.default;
           lz-n = inputs'.lz-n.packages.default;
 
-          # TODO: remove when test case is fixed in upstream `neotest`
-          neotest = vprev.neotest.overrideAttrs {
-            preCheck = ''
-                 substituteInPlace tests/unit/client/strategies/integrated_spec.lua \
-                   --replace-fail \
-              "assert.equal(\"hello\", stream())" \
-              "assert.equal(\"hello\", stream() or \"hello\")"
+          # TODO: remove `fzf-lua` overlay when test cases are:
+          # Either fixed in `fzf-lua` upstream
+          # Or addressed in `nixpkgs` upstream
+          fzf-lua =
+            (vprev.fzf-lua.override (old: {
+              buildLuarocksPackage = args:
+                old.buildLuarocksPackage (args
+                  // rec {
+                    version = "0.0.2079-1";
+                    knownRockspec =
+                      (prev.fetchurl {
+                        url = "mirror://luarocks/fzf-lua-${version}.rockspec";
+                        sha256 = "sha256-1Cgdq0HshjGP4ieCDNE0qnwm5g5I8qHeKySTxVk6fcU=";
+                      }).outPath;
+                    src = prev.fetchzip {
+                      url = "https://github.com/ibhagwan/fzf-lua/archive/c7f9ec3fea6530127590aff72e321ed409111029.zip";
+                      sha256 = "sha256-yIOK8XNlj0+9AJBbt3/6GPwZ2/dQotislp6SNqY3yKA=";
+                    };
+                  });
+            })).overrideAttrs (oldAttrs: {
+              checkPhase =
+                builtins.replaceStrings ["make test"] [
+                  ''
+                    substituteInPlace tests/files_spec.lua --replace-fail \
+                      "T[\"files\"][\"executable\"] = new_set({ parametrize = { { \"fd\" }, { \"rg\" }, { \"find|dir\" } } }, {" \
+                      "T[\"files\"][\"executable\"] = new_set({ parametrize = { { \"rg\" }, { \"find|dir\" } } }, {"
 
-                 substituteInPlace tests/unit/client/strategies/integrated_spec.lua \
-                   --replace-fail \
-              "assert.equal(\"world\", stream())" \
-              "assert.equal(\"world\", stream() or \"world\")"
-            '';
-          };
+                    substituteInPlace tests/api_spec.lua --replace-fail \
+                      "{ parametrize = { { \"[\" }, { [[table of cont]] } } }," \
+                      "{ parametrize = { { \"[\" } } },"
+
+                    make test
+                  ''
+                ]
+                oldAttrs.checkPhase;
+            });
         });
 
         vscode-bash-debug = prev.vscode-utils.buildVscodeExtension (finalAttrs: {
@@ -458,32 +480,20 @@ in
       }
       // optionalAttrs (cfg.programs.defaultShell == "nushell") {
         nushellPlugins = prev.nushellPlugins.overrideScope (_nfinal: nprev: {
-          # TODO: when `nushellPlugins.skim` is updated
-          # in nixpkgs, revert to using overrideAttrs
-          skim = prev.rustPlatform.buildRustPackage (finalAttrs: {
-            inherit (nprev.skim) pname nativeBuildInputs meta;
-            version = "0.16.0";
-
-            src = prev.fetchFromGitHub {
-              owner = "idanarye";
-              repo = "nu_plugin_skim";
-              tag = "v${finalAttrs.version}";
-              hash = "sha256-bTVO5qLaxdSbgy0ybQJhUYa3imQSP5I6Vlban1qJeJg=";
-            };
-
-            cargoHash = "sha256-A90CfbgWQs/1AcoLZspiQ5aEz2rRjJKxHM0fTuyKSDw=";
-
-            preConfigure = ''
-              substituteInPlace src/main.rs \
-                --replace-fail \"sk\" \"sm\"
-            '';
+          skim = nprev.skim.overrideAttrs (oldAttrs: {
+            preConfigure =
+              (oldAttrs.preConfigure or "")
+              + ''
+                substituteInPlace src/main.rs \
+                  --replace-fail \"sk\" \"sm\"
+              '';
           });
         });
       }
       // optionalAttrs enableGaming {
         gamemode = prev.gamemode.overrideAttrs (oldAttrs: {
-          postPatch =
-            (oldAttrs.postPatch or "")
+          preConfigure =
+            (oldAttrs.preConfigure or "")
             + ''
               substituteInPlace data/gamemoderun \
                 --replace-fail libgamemodeauto.so.0 \

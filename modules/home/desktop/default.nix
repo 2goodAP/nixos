@@ -43,7 +43,7 @@
                 else if nushellDefault
                 then "${getExe nushellPkg} -li"
                 else "$SHELL";
-              font = "IosevkaSpecial Nerd Font:size=12, JetbrainsMono Nerd Font:size=11.5";
+              font = "IosevkaSpecial Nerd Font:size=11, JetbrainsMono Nerd Font:size=10";
               underline-offset = 1;
               dpi-aware = "yes";
               pad = "2x2 center";
