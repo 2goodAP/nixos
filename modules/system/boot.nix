@@ -186,7 +186,7 @@
                   if cfg.secureBoot.enable
                   then false
                   else true;
-                configurationLimit = 10;
+                configurationLimit = 30;
                 editor =
                   if cfg.rescue.enable
                   then true
