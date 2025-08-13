@@ -27,17 +27,16 @@ in {
     xdg.desktopEntries = let
       wineDir = "/home/${uname}/Wine";
     in {
-      divinity-original-sin-2 = let
-        gameDir = "Divinity_Original_Sin_2";
-      in {
+      indiana-jones-and-the-great-circle = {
         categories = ["Game"];
-        comment = "Larian: Tactical RPG, Turn-Based Strategy";
+        comment = "MachineGames: Action-Adventure, First-Person, Story Rich";
         exec =
-          ''env GAMEID=435150 umu-launch -emp "${gameDir}" -t "GE-Proton8-32"''
-          + " ${wineDir}/Games/${gameDir}/DefEd/bin EoCApp.exe";
+          "env GAMEID=2677660 umu-launch -em"
+          + " ${wineDir}/Games/Indiana_Jones_and_the_Great_Circle"
+          + " TheGreatCircle.exe -- +com_skipIntroVideo 1";
         genericName = "Game";
-        icon = "${wineDir}/Misc/DOS2/DOS2_Icon.png";
-        name = "Divinity Original Sin 2";
+        icon = "${wineDir}/Misc/Indiana_Jones/TGC_Icon.png";
+        name = "Indiana Jones and the Great Circle";
         prefersNonDefaultGPU = true;
         settings = {DBusActivatable = "false";};
       };
