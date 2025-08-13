@@ -352,6 +352,7 @@ window-rule {
 
 // Enable on-demand VRR and fullscreen for mpv and games.
 window-rule {
+    match app-id="^gamescope$"
     match app-id="^mpv$"
     match app-id="Ryujinx"
     match app-id="^steam_app"

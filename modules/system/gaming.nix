@@ -153,7 +153,6 @@ in {
                                              $HOME/Wine/Prefixes
                 -t, --proton <proton>        name of the proton build to use
                 -m, --mangohud               enable mangohud overlay
-                -o, --opengl                 enable OpenGL specific tweaks
                 -x, --no-hidraw              disable HID raw and emulate xinput
                                              for controller compatibility
                     --help                   display this help
@@ -169,9 +168,9 @@ in {
 
               if ! opts="$( \
                 getopt --name "''${0##*/}" \
-                --options 'ew:h:r:l:g:p:t:mox' --longoptions 'help,gamescope' \
+                --options 'ew:h:r:l:g:p:t:mx' --longoptions 'help,gamescope' \
                 --longoptions 'width:,height:,ref-rate:,fps-limit:,gs-args:' \
-                --longoptions 'prefix:,proton:,mangohud,opengl,no-hidraw' \
+                --longoptions 'prefix:,proton:,mangohud,no-hidraw' \
                 -- "$@" \
               )"; then
                 show_help >&2
@@ -215,10 +214,6 @@ in {
                     ;;
                   -m|--mangohud)
                     mangohud=true
-                    shift
-                    ;;
-                  -o|--opengl)
-                    opengl=true
                     shift
                     ;;
                   -x|--no-hidraw)
@@ -314,10 +309,6 @@ in {
 
               if [[ -n ''${mangohud+x} && -z ''${gs_enable+x} ]]; then
                 mh_cmd="mangohud"
-
-                if [[ -n ''${opengl+x} ]]; then
-                  mh_cmd+=" --dlsym"
-                fi
               fi
 
               # HidRaw and XInput Emulation

@@ -293,8 +293,9 @@
           enable = true;
 
           settings = {
-            no_display = true;
             legacy_layout = false;
+            no_display = true;
+            vsync = 0;
 
             reload_cfg = "Shift_L+F1";
             toggle_fps_limit = "Shift_L+F2";
