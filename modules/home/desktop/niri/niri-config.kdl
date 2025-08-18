@@ -272,7 +272,7 @@ layout {
 // Note that running niri as a session supports xdg-desktop-autostart,
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
-spawn-at-startup "bash" "-c" "if [[ -d \"%NIRI_TMP%\" ]]; then rm -r \"%NIRI_TMP%\"; fi && mkdir -p \"%NIRI_TMP%\" && mkfifo \"%NIRI_TMP%/%SNKVOLPIPE%\" && mkfifo \"%NIRI_TMP%/%SRCVOLPIPE%\""
+spawn-at-startup "bash" "-c" "mkdir -p \"%NIRI_TMP%\" && mkfifo \"%SNKVOLPIPE%\" && mkfifo \"%SRCVOLPIPE%\""
 
 spawn-at-startup "eww" "open" "main-bar"
 
@@ -469,14 +469,14 @@ binds {
 
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SNKVOLPIPE%\""; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SNKVOLPIPE%\""; }
-    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_SINK@ 5%+ && %SNK_VOL% > \"%SNKVOLPIPE%\""; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_SINK@ 5%- && %SNK_VOL% > \"%SNKVOLPIPE%\""; }
+    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_SINK@" "toggle"; }
 
-    Mod+XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%+ && wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SRCVOLPIPE%\""; }
-    Mod+XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%- && wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 > \"%NIRI_TMP%/%SRCVOLPIPE%\""; }
-    Mod+XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    Mod+XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_SOURCE@ 5%+ && %SRC_VOL% > \"%SRCVOLPIPE%\""; }
+    Mod+XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "-c" "wpctl set-volume @DEFAULT_SOURCE@ 5%- && %SRC_VOL% > \"%SRCVOLPIPE%\""; }
+    Mod+XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_SOURCE@" "toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_SOURCE@" "toggle"; }
 
     Mod+Shift+Q { close-window; }
 

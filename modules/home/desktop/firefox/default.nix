@@ -9,7 +9,7 @@
   osCfg = osConfig.tgap.system;
   inherit (lib) mkIf optionalString;
 in
-  mkIf (osCfg.desktop.enable && cfg.applications.enable) {
+  mkIf (osCfg.desktop.enable && cfg.enable && cfg.applications.enable) {
     programs.firefox = {
       enable = true;
       package = pkgs.firefox-beta;
@@ -361,8 +361,8 @@ in
 
             // PREF: enforce DNS-over-HTTPS (DoH)
             user_pref("network.trr.mode", 3);
-            // PREF: set DoH provider (Quad9)
-            user_pref("network.trr.uri", "https://dns.quad9.net/dns-query");
+            // PREF: set DoH provider (Cloudflare)
+            user_pref("network.trr.uri", "https://security.cloudflare-dns.com/dns-query");
 
             // PREF: disable disk cache
             user_pref("browser.cache.disk.enable", false);

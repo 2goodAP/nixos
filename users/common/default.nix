@@ -1,7 +1,10 @@
 # Configurations shared across the various user profiles.
 {
   tgap.home = {
-    desktop.applications.enable = true;
+    desktop = {
+      enable = true;
+      applications.enable = true;
+    };
 
     programs = {
       enable = true;

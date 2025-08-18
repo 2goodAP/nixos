@@ -6,10 +6,10 @@
 
 (deflisten sink-volume
   :initial 0
-  `wpctl get-volume @DEFAULT_AUDIO_SINK@ | cut -d ' ' -f 2 && tail -f "%NIRI_TMP%/%SNKVOLPIPE%"`)
+  `sleep 3 && %SNK_VOL% && tail -F "%SNKVOLPIPE%"`)
 (deflisten source-volume
   :initial 0
-  `wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | cut -d ' ' -f 2 && tail -f "%NIRI_TMP%/%SRCVOLPIPE%"`)
+  `sleep 3 && %SRC_VOL% && tail -F "%SRCVOLPIPE%"`)
 
 (defwindow main-bar
   :geometry (geometry

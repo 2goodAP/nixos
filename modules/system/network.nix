@@ -38,10 +38,10 @@
       type = types.listOf types.str;
       description = "IPv4 and IPv6 addresses of the DNS resolver.";
       default = [
-        "9.9.9.9#dns.quad9.net"
-        "149.112.112.112#dns.quad9.net"
-        "2620:fe::fe#dns.quad9.net"
-        "2620:fe::9#dns.quad9.net"
+        "1.1.1.2#security.cloudflare-dns.com"
+        "1.0.0.2#security.cloudflare-dns.com"
+        "2606:4700:4700::1112#security.cloudflare-dns.com"
+        "2606:4700:4700::1002#security.cloudflare-dns.com"
       ];
     };
 
@@ -49,10 +49,10 @@
       type = types.listOf types.str;
       description = "IPv4 and IPv6 addresses of the fallback DNS resolver.";
       default = [
-        "1.1.1.2#security.cloudflare-dns.com"
-        "1.0.0.2#security.cloudflare-dns.com"
-        "2606:4700:4700::1112#security.cloudflare-dns.com"
-        "2606:4700:4700::1002#security.cloudflare-dns.com"
+        "9.9.9.9#dns.quad9.net"
+        "149.112.112.112#dns.quad9.net"
+        "2620:fe::fe#dns.quad9.net"
+        "2620:fe::9#dns.quad9.net"
       ];
     };
   };

@@ -8,15 +8,14 @@
   imports = [
     ./applications.nix
     ./display.nix
-    ./widgets.nix
   ];
 
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.tgap.system;
+    osCfg = osConfig.tgap.system.desktop;
     inherit (lib) getExe mapAttrsToList mkIf optionalAttrs;
 
-    configTemplates =
+    templates =
       {
         "%XKB_LAYOUT%" = osConfig.services.xserver.xkb.layout;
         "%XKB_VARIANT%" = osConfig.services.xserver.xkb.variant;
@@ -26,9 +25,12 @@
           osConfig.services.xserver.xkb.options;
 
         "%NIRI_TMP%" = "$XDG_RUNTIME_DIR/niri";
-        "%SNKVOLPIPE%" = "snkvolpipe";
-        "%SRCVOLPIPE%" = "srcvolpipe";
+        "%SNKVOLPIPE%" = "${templates."%NIRI_TMP%"}/snkvolpipe";
+        "%SRCVOLPIPE%" = "${templates."%NIRI_TMP%"}/srcvolpipe";
         "%SCRSHTPNG%" = "${config.xdg.cacheHome}/niri/screenshot.png";
+
+        "%SNK_VOL%" = "wpctl get-volume @DEFAULT_SINK@ 2> /dev/null | cut -d ' ' -f 2";
+        "%SRC_VOL%" = "wpctl get-volume @DEFAULT_SOURCE@ 2> /dev/null | cut -d ' ' -f 2";
       }
       // optionalAttrs (cfg.terminal.name == "foot") {
         "%TERMINAL%" = ''"foot"'';
@@ -43,7 +45,7 @@
         "%CLIPSE%" = ''"wezterm" "start" "--class" "clipse" "--" "clipse"'';
       };
   in
-    mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {
+    mkIf (osCfg.enable && osCfg.manager == "niri" && cfg.enable) {
       home.activation.activateQtctConfig = let
         qt5ctConf = builtins.readFile ./qtct/qt5ct.conf;
         qt6ctConf = builtins.readFile ./qtct/qt6ct.conf;
@@ -127,38 +129,26 @@
         };
       };
 
-      programs.eww = let
-        configDir = pkgs.runCommand "eww-config-dir" {} ''
-          mkdir $out
-
-          # eww.scss
-          echo '${builtins.replaceStrings ["'"] ["'\"'\"'"]
-            (builtins.readFile ./eww/eww.scss)}' > $out/eww.scss
-
-          # eww.yuck
-          echo '${builtins.replaceStrings
-            (["'"] ++ (mapAttrsToList (name: _: name) configTemplates))
-            (["'\"'\"'"] ++ (mapAttrsToList (_: value: value) configTemplates))
-            (builtins.readFile ./eww/eww.yuck)}' > $out/eww.yuck
-        '';
-      in {
-        enable = true;
-        inherit configDir;
-      };
-
       qt = {
         enable = true;
         platformTheme.name = "qtct";
       };
 
       xdg.configFile = {
+        "eww/eww.scss".source = ./eww/eww.scss;
         "qt5ct/style-colors.conf".source = ./qtct/qt5-style-colors.conf;
         "qt6ct/style-colors.conf".source = ./qtct/qt6-style-colors.conf;
 
+        "eww/eww.yuck".text =
+          builtins.replaceStrings
+          (mapAttrsToList (name: _: name) templates)
+          (mapAttrsToList (_: value: value) templates)
+          (builtins.readFile ./eww/eww.yuck);
+
         "niri/config.kdl".text =
           builtins.replaceStrings
-          (mapAttrsToList (name: _: name) configTemplates)
-          (mapAttrsToList (_: value: value) configTemplates)
+          (mapAttrsToList (name: _: name) templates)
+          (mapAttrsToList (_: value: value) templates)
           (builtins.readFile ./niri-config.kdl);
       };
     };

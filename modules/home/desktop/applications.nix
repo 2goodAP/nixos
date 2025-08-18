@@ -8,20 +8,20 @@
   options.tgap.home.desktop = let
     inherit (lib) mkEnableOption;
   in {
-    gaming.enable = mkEnableOption "gaming related apps";
+    gaming.enable = mkEnableOption "gaming-related apps";
 
     applications = {
-      enable = mkEnableOption "common desktop apps";
+      enable = mkEnableOption "desktop apps necessary for daily usage";
       extras.enable = mkEnableOption "extra, nice-to-have desktop apps";
     };
   };
 
   config = let
     cfg = config.tgap.home.desktop;
-    osCfg = osConfig.tgap.system;
+    osCfg = osConfig.tgap.system.desktop;
     inherit (lib) getExe importJSON mkIf mkMerge;
   in
-    mkIf osCfg.desktop.enable (mkMerge [
+    mkIf (osCfg.enable && cfg.enable) (mkMerge [
       (mkIf cfg.applications.enable (mkMerge [
         {
           home.packages = with pkgs; [
@@ -282,7 +282,7 @@
         })
       ]))
 
-      (mkIf (osCfg.desktop.gaming.enable && cfg.gaming.enable) {
+      (mkIf (osCfg.gaming.enable && cfg.gaming.enable) {
         home.packages = with pkgs; [
           protonup
           winetricks

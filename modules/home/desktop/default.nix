@@ -12,24 +12,27 @@
     ./applications.nix
   ];
 
-  options.tgap.home.desktop.terminal.name = let
-    inherit (lib) mkOption types;
-  in
-    mkOption {
+  options.tgap.home.desktop = let
+    inherit (lib) mkEnableOption mkOption types;
+  in {
+    enable = mkEnableOption "core user-specific desktop apps and configs";
+
+    terminal.name = mkOption {
       type = types.nullOr (types.enum ["foot" "ghostty" "wezterm"]);
       default = "foot";
       description = "The terminal emulator program to install.";
     };
+  };
 
   config = let
-    cfg = config.tgap.home;
+    cfg = config.tgap.home.desktop;
     osCfg = osConfig.tgap.system;
     nushellDefault = osCfg.programs.defaultShell == "nushell";
     nushellPkg = config.programs.nushell.package;
     inherit (lib) mkIf mkMerge getExe optionalAttrs optionalString;
   in
-    mkIf osCfg.desktop.enable (mkMerge [
-      (mkIf (cfg.desktop.terminal.name == "foot") {
+    mkIf (osCfg.desktop.enable && cfg.enable) (mkMerge [
+      (mkIf (cfg.terminal.name == "foot") {
         programs.foot = {
           enable = true;
           settings = {
@@ -114,7 +117,7 @@
         };
       })
 
-      (mkIf (cfg.desktop.terminal.name == "ghostty") {
+      (mkIf (cfg.terminal.name == "ghostty") {
         programs.ghostty = {
           enable = true;
           clearDefaultKeybinds = true;
@@ -218,7 +221,7 @@
         };
       })
 
-      (mkIf (cfg.desktop.terminal.name == "wezterm") {
+      (mkIf (cfg.terminal.name == "wezterm") {
         programs.wezterm = {
           enable = true;
 

@@ -5,14 +5,14 @@
   pkgs,
   ...
 }: let
-  osCfg = osConfig.tgap.system.desktop;
   cfg = config.tgap.home.desktop;
+  osCfg = osConfig.tgap.system.desktop;
   inherit (lib) getExe mkIf;
 
   fontSpec = "Jetbrains Mono Nerd Font:size=12:fontfeatures=calt,cv04,cv16,ss02,ss19";
   icon-theme = "Papirus";
 in
-  mkIf (osCfg.enable && osCfg.manager == "niri") {
+  mkIf (osCfg.enable && osCfg.manager == "niri" && cfg.enable) {
     home.packages = with pkgs; [
       glib
       inotify-tools
@@ -26,6 +26,8 @@ in
     ];
 
     programs = {
+      eww.enable = true;
+
       fuzzel = {
         enable = true;
         settings.main = {

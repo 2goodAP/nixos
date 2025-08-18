@@ -5,10 +5,11 @@
   pkgs,
   ...
 }: let
+  cfg = config.tgap.home.desktop;
   osCfg = osConfig.tgap.system;
   inherit (lib) getExe getExe' mkIf optionals;
 in
-  mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri") {
+  mkIf (osCfg.desktop.enable && osCfg.desktop.manager == "niri" && cfg.enable) {
     home.packages = with pkgs; [
       wlr-randr
       xwayland-satellite

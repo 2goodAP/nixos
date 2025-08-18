@@ -9,7 +9,7 @@
   osCfg = osConfig.tgap.system.desktop;
   inherit (lib) mkIf;
 in
-  mkIf (osCfg.enable && cfg.applications.enable) {
+  mkIf (osCfg.enable && cfg.enable && cfg.applications.enable) {
     home.packages = [pkgs.keepassxc];
 
     xdg.configFile.keepassxc-settings = {
