@@ -36,7 +36,7 @@
 
     lanzaboote = {
       # url = "github:nix-community/lanzaboote";
-      url = "github:2goodAP/lanzaboote";
+      url = "github:leguteape/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

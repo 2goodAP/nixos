@@ -422,41 +422,24 @@ in
           lz-n = inputs'.lz-n.packages.default;
 
           # TODO: remove `fzf-lua` overlay when test cases are:
-          # Either fixed in `fzf-lua` upstream
-          # Or addressed in `nixpkgs` upstream
-          fzf-lua =
-            (vprev.fzf-lua.override (old: {
-              buildLuarocksPackage = args:
-                old.buildLuarocksPackage (args
-                  // rec {
-                    version = "0.0.2079-1";
-                    knownRockspec =
-                      (prev.fetchurl {
-                        url = "mirror://luarocks/fzf-lua-${version}.rockspec";
-                        sha256 = "sha256-1Cgdq0HshjGP4ieCDNE0qnwm5g5I8qHeKySTxVk6fcU=";
-                      }).outPath;
-                    src = prev.fetchzip {
-                      url = "https://github.com/ibhagwan/fzf-lua/archive/c7f9ec3fea6530127590aff72e321ed409111029.zip";
-                      sha256 = "sha256-yIOK8XNlj0+9AJBbt3/6GPwZ2/dQotislp6SNqY3yKA=";
-                    };
-                  });
-            })).overrideAttrs (oldAttrs: {
-              checkPhase =
-                builtins.replaceStrings ["make test"] [
-                  ''
-                    substituteInPlace tests/files_spec.lua --replace-fail \
-                      "T[\"files\"][\"executable\"] = new_set({ parametrize = { { \"fd\" }, { \"rg\" }, { \"find|dir\" } } }, {" \
-                      "T[\"files\"][\"executable\"] = new_set({ parametrize = { { \"rg\" }, { \"find|dir\" } } }, {"
-
-                    substituteInPlace tests/api_spec.lua --replace-fail \
-                      "{ parametrize = { { \"[\" }, { [[table of cont]] } } }," \
-                      "{ parametrize = { { \"[\" } } },"
-
-                    make test
-                  ''
-                ]
-                oldAttrs.checkPhase;
-            });
+          # - Either fixed in `fzf-lua` upstream
+          # - Or addressed in `nixpkgs` upstream
+          fzf-lua = vprev.fzf-lua.override (old: {
+            buildLuarocksPackage = args:
+              old.buildLuarocksPackage (args
+                // rec {
+                  version = "0.0.2086-1";
+                  knownRockspec =
+                    (prev.fetchurl {
+                      url = "mirror://luarocks/fzf-lua-${version}.rockspec";
+                      sha256 = "10wnp4xj33xi861fiv7p9rl8r6czwm2d8w2r2a4iqrf9plrm4k7m";
+                    }).outPath;
+                  src = prev.fetchzip {
+                    url = "https://github.com/ibhagwan/fzf-lua/archive/de1ddf70922ef26825ae5460a154a22278954cae.zip";
+                    sha256 = "1rm4msncfylgg3yn42x8w9s586glnssqlqd13cdlj1ph92a0c103";
+                  };
+                });
+          });
         });
 
         vscode-bash-debug = prev.vscode-utils.buildVscodeExtension (finalAttrs: {
@@ -509,7 +492,7 @@ in
     inputs.nixpkgs-wayland.overlay
 
     (final: prev: {
-      flif = final.stdenv.mkDerivation (finalAttrs: {
+      flif = prev.stdenv.mkDerivation (finalAttrs: {
         pname = "flif";
         version = "0.4";
 
@@ -557,105 +540,115 @@ in
         };
       });
 
-      swappy = prev.swappy.overrideAttrs (oldAttrs: {
-        version = "1.5.1-unstable-2024-11-17";
+      wuimg = let
+        # Use `ar` with lto support
+        ar =
+          prev.stdenv.cc.bintools.targetPrefix
+          + (
+            if prev.stdenv.cc.isClang
+            then "llvm-ar"
+            else if prev.stdenv.cc.isGNU
+            then "gcc-ar"
+            else "ar"
+          );
+      in
+        prev.stdenv.mkDerivation (finalAttrs: {
+          pname = "wuimg";
+          version = "1.2";
 
-        src = prev.fetchFromGitHub {
-          owner = "jtheoof";
-          repo = oldAttrs.pname;
-          rev = "2aa3ae2433ee671ddc73e36ece8598e68f7f3632";
-          hash = "sha256-9fpGmGgHEYSZCXS7mkojnaQhD+OJMxocaz+dXShvF68=";
-        };
-      });
+          src = prev.fetchFromGitea {
+            domain = "codeberg.org";
+            owner = "kaleido";
+            repo = "wuimg";
+            tag = "w${finalAttrs.version}";
+            hash = "sha256-9iTHgFOoA/0W6gMlA9hJzrlISogv3/eMa3Rru01mx8E=";
+          };
 
-      wuimg = final.stdenv.mkDerivation (finalAttrs: {
-        pname = "wuimg";
-        version = "1.0";
+          mesonFlags = [
+            # Enable lto
+            "-Db_lto=true"
+            # Configure X11 support
+            "-Dwindow_glfw=disabled"
+          ];
 
-        src = prev.fetchFromGitea {
-          domain = "codeberg.org";
-          owner = "kaleido";
-          repo = "wuimg";
-          tag = "v${finalAttrs.version}";
-          hash = "sha256-dPcfgp1RZ6TlyaO+qjcFM7fZlX1bUJcYhb2Nn05tASQ=";
-        };
+          strictDeps = true;
 
-        mesonFlags = ["-Dwindow_glfw=disabled"];
+          nativeBuildInputs = with final; [
+            meson
+            ninja
+            pkg-config
+            python3
+            wayland-scanner
+          ];
 
-        strictDeps = true;
+          buildInputs = with final; [
+            # Minimum
+            libarchive
+            libepoxy
+            exiv2
+            icu
+            lcms
+            libuchardet
 
-        nativeBuildInputs = with final; [
-          meson
-          ninja
-          pkg-config
-          python3
-          wayland-scanner
-        ];
+            # Wayland
+            wayland
+            libGL
+            libxkbcommon
+            wayland-protocols
 
-        buildInputs = with final; [
-          # Minimum
-          libarchive
-          libepoxy
-          exiv2
-          icu
-          lcms
-          libuchardet
+            # DRM/KMS
+            libdrm
+            libgbm
 
-          # Wayland
-          wayland
-          libGL
-          libxkbcommon
-          wayland-protocols
+            # Image decoding
+            zlib
+            libavif
+            flif
+            giflib
+            libheif
+            jbigkit
+            jbig2dec
+            libjpeg
+            openjpeg
+            charls
+            libjxl
+            lerc
+            libpng
+            libraw
+            librsvg
+            libtiff
+            libwebp
+          ];
 
-          # DRM/KMS
-          libdrm
-          libgbm
-
-          # Image decoding
-          zlib
-          libavif
-          flif
-          giflib
-          libheif
-          jbigkit
-          jbig2dec
-          libjpeg
-          openjpeg
-          charls
-          libjxl
-          lerc
-          libpng
-          libraw
-          librsvg
-          libtiff
-          libwebp
-        ];
-
-        buildPhase = ''
-          runHook preBuild
-
-          meson compile
-          meson compile wuconv
-
-          runHook postBuild
-        '';
-
-        postInstall = ''
-          install -Dm755 src/wuconv $out/bin
-        '';
-
-        meta = with lib; {
-          description = "Minimalistic but not barebones image viewer";
-          homepage = "https://codeberg.org/kaleido/wuimg";
-          license = licenses.bsd0;
-          platforms = platforms.linux;
-          mainProgram = "wu";
-          longDescription = ''
-            wu is a minimalistic but not barebones image viewer. It aims for comfort,
-            speed, accurate color rendering, and format documentation/preservation.
-            wu is meant as a terminal companion, so launching from one is recommended.
+          preConfigure = ''
+            export AR="${ar}"
           '';
-        };
-      });
+
+          buildPhase = ''
+            runHook preBuild
+
+            meson compile
+            meson compile wuconv
+
+            runHook postBuild
+          '';
+
+          postInstall = ''
+            install -Dm755 src/wuconv $out/bin
+          '';
+
+          meta = with lib; {
+            description = "Minimalistic but not barebones image viewer";
+            homepage = "https://codeberg.org/kaleido/wuimg";
+            license = licenses.bsd0;
+            platforms = platforms.linux;
+            mainProgram = "wu";
+            longDescription = ''
+              wu is a minimalistic but not barebones image viewer. It aims for comfort,
+              speed, accurate color rendering, and format documentation/preservation.
+              wu is meant as a terminal companion, so launching from one is recommended.
+            '';
+          };
+        });
     })
   ]
