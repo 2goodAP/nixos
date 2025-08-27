@@ -125,7 +125,6 @@ in {
             runtimeInputs =
               [steam.run]
               ++ (with pkgs; [
-                coreutils
                 findutils
                 mangohud
                 umu-launcher
@@ -231,7 +230,7 @@ in {
                 esac
               done
 
-              if [[ -z "$1" ]]; then
+              if [[ -z ''${1+x} ]]; then
               cat >&2 <<EOF
               ''${0##*/}: missing game-dir argument
               Please specify the absolute path to the game's root directory.
@@ -239,7 +238,7 @@ in {
               EOF
                 show_help >&2
                 exit 1
-              elif [[ -z "$2" ]]; then
+              elif [[ -z ''${2+x} ]]; then
               cat >&2 <<EOF
               ''${0##*/}: missing exe-path argument
               Please specify the relative path to the game's exe from game-dir.
