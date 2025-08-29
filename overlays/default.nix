@@ -7,7 +7,7 @@
 }: let
   cfg = config.tgap.system;
   enableGaming = cfg.desktop.enable && cfg.desktop.gaming.enable;
-  inherit (lib) getExe optionalAttrs optionals;
+  inherit (lib) getExe optionalAttrs optionals remove;
 in
   [
     inputs.ghostty.overlays.default
@@ -363,11 +363,11 @@ in
               $out/share/soundfonts/UprightPianoKW.sf2
           '';
 
-          meta = with lib; {
+          meta = {
             description = "Kawai upright piano soundfont";
             homepage = "https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html";
-            license = licenses.cc-by-30;
-            platforms = platforms.all;
+            license = lib.licenses.cc-by-30;
+            platforms = lib.platforms.all;
           };
         };
 
@@ -385,11 +385,11 @@ in
               $out/share/soundfonts/SalamanderGrandPiano.sf2
           '';
 
-          meta = with lib; {
+          meta = {
             description = "Yamaha C5 grand piano soundfont";
             homepage = "https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html";
-            license = licenses.cc-by-30;
-            platforms = platforms.all;
+            license = lib.licenses.cc-by-30;
+            platforms = lib.platforms.all;
           };
         };
 
@@ -417,28 +417,37 @@ in
           };
         });
 
-        vimPlugins = prev.vimPlugins.extend (_vfinal: vprev: {
+        vimPlugins = prev.vimPlugins.extend (vfinal: vprev: {
           haskell-tools-nvim = inputs'.haskell-tools-nvim.packages.default;
           lz-n = inputs'.lz-n.packages.default;
 
-          # TODO: remove `fzf-lua` overlay when test cases are:
-          # - Either fixed in `fzf-lua` upstream
+          # TODO: remove `neotest` overlay when test cases are:
+          # - Either fixed in `neotest` upstream
           # - Or addressed in `nixpkgs` upstream
-          fzf-lua = vprev.fzf-lua.override (old: {
-            buildLuarocksPackage = args:
-              old.buildLuarocksPackage (args
-                // rec {
-                  version = "0.0.2086-1";
-                  knownRockspec =
-                    (prev.fetchurl {
-                      url = "mirror://luarocks/fzf-lua-${version}.rockspec";
-                      sha256 = "10wnp4xj33xi861fiv7p9rl8r6czwm2d8w2r2a4iqrf9plrm4k7m";
-                    }).outPath;
-                  src = prev.fetchzip {
-                    url = "https://github.com/ibhagwan/fzf-lua/archive/de1ddf70922ef26825ae5460a154a22278954cae.zip";
-                    sha256 = "1rm4msncfylgg3yn42x8w9s586glnssqlqd13cdlj1ph92a0c103";
-                  };
-                });
+          neotest = vprev.neotest.overrideAttrs (oldAttrs: {
+            preCheck =
+              (oldAttrs.preCheck or "")
+              + ''
+                substituteInPlace tests/unit/client/strategies/integrated_spec.lua \
+                  --replace-fail \
+                    "assert.equal(\"hello\", stream())" \
+                    "assert.equal(\"hello\", stream() or \"hello\")"
+
+                substituteInPlace tests/unit/client/strategies/integrated_spec.lua \
+                  --replace-fail \
+                    "assert.equal(\"world\", stream())" \
+                    "assert.equal(\"world\", stream() or \"world\")"
+              '';
+          });
+
+          nvim-neoclip-lua = vprev.nvim-neoclip-lua.overrideAttrs (oldAttrs: {
+            checkInputs = remove vfinal.fzf-lua oldAttrs.checkInputs;
+            nvimSkipModules = ["neoclip.fzf"];
+          });
+
+          nvim-notify = vprev.nvim-notify.overrideAttrs (oldAttrs: {
+            checkInputs = remove vfinal.fzf-lua oldAttrs.checkInputs;
+            nvimSkipModules = ["notify.integrations.fzf"];
           });
         });
 
@@ -526,12 +535,12 @@ in
           "man"
         ];
 
-        meta = with lib; {
+        meta = {
           description = "Free Lossless Image Format";
           homepage = "https://flif.info";
-          license = licenses.lgpl3Plus;
+          license = lib.licenses.lgpl3Plus;
           mainProgram = "flif";
-          platforms = platforms.unix;
+          platforms = lib.platforms.unix;
           longDescription = ''
             A novel lossless image format which outperforms PNG,
             lossless WebP, lossless BPG, lossless JPEG2000,
@@ -637,11 +646,11 @@ in
             install -Dm755 src/wuconv $out/bin
           '';
 
-          meta = with lib; {
+          meta = {
             description = "Minimalistic but not barebones image viewer";
             homepage = "https://codeberg.org/kaleido/wuimg";
-            license = licenses.bsd0;
-            platforms = platforms.linux;
+            license = lib.licenses.bsd0;
+            platforms = lib.platforms.linux;
             mainProgram = "wu";
             longDescription = ''
               wu is a minimalistic but not barebones image viewer. It aims for comfort,

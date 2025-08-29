@@ -202,6 +202,16 @@
                 then false
                 else true;
               theme = "breeze";
+              themePackages = [
+                (pkgs.kdePackages.breeze-plymouth.override rec {
+                  logoName = "nix-snowflake-white";
+                  logoFile =
+                    "${pkgs.nixos-icons}/share/icons/hicolor"
+                    + "/128x128/apps/${logoName}.png";
+                  osName = "NixOS";
+                  osVersion = config.system.nixos.release;
+                })
+              ];
             };
           };
 

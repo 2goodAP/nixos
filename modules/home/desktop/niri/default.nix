@@ -113,13 +113,13 @@
       home = {
         sessionVariables.QT_QUICK_CONTROLS_STYLE = "org.kde.breeze";
 
-        packages = with pkgs; [
-          bibata-cursors
-          kdePackages.breeze
-          kdePackages.breeze.qt5
-          kdePackages.qqc2-breeze-style
-          libsForQt5.qqc2-breeze-style
-        ];
+        packages =
+          [pkgs.bibata-cursors]
+          ++ (with pkgs.kdePackages; [
+            breeze
+            breeze.qt5
+            qqc2-breeze-style
+          ]);
 
         pointerCursor = {
           gtk.enable = true;
